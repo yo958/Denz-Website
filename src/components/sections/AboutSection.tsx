@@ -1,0 +1,86 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { useVenueSettings, getTodayHours } from '@/hooks/useVenueSettings';
+
+const STATS = [
+  { value: '1 Gbps', label: 'Fibre internet' },
+  { value: '฿50', label: 'From per hour' },
+  { value: '10+', label: 'Desk options' },
+  { value: '5★', label: 'Avg. review' },
+];
+
+export function AboutSection() {
+  const settings = useVenueSettings();
+  const todayHours = getTodayHours(settings);
+
+  return (
+    <section className="py-24 bg-surface-muted">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Image */}
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="relative"
+          >
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-surface-raised shadow-lg">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://denzphuket.com/wp-content/uploads/2024/11/denz-interior.jpg"
+                alt="Denz interior"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const el = e.target as HTMLImageElement;
+                  el.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect fill="%23F5F5F3"/></svg>';
+                }}
+              />
+            </div>
+            {/* Floating card */}
+            <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl p-5 border border-ink-faint/20">
+              <p className="text-xs text-ink-muted uppercase tracking-wider mb-1">Open today</p>
+              <p className="font-bold text-ink text-sm">{todayHours}</p>
+            </div>
+          </motion.div>
+
+          {/* Text */}
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <span className="inline-block text-xs font-semibold uppercase tracking-widest text-brand mb-4">
+              About Denz
+            </span>
+            <h2 className="text-4xl font-bold text-ink leading-tight mb-5">
+              A workspace that feels like home
+            </h2>
+            <p className="text-ink-muted leading-relaxed mb-4">
+              Nestled between the mountains of Kathu and the beaches of Patong,
+              Denz is where remote workers, freelancers and digital nomads call their
+              second home in Phuket.
+            </p>
+            <p className="text-ink-muted leading-relaxed mb-10">
+              We built Denz because we wanted a place that had everything — fast internet,
+              proper food, comfortable desks and a community that gets it. No pretension,
+              just a great place to get things done.
+            </p>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+              {STATS.map((stat) => (
+                <div key={stat.label}>
+                  <p className="text-2xl font-bold text-ink">{stat.value}</p>
+                  <p className="text-xs text-ink-muted mt-1">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
