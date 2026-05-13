@@ -202,8 +202,10 @@ export default function CoworkingPage() {
     'spaces',
     FALLBACK_SPACES,
   );
-  const { data: allEquipment } = useFirestoreSlice<Equipment[]>('equipment', FALLBACK_EQUIPMENT);
+  const { data: rawEquipment } = useFirestoreSlice<Equipment[]>('equipment', FALLBACK_EQUIPMENT);
   const { data: bookingTabs } = useFirestoreSlice<BookingTab[]>('tabs', []);
+  // Use fallback Mac Minis when Firestore slice is empty (POS equipment not yet configured)
+  const allEquipment = rawEquipment.length > 0 ? rawEquipment : FALLBACK_EQUIPMENT;
   const activeEquipment = allEquipment.filter((e) => !e.archived);
 
   const activeSpaces = spaces.filter((s) => !s.archived);
