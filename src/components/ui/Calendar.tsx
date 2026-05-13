@@ -42,14 +42,29 @@ const MONTH_NAMES = [
 ];
 
 interface CalendarProps {
-  value: string;           // 'YYYY-MM-DD'
-  minDate?: string;        // 'YYYY-MM-DD', defaults to today
+  value: string;              // 'YYYY-MM-DD'
+  minDate?: string;           // 'YYYY-MM-DD', defaults to today
   onChange: (value: string) => void;
+  disableWeekends?: boolean;  // if true, Sat & Sun are not selectable
 }
 
-export function Calendar({ value, minDate, onChange }: CalendarProps) {
+function isWeekend(d: Date): boolean {
+  const dow = d.getDay(); // 0 = Sun, 6 = Sat
+  return dow === 0 || dow === 6;
+}
+
+// Advance a date forward past weekends (used to skip initial value onto a weekday)
+function nextWeekday(d: Date): Date {
+  const r = new Date(d);
+  while (isWeekend(r)) r.setDate(r.getDate() + 1);
+  return r;
+}
+
+export function Calendar({ value, minDate, onChange, disableWeekends }: CalendarProps) {
   const today = startOfDay(new Date());
-  const min = minDate ? startOfDay(new Date(minDate + 'T00:00:00')) : today;
+  const rawMin = minDate ? startOfDay(new Date(minDate + 'T00:00:00')) : today;
+  // If weekends are disabled and rawMin lands on a weekend, advance to Monday
+  const min = disableWeekends ? nextWeekday(rawMin) : rawMin;
 
   const selected = value ? startOfDay(new Date(value + 'T00:00:00')) : null;
   const initial = selected && selected >= min ? selected : min;
@@ -98,8 +113,8 @@ export function Calendar({ value, minDate, onChange }: CalendarProps) {
 
       {/* Day-of-week headers */}
       <div className="grid grid-cols-7 mb-1">
-        {DAY_LABELS.map(d => (
-          <div key={d} className="text-center text-[10px] font-semibold text-ink-muted py-1">
+        {DAY_LABELS.map((d, i) => (
+          <div key={d} className={`text-center text-[10px] font-semibold py-1 ${disableWeekends && i >= 5 ? 'text-ink-faint/50' : 'text-ink-muted'}`}>
             {d}
           </div>
         ))}
@@ -110,22 +125,25 @@ export function Calendar({ value, minDate, onChange }: CalendarProps) {
         {grid.map((date, i) => {
           if (!date) return <div key={i} />;
           const isPast = startOfDay(date) < min;
+          const isWknd = disableWeekends && isWeekend(date);
+          const isDisabled = isPast || isWknd;
           const isToday = isSameDay(date, today);
           const isSelected = selected ? isSameDay(date, selected) : false;
           return (
             <button
               key={i}
               type="button"
-              disabled={isPast}
-              onClick={() => onChange(toDateValue(date))}
+              disabled={isDisabled}
+              onClick={() => !isDisabled && onChange(toDateValue(date))}
+              title={isWknd ? 'Not available on weekends' : undefined}
               className={`
-                mx-auto w-9 h-9 rounded-full text-sm font-medium transition-colors cursor-pointer
-                ${isPast ? 'text-ink-faint cursor-not-allowed' : ''}
-                ${isSelected
+                mx-auto w-9 h-9 rounded-full text-sm font-medium transition-colors
+                ${isDisabled ? 'text-ink-faint cursor-not-allowed opacity-40' : 'cursor-pointer'}
+                ${isSelected && !isDisabled
                   ? 'bg-ink text-white'
-                  : isToday
+                  : isToday && !isDisabled
                   ? 'ring-1 ring-brand text-ink hover:bg-surface-raised'
-                  : !isPast
+                  : !isDisabled
                   ? 'text-ink hover:bg-surface-raised'
                   : ''
                 }
