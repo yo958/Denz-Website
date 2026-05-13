@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import { Check, ArrowRight, Wifi, Coffee, Printer, Lock, Users, Zap, Loader2, X, Minus, Plus } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
+import { TimePicker } from '@/components/ui/TimePicker';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
-import type { CoworkSpace, CoworkSpaceRate, CoworkRatePeriod, Equipment, EquipmentTier } from '@/types';
+import { useVenueSettings } from '@/hooks/useVenueSettings';
+import type { CoworkSpace, CoworkSpaceRate, CoworkRatePeriod, DayOfWeek, Equipment, EquipmentTier } from '@/types';
 
 const PERIOD_LABELS: Partial<Record<CoworkRatePeriod, string>> = {
   hourly: 'Per hour',
@@ -25,8 +27,44 @@ const PERIOD_UNIT: Partial<Record<CoworkRatePeriod, string>> = {
 };
 
 const PERIOD_MAX: Partial<Record<CoworkRatePeriod, number>> = {
-  hourly: 12, daily: 31, weekly: 12, '2-weeks': 6, monthly: 12, '3-months': 4, '6-months': 2, yearly: 3,
+  hourly: 13, daily: 31, weekly: 12, '2-weeks': 6, monthly: 12, '3-months': 4, '6-months': 2, yearly: 3,
 };
+
+function timeToMinutes(t: string): number {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + (m ?? 0);
+}
+
+function minutesToTime(mins: number): string {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+function getVenueHoursForDate(
+  openingHours: Partial<Record<DayOfWeek, { open: string; close: string; closed: boolean }>> | undefined,
+  dateStr: string,
+): { open: string; close: string } {
+  if (!openingHours || !dateStr) return { open: '10:00', close: '23:30' };
+  const day = new Date(dateStr + 'T12:00:00')
+    .toLocaleDateString('en-US', { weekday: 'long' })
+    .toLowerCase() as DayOfWeek;
+  const h = openingHours[day];
+  if (!h || h.closed) return { open: '10:00', close: '23:30' };
+  return { open: h.open, close: h.close };
+}
+
+function workingDaysNote(period: CoworkRatePeriod): string | null {
+  switch (period) {
+    case 'weekly':    return 'We\'re open Mon – Fri only. A weekly pass covers 5 working days.';
+    case '2-weeks':   return 'We\'re open Mon – Fri only. A 2-week pass covers 10 working days.';
+    case 'monthly':   return 'We\'re open Mon – Fri only. A monthly pass covers all working days in that month.';
+    case '3-months':  return 'We\'re open Mon – Fri only. This pass covers all working days across 3 months.';
+    case '6-months':  return 'We\'re open Mon – Fri only. This pass covers all working days across 6 months.';
+    case 'yearly':    return 'We\'re open Mon – Fri only. An annual pass covers all working days in the year.';
+    default:          return null;
+  }
+}
 
 const PERIOD_ORDER: CoworkRatePeriod[] = [
   'hourly', 'daily', 'weekly', '2-weeks', 'monthly', '3-months', '6-months', 'yearly',
@@ -106,10 +144,20 @@ function hasDailyDeskItem(t: BookingTab): boolean {
   return t.items.some(i => i.product.category === 'desks' && i.product.name.endsWith(` — ${PERIOD_LABEL_SUFFIX['daily']}`));
 }
 
-function countActiveForSpace(tabs: BookingTab[], spaces: CoworkSpace[], spaceId: string, spaceName: string): number {
+const SHORT_TERM_PERIODS = new Set<CoworkRatePeriod>(['hourly', 'daily']);
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+function countActiveForSpace(
+  tabs: BookingTab[],
+  spaces: CoworkSpace[],
+  spaceId: string,
+  spaceName: string,
+  period: CoworkRatePeriod = 'hourly',
+): number {
   const now = new Date();
   const nowMs = now.getTime();
   const seen = new Set<string>();
+  const isMultiDay = !SHORT_TERM_PERIODS.has(period);
 
   for (const t of tabs) {
     const endsMs = t.bookingEndsAt ? new Date(t.bookingEndsAt as string).getTime() : null;
@@ -118,6 +166,12 @@ function countActiveForSpace(tabs: BookingTab[], spaces: CoworkSpace[], spaceId:
     // Daily bookings: expire at end of the calendar day they were opened — not 24h after paidAt.
     const openedDate = t.openedAt ? new Date(t.openedAt as string) : null;
     const isDaily = hasDailyDeskItem(t);
+
+    // For weekly/monthly/longer views, only count bookings that actually span multiple days.
+    // Skip anything hourly/daily, anything with no end time, or anything ending within 24h.
+    if (isMultiDay) {
+      if (endsMs === null || endsMs <= nowMs + ONE_DAY_MS) continue;
+    }
 
     const isOpenAndActive = t.status === 'open' && (() => {
       if (endsMs !== null && endsMs > nowMs) return true;
@@ -140,8 +194,6 @@ function countActiveForSpace(tabs: BookingTab[], spaces: CoworkSpace[], spaceId:
       });
     })();
 
-    // Capacity is physical — any active desk booking for this space reduces availability,
-    // regardless of which period (daily/weekly/monthly) the customer is browsing.
     if (!isOpenAndActive && !isPaidStillActive) continue;
 
     let matches = false;
@@ -204,6 +256,7 @@ export default function CoworkingPage() {
   );
   const { data: rawEquipment } = useFirestoreSlice<Equipment[]>('equipment', FALLBACK_EQUIPMENT);
   const { data: bookingTabs } = useFirestoreSlice<BookingTab[]>('tabs', []);
+  const venueSettings = useVenueSettings();
   // Use fallback Mac Minis when Firestore slice is empty (POS equipment not yet configured)
   const allEquipment = rawEquipment.length > 0 ? rawEquipment : FALLBACK_EQUIPMENT;
   const activeEquipment = allEquipment.filter((e) => !e.archived);
@@ -226,7 +279,12 @@ export default function CoworkingPage() {
   const [picker, setPicker] = useState<PickerItem | null>(null);
   const [pickerQty, setPickerQty] = useState(1);
   const [pickerDate, setPickerDate] = useState('');
-  const [pickerTime, setPickerTime] = useState('09:00');
+  const [pickerTime, setPickerTime] = useState('10:00');
+
+  const dayHours = getVenueHoursForDate(venueSettings.venue.openingHours, pickerDate);
+  const maxHourlyHours = Math.floor((timeToMinutes(dayHours.close) - timeToMinutes(dayHours.open)) / 60);
+  // Latest start time = close time minus the selected duration (e.g. 1hr booking can start no later than 22:30 if close is 23:30)
+  const maxStartTime = minutesToTime(timeToMinutes(dayHours.close) - pickerQty * 60);
 
   useEffect(() => {
     if (fromFirestore) setPeriod(bestDefaultPeriod);
@@ -245,23 +303,28 @@ export default function CoworkingPage() {
     let defaultDate = todayStr;
     if (spaceId && spaceName && spacePeriod) {
       const slots = activeSpaces.find(s => s.id === spaceId)?.capacity ?? 1;
-      const booked = countActiveForSpace(bookingTabs, activeSpaces, spaceId, spaceName);
+      const booked = countActiveForSpace(bookingTabs, activeSpaces, spaceId, spaceName, spacePeriod);
       if (booked >= slots) {
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
         defaultDate = toDateValue(tomorrow);
       }
     }
+    const openTime = getVenueHoursForDate(venueSettings.venue.openingHours, defaultDate).open;
     setPicker(item);
     setPickerQty(1);
     setPickerDate(defaultDate);
-    setPickerTime('09:00');
+    setPickerTime(openTime);
   }
 
   function confirmPicker() {
     if (!picker) return;
     // Advance past any weekend (safety net — Calendar already blocks weekends)
     let dateParam = pickerDate || toDateValue(new Date());
+    // Safety clamp: ensure start time doesn't push booking past closing time
+    const hours = getVenueHoursForDate(venueSettings.venue.openingHours, dateParam);
+    const latestStart = minutesToTime(timeToMinutes(hours.close) - pickerQty * 60);
+    if (pickerTime > latestStart) setPickerTime(latestStart);
     const chosen = new Date(dateParam + 'T12:00:00');
     const dow = chosen.getDay();
     if (dow === 0 || dow === 6) {
@@ -381,7 +444,7 @@ export default function CoworkingPage() {
                     )}
                     {(() => {
                       const slots = space.capacity ?? 1;
-                      const booked = countActiveForSpace(bookingTabs, activeSpaces, space.id, space.name);
+                      const booked = countActiveForSpace(bookingTabs, activeSpaces, space.id, space.name, validPeriod);
                       const available = Math.max(0, slots - booked);
                       const isFull = available === 0;
                       return (
@@ -442,12 +505,13 @@ export default function CoworkingPage() {
                     <button
                       onClick={() => {
                         if (!rate) return;
-                        if (space.type === 'private-office') {
+                        if (space.type === 'private-office' && validPeriod === 'hourly') {
                           openPicker({ kind: 'equipment', id: space.id, name: space.name, tiers: rate.tiers?.length ? rate.tiers : [{ price: rate.price }] }, space.id, space.name, validPeriod);
                         } else {
-                          const hasDedicated = (space.dedicatedRates ?? []).some((r) => r.period === validPeriod && r.enabled);
-                          const walkInRate = space.rates.find((r) => r.period === validPeriod && r.enabled)?.price;
-                          openPicker({ kind: 'desk', id: space.id, name: space.name, bookingRate: rate.price, walkInRate, period: validPeriod, spaceType: space.type, hotDeskOnly: !hasDedicated }, space.id, space.name, validPeriod);
+                          const isPrivateOffice = space.type === 'private-office';
+                          const hasDedicated = !isPrivateOffice && (space.dedicatedRates ?? []).some((r) => r.period === validPeriod && r.enabled);
+                          const walkInRate = isPrivateOffice ? undefined : space.rates.find((r) => r.period === validPeriod && r.enabled)?.price;
+                          openPicker({ kind: 'desk', id: space.id, name: space.name, bookingRate: rate.price, walkInRate, period: validPeriod, spaceType: space.type, hotDeskOnly: !isPrivateOffice && !hasDedicated }, space.id, space.name, validPeriod);
                         }
                       }}
                       className={`flex items-center justify-center gap-2 w-full py-3 rounded-full text-sm font-semibold transition-colors cursor-pointer ${
@@ -537,7 +601,7 @@ export default function CoworkingPage() {
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md"
           onClick={(e) => { if (e.target === e.currentTarget) setPicker(null); }}
         >
-          <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl shadow-2xl w-full max-w-lg p-8">
+          <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl shadow-2xl w-full max-w-lg p-8 overflow-y-auto max-h-[95vh]">
             {/* Header */}
             <div className="flex items-start justify-between mb-6">
               <div>
@@ -547,6 +611,8 @@ export default function CoworkingPage() {
                     ? 'How many hours do you need?'
                     : picker.hotDeskOnly
                     ? 'Walk-in hot desk pricing'
+                    : picker.spaceType === 'private-office'
+                    ? 'Book your private office'
                     : 'Choose how you want to use this desk'}
                 </p>
               </div>
@@ -568,6 +634,11 @@ export default function CoworkingPage() {
                         First come, first served — no desk is reserved. When you leave the premises you must take your belongings with you, and your desk may change when you return. Perfect for flexible short-stay working.
                       </p>
                     </div>
+                    {workingDaysNote(picker.period) && (
+                      <p className="text-xs text-ink-muted bg-surface-muted rounded-xl px-4 py-3 mb-6">
+                        📅 {workingDaysNote(picker.period)}
+                      </p>
+                    )}
                     <div className="mb-6">
                       <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
                         Start date{pickerDate && <span className="normal-case font-normal ml-1.5 text-ink">— {formatBookingDate(pickerDate)}</span>}
@@ -598,12 +669,23 @@ export default function CoworkingPage() {
                         </div>
                       )}
                       <div className="rounded-xl border border-ink bg-ink p-4">
-                        <p className="text-[10px] font-semibold uppercase tracking-widest text-white/50 mb-3">Dedicated Desk</p>
+                        <p className="text-[10px] font-semibold uppercase tracking-widest text-white/50 mb-3">
+                          {picker.spaceType === 'private-office' ? 'Dedicated Office' : 'Dedicated Desk'}
+                        </p>
                         <p className="text-2xl font-bold text-white">฿{picker.bookingRate.toLocaleString()}</p>
                         <p className="text-xs text-white/50 mt-0.5">/ {PERIOD_LABELS[picker.period]?.toLowerCase()}</p>
-                        <p className="text-xs text-white/50 mt-3 leading-relaxed">This desk is yours for the full opening hours — reserved just for you. Leave your belongings, rearrange things, make yourself at home. No one else will sit here.</p>
+                        <p className="text-xs text-white/50 mt-3 leading-relaxed">
+                          {picker.spaceType === 'private-office'
+                            ? 'Your own private office for the full period — locked, yours alone. Leave your belongings, set up your space, come and go as you please.'
+                            : 'This desk is yours for the full opening hours — reserved just for you. Leave your belongings, rearrange things, make yourself at home. No one else will sit here.'}
+                        </p>
                       </div>
                     </div>
+                    {workingDaysNote(picker.period) && (
+                      <p className="text-xs text-ink-muted bg-surface-muted rounded-xl px-4 py-3 mb-6">
+                        📅 {workingDaysNote(picker.period)}
+                      </p>
+                    )}
                     <div className="mb-6">
                       <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
                         Start date{pickerDate && <span className="normal-case font-normal ml-1.5 text-ink">— {formatBookingDate(pickerDate)}</span>}
@@ -639,8 +721,13 @@ export default function CoworkingPage() {
                     <p className="text-sm text-ink-muted mt-1">hour{pickerQty !== 1 ? 's' : ''}</p>
                   </div>
                   <button
-                    onClick={() => setPickerQty((q) => Math.min(12, q + 1))}
-                    disabled={pickerQty >= 12}
+                    onClick={() => {
+                      const newQty = Math.min(maxHourlyHours, pickerQty + 1);
+                      setPickerQty(newQty);
+                      const newMax = minutesToTime(timeToMinutes(dayHours.close) - newQty * 60);
+                      if (pickerTime > newMax) setPickerTime(newMax);
+                    }}
+                    disabled={pickerQty >= maxHourlyHours}
                     className="w-10 h-10 rounded-full border border-ink-faint/40 flex items-center justify-center text-ink hover:bg-surface-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                   >
                     <Plus className="w-4 h-4" />
@@ -659,12 +746,11 @@ export default function CoworkingPage() {
                   </p>
                   <Calendar value={pickerDate} minDate={toDateValue(new Date())} onChange={setPickerDate} disableWeekends />
                   <div className="mt-3">
-                    <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">Start time</p>
-                    <input
-                      type="time"
+                    <TimePicker
                       value={pickerTime}
-                      onChange={(e) => setPickerTime(e.target.value)}
-                      className="w-full bg-white border border-ink-faint/40 rounded-xl px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand/50"
+                      min={dayHours.open}
+                      max={maxStartTime}
+                      onChange={setPickerTime}
                     />
                   </div>
                   <p className="text-xs text-ink-muted mt-2">Select today to arrive now, or a future date to reserve your spot.</p>
