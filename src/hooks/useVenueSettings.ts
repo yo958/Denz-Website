@@ -31,8 +31,8 @@ export function useVenueSettings() {
 }
 
 /** Format a single day's hours as "10:00 – 23:30" or "Closed". */
-export function formatDayHours(h: DayHours): string {
-  if (h.closed) return 'Closed';
+export function formatDayHours(h: DayHours | undefined): string {
+  if (!h || h.closed) return 'Closed';
   return `${h.open} – ${h.close}`;
 }
 
@@ -70,7 +70,6 @@ export function getTodayHours(settings: SiteSettings): string {
   const dayName = new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: tz })
     .format(new Date())
     .toLowerCase() as DayOfWeek;
-  const h = hours[dayName];
-  if (!h) return '10:00 – 23:30';
+  const h = hours[dayName as DayOfWeek];
   return formatDayHours(h);
 }
