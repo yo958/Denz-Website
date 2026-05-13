@@ -96,19 +96,23 @@ export default function OrderConfirmationPage({ params }: { params: Promise<{ id
                 <div className="space-y-4">
                   {steps.map((step, i) => {
                     const done = i <= currentStep;
-                    const active = i === currentStep;
+                    const isLastStep = i === steps.length - 1;
+                    // "active" only applies mid-journey — the final reached step is treated as fully done
+                    const active = i === currentStep && !isLastStep;
                     return (
                       <div key={step.key} className="flex items-center gap-4">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-                          done ? (active ? 'bg-brand' : 'bg-green-500') : 'bg-surface-raised'
+                          done ? 'bg-green-500' : active ? 'bg-brand' : 'bg-surface-raised'
                         }`}>
                           {done ? (
+                            <step.icon className="w-4 h-4 text-white" />
+                          ) : active ? (
                             <step.icon className="w-4 h-4 text-white" />
                           ) : (
                             <span className="text-xs text-ink-faint">{i + 1}</span>
                           )}
                         </div>
-                        <span className={`text-sm font-medium ${active ? 'text-ink' : done ? 'text-green-600' : 'text-ink-muted'}`}>
+                        <span className={`text-sm font-medium ${done ? 'text-green-600' : active ? 'text-ink' : 'text-ink-muted'}`}>
                           {step.label}
                           {active && <span className="ml-2 inline-flex items-center gap-1 text-xs text-brand"><Loader2 className="w-3 h-3 animate-spin" /> updating…</span>}
                         </span>
