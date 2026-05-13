@@ -106,11 +106,10 @@ function hasDailyDeskItem(t: BookingTab): boolean {
   return t.items.some(i => i.product.category === 'desks' && i.product.name.endsWith(` — ${PERIOD_LABEL_SUFFIX['daily']}`));
 }
 
-function countActiveForSpace(tabs: BookingTab[], spaces: CoworkSpace[], spaceId: string, spaceName: string, period: CoworkRatePeriod): number {
+function countActiveForSpace(tabs: BookingTab[], spaces: CoworkSpace[], spaceId: string, spaceName: string): number {
   const now = new Date();
   const nowMs = now.getTime();
   const seen = new Set<string>();
-  const periodLabel = period !== 'hourly' ? PERIOD_LABEL_SUFFIX[period] : null;
 
   for (const t of tabs) {
     const endsMs = t.bookingEndsAt ? new Date(t.bookingEndsAt as string).getTime() : null;
@@ -123,7 +122,7 @@ function countActiveForSpace(tabs: BookingTab[], spaces: CoworkSpace[], spaceId:
     const isOpenAndActive = t.status === 'open' && (() => {
       if (endsMs !== null && endsMs > nowMs) return true;
       if (isDaily && openedDate) return sameCalendarDay(openedDate, now);
-      return !isDaily; // non-daily open tabs always active; daily without openedAt fallback: exclude
+      return !isDaily;
     })();
 
     const isPaidStillActive = t.status === 'paid' && (() => {
@@ -141,15 +140,9 @@ function countActiveForSpace(tabs: BookingTab[], spaces: CoworkSpace[], spaceId:
       });
     })();
 
+    // Capacity is physical — any active desk booking for this space reduces availability,
+    // regardless of which period (daily/weekly/monthly) the customer is browsing.
     if (!isOpenAndActive && !isPaidStillActive) continue;
-
-    // For non-hourly periods, only count tabs whose desk item matches this period's label
-    if (periodLabel !== null) {
-      const hasPeriodMatch = t.items.some(
-        item => item.product.category === 'desks' && item.product.name.endsWith(` — ${periodLabel}`),
-      );
-      if (!hasPeriodMatch) continue;
-    }
 
     let matches = false;
     if (t.type === 'desk') {
@@ -250,7 +243,7 @@ export default function CoworkingPage() {
     let defaultDate = todayStr;
     if (spaceId && spaceName && spacePeriod) {
       const slots = activeSpaces.find(s => s.id === spaceId)?.capacity ?? 1;
-      const booked = countActiveForSpace(bookingTabs, activeSpaces, spaceId, spaceName, spacePeriod);
+      const booked = countActiveForSpace(bookingTabs, activeSpaces, spaceId, spaceName);
       if (booked >= slots) {
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
@@ -377,7 +370,7 @@ export default function CoworkingPage() {
                     )}
                     {(() => {
                       const slots = space.capacity ?? 1;
-                      const booked = countActiveForSpace(bookingTabs, activeSpaces, space.id, space.name, validPeriod);
+                      const booked = countActiveForSpace(bookingTabs, activeSpaces, space.id, space.name);
                       const available = Math.max(0, slots - booked);
                       const isFull = available === 0;
                       return (
