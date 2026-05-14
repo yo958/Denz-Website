@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.7] - 2026-05-14
+### Changed
+- **Coworking page** — Private Office card now has a distinct VIP gold/amber gradient style with a crown "VIP Package" badge, white text, and a white CTA button with amber text. Distinguished visually as a premium package, separate from the regular "most popular" highlight logic.
+
 ## [0.2.6] - 2026-05-13
 ### Fixed
 - **Coworking availability** — Hourly/daily bookings (and tabs with no end time) no longer mark a space as "full" on the weekly, monthly, or longer-term tabs. Multi-day views now only count bookings whose `bookingEndsAt` extends more than 24 hours ahead.

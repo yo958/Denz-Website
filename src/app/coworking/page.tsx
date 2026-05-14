@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, ArrowRight, Wifi, Coffee, Printer, Lock, Users, Zap, Loader2, X, Minus, Plus } from 'lucide-react';
+import { Check, ArrowRight, Wifi, Coffee, Printer, Lock, Users, Zap, Loader2, X, Minus, Plus, Crown } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { TimePicker } from '@/components/ui/TimePicker';
@@ -419,11 +419,13 @@ export default function CoworkingPage() {
                 const displayRate = isDesk
                   ? (space.rates.find((r) => r.period === validPeriod && r.enabled) ?? rate)
                   : rate;
+                const isPrivateOffice = space.type === 'private-office';
                 const popularIdx = visibleSpaces.findIndex((s) =>
                   s.name.toLowerCase().includes('standup + 27'),
                 );
                 const highlightIdx = popularIdx !== -1 ? popularIdx : visibleSpaces.length === 1 ? 0 : 1;
-                const isHighlighted = i === highlightIdx;
+                // Private office always gets VIP treatment; never the "most popular" highlight
+                const isHighlighted = !isPrivateOffice && i === highlightIdx;
                 const features = SPACE_FEATURES[space.type] ?? SPACE_FEATURES['desk'];
                 const isHotDesk = validPeriod === 'hourly' && space.name.toLowerCase().includes('hot');
                 const isBookable = !isHotDesk;
@@ -432,16 +434,23 @@ export default function CoworkingPage() {
                   <div
                     key={space.id}
                     className={`rounded-2xl p-8 border transition-all ${
-                      isHighlighted
+                      isPrivateOffice
+                        ? 'bg-gradient-to-br from-amber-500 to-amber-700 border-amber-400/40 shadow-xl shadow-amber-300/30 scale-[1.02]'
+                        : isHighlighted
                         ? 'bg-ink text-white border-ink shadow-xl scale-[1.02]'
                         : 'bg-white border-ink-faint/30 shadow-sm'
                     }`}
                   >
-                    {isHighlighted && visibleSpaces.length >= 2 && (
+                    {isPrivateOffice ? (
+                      <span className="inline-flex items-center gap-1.5 bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">
+                        <Crown className="w-3 h-3" />
+                        VIP Package
+                      </span>
+                    ) : isHighlighted && visibleSpaces.length >= 2 ? (
                       <span className="inline-block bg-brand text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">
                         Most popular
                       </span>
-                    )}
+                    ) : null}
                     {(() => {
                       const slots = space.capacity ?? 1;
                       const booked = countActiveForSpace(bookingTabs, activeSpaces, space.id, space.name, validPeriod);
@@ -451,6 +460,8 @@ export default function CoworkingPage() {
                         <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full mb-3 ${
                           isFull
                             ? 'bg-red-100 text-red-600'
+                            : isPrivateOffice
+                            ? 'bg-white/20 text-white/80'
                             : isHighlighted
                             ? 'bg-white/10 text-white/70'
                             : 'bg-surface-raised text-ink-muted'
@@ -459,11 +470,11 @@ export default function CoworkingPage() {
                         </span>
                       );
                     })()}
-                    <h3 className={`text-xl font-bold mb-1 ${isHighlighted ? 'text-white' : 'text-ink'}`}>
+                    <h3 className={`text-xl font-bold mb-1 ${isPrivateOffice || isHighlighted ? 'text-white' : 'text-ink'}`}>
                       {space.name}
                     </h3>
                     {space.description && (
-                      <p className={`text-sm mb-6 ${isHighlighted ? 'text-white/60' : 'text-ink-muted'}`}>
+                      <p className={`text-sm mb-6 ${isPrivateOffice ? 'text-white/70' : isHighlighted ? 'text-white/60' : 'text-ink-muted'}`}>
                         {space.description}
                       </p>
                     )}
@@ -472,20 +483,20 @@ export default function CoworkingPage() {
                     <div className="mb-8">
                       {displayRate ? (
                         <>
-                          <p className={`text-xs font-semibold uppercase tracking-widest mb-1 ${isDesk ? (isHighlighted ? 'text-white/50' : 'text-ink-muted') : 'invisible'}`}>
+                          <p className={`text-xs font-semibold uppercase tracking-widest mb-1 ${isDesk ? (isPrivateOffice || isHighlighted ? 'text-white/50' : 'text-ink-muted') : 'invisible'}`}>
                             from
                           </p>
                           <div>
-                            <span className={`text-4xl font-bold ${isHighlighted ? 'text-white' : 'text-ink'}`}>
+                            <span className={`text-4xl font-bold ${isPrivateOffice || isHighlighted ? 'text-white' : 'text-ink'}`}>
                               ฿{displayRate.price.toLocaleString()}
                             </span>
-                            <span className={`text-sm ml-1 ${isHighlighted ? 'text-white/50' : 'text-ink-muted'}`}>
+                            <span className={`text-sm ml-1 ${isPrivateOffice ? 'text-white/60' : isHighlighted ? 'text-white/50' : 'text-ink-muted'}`}>
                               / {PERIOD_LABELS[validPeriod]?.toLowerCase()}
                             </span>
                           </div>
                         </>
                       ) : (
-                        <span className={`text-sm italic ${isHighlighted ? 'text-white/50' : 'text-ink-muted'}`}>
+                        <span className={`text-sm italic ${isPrivateOffice || isHighlighted ? 'text-white/50' : 'text-ink-muted'}`}>
                           Not available for this period
                         </span>
                       )}
@@ -495,8 +506,8 @@ export default function CoworkingPage() {
                     <ul className="space-y-2.5 mb-8">
                       {features.map((feat) => (
                         <li key={feat} className="flex items-start gap-2.5 text-sm">
-                          <Check className="w-4 h-4 mt-0.5 shrink-0 text-brand" />
-                          <span className={isHighlighted ? 'text-white/80' : 'text-ink-muted'}>{feat}</span>
+                          <Check className={`w-4 h-4 mt-0.5 shrink-0 ${isPrivateOffice ? 'text-amber-100' : 'text-brand'}`} />
+                          <span className={isPrivateOffice ? 'text-white/85' : isHighlighted ? 'text-white/80' : 'text-ink-muted'}>{feat}</span>
                         </li>
                       ))}
                     </ul>
@@ -508,14 +519,15 @@ export default function CoworkingPage() {
                         if (space.type === 'private-office' && validPeriod === 'hourly') {
                           openPicker({ kind: 'equipment', id: space.id, name: space.name, tiers: rate.tiers?.length ? rate.tiers : [{ price: rate.price }] }, space.id, space.name, validPeriod);
                         } else {
-                          const isPrivateOffice = space.type === 'private-office';
                           const hasDedicated = !isPrivateOffice && (space.dedicatedRates ?? []).some((r) => r.period === validPeriod && r.enabled);
                           const walkInRate = isPrivateOffice ? undefined : space.rates.find((r) => r.period === validPeriod && r.enabled)?.price;
                           openPicker({ kind: 'desk', id: space.id, name: space.name, bookingRate: rate.price, walkInRate, period: validPeriod, spaceType: space.type, hotDeskOnly: !isPrivateOffice && !hasDedicated }, space.id, space.name, validPeriod);
                         }
                       }}
                       className={`flex items-center justify-center gap-2 w-full py-3 rounded-full text-sm font-semibold transition-colors cursor-pointer ${
-                        isHighlighted
+                        isPrivateOffice
+                          ? 'bg-white text-amber-700 hover:bg-amber-50'
+                          : isHighlighted
                           ? 'bg-brand text-white hover:bg-brand-dark'
                           : 'bg-ink text-white hover:bg-ink/80'
                       }`}
@@ -525,7 +537,11 @@ export default function CoworkingPage() {
                     </button>
                     ) : (
                       <div className={`w-full py-3 rounded-full text-sm font-medium text-center ${
-                        isHighlighted ? 'bg-white/10 text-white/60' : 'bg-surface-muted text-ink-muted border border-ink-faint/30'
+                        isPrivateOffice
+                          ? 'bg-white/20 text-white/70'
+                          : isHighlighted
+                          ? 'bg-white/10 text-white/60'
+                          : 'bg-surface-muted text-ink-muted border border-ink-faint/30'
                       }`}>
                         Walk-in only — no booking needed
                       </div>
