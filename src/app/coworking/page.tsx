@@ -435,16 +435,15 @@ export default function CoworkingPage() {
                     key={space.id}
                     className={`rounded-2xl p-8 border transition-all ${
                       isPrivateOffice
-                        ? 'bg-gradient-to-br from-amber-500 to-amber-700 border-amber-400/40 shadow-xl shadow-amber-300/30 scale-[1.02]'
+                        ? 'bg-gradient-to-br from-brand to-brand-dark border-brand-dark/30 shadow-xl shadow-brand/20 scale-[1.02]'
                         : isHighlighted
                         ? 'bg-ink text-white border-ink shadow-xl scale-[1.02]'
                         : 'bg-white border-ink-faint/30 shadow-sm'
                     }`}
                   >
                     {isPrivateOffice ? (
-                      <span className="inline-flex items-center gap-1.5 bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">
-                        <Crown className="w-3 h-3" />
-                        VIP Package
+                      <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white/20 mb-4">
+                        <Crown className="w-3.5 h-3.5 text-white" />
                       </span>
                     ) : isHighlighted && visibleSpaces.length >= 2 ? (
                       <span className="inline-block bg-brand text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">
@@ -461,7 +460,7 @@ export default function CoworkingPage() {
                           isFull
                             ? 'bg-red-100 text-red-600'
                             : isPrivateOffice
-                            ? 'bg-white/20 text-white/80'
+                            ? 'bg-white/15 text-white/80'
                             : isHighlighted
                             ? 'bg-white/10 text-white/70'
                             : 'bg-surface-raised text-ink-muted'
@@ -506,7 +505,7 @@ export default function CoworkingPage() {
                     <ul className="space-y-2.5 mb-8">
                       {features.map((feat) => (
                         <li key={feat} className="flex items-start gap-2.5 text-sm">
-                          <Check className={`w-4 h-4 mt-0.5 shrink-0 ${isPrivateOffice ? 'text-amber-100' : 'text-brand'}`} />
+                          <Check className={`w-4 h-4 mt-0.5 shrink-0 ${isPrivateOffice ? 'text-white/70' : 'text-brand'}`} />
                           <span className={isPrivateOffice ? 'text-white/85' : isHighlighted ? 'text-white/80' : 'text-ink-muted'}>{feat}</span>
                         </li>
                       ))}
@@ -526,7 +525,7 @@ export default function CoworkingPage() {
                       }}
                       className={`flex items-center justify-center gap-2 w-full py-3 rounded-full text-sm font-semibold transition-colors cursor-pointer ${
                         isPrivateOffice
-                          ? 'bg-white text-amber-700 hover:bg-amber-50'
+                          ? 'bg-white text-brand hover:bg-red-50'
                           : isHighlighted
                           ? 'bg-brand text-white hover:bg-brand-dark'
                           : 'bg-ink text-white hover:bg-ink/80'

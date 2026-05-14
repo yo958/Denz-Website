@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.8] - 2026-05-14
+### Changed
+- **Coworking page** — Private Office card styled with Denz brand red gradient (`brand` → `brand-dark`), a small crown icon, white text, and a white CTA button with brand-red text. Visually distinct from regular desk cards with no label text on the badge.
+
 ## [0.2.7] - 2026-05-14
 ### Changed
 - **Coworking page** — Private Office card now has a distinct VIP gold/amber gradient style with a crown "VIP Package" badge, white text, and a white CTA button with amber text. Distinguished visually as a premium package, separate from the regular "most popular" highlight logic.
