@@ -420,9 +420,10 @@ export default function CoworkingPage() {
                   ? (space.rates.find((r) => r.period === validPeriod && r.enabled) ?? rate)
                   : rate;
                 const isPrivateOffice = space.type === 'private-office';
-                const popularIdx = visibleSpaces.findIndex((s) =>
-                  s.name.toLowerCase().includes('standup + 27'),
-                );
+                const popularIdx = visibleSpaces.findIndex((s) => {
+                  const n = s.name.toLowerCase();
+                  return n.includes('standup') && n.includes('27');
+                });
                 const highlightIdx = popularIdx !== -1 ? popularIdx : visibleSpaces.length === 1 ? 0 : 1;
                 // Private office always gets VIP treatment; never the "most popular" highlight
                 const isHighlighted = !isPrivateOffice && i === highlightIdx;

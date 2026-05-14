@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.9] - 2026-05-14
+### Fixed
+- **Coworking page** — "Most popular" badge now correctly targets "Standup Desk + 27". Previous substring check (`'standup + 27'`) never matched the full name `'Standup Desk + 27'`; updated to check for both `'standup'` and `'27'` independently.
+
 ## [0.2.8] - 2026-05-14
 ### Changed
 - **Coworking page** — Private Office card styled with Denz brand red gradient (`brand` → `brand-dark`), a small crown icon, white text, and a white CTA button with brand-red text. Visually distinct from regular desk cards with no label text on the badge.
