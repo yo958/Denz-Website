@@ -198,6 +198,7 @@ export default function RoomsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="flex items-baseline gap-1">
+                          <span className="text-sm text-ink-muted mr-0.5">from</span>
                           <span className={`text-2xl font-bold ${isBlocked ? 'text-ink-muted' : 'text-ink'}`}>฿{cardPrice.toLocaleString()}</span>
                           <span className="text-sm text-ink-muted">/night</span>
                         </div>
