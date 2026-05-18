@@ -21,6 +21,8 @@ export interface Product {
   image?: string | null;
   glyph?: string | null;
   archived?: boolean;
+  /** Extended description shown on the room's individual page. */
+  longDescription?: string;
   /** Seasonal pricing — only used when category === 'rooms'. */
   seasons?: RoomSeason[];
   /** If true, room is blocked from website bookings (e.g. under renovation). */

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.5] - 2026-05-18
+### Added
+- **Room detail pages** — individual landing page at `/rooms/[id]` for each room. Shows hero image, short description, feature tags, full long description (multi-paragraph), and a sticky booking card with the night picker. Clicking the room image on the listing page navigates here. A "More info" link also appears on each card.
+
 ## [0.3.4] - 2026-05-18
 ### Added
 - **Rooms page — seasonal pricing**: Room cards now display the price for the applicable season based on today's date. If a season is active, the season name and base rate are shown below the price. The night picker modal also shows the season-adjusted rate and recalculates the estimated total based on the selected check-in date.

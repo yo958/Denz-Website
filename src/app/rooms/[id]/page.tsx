@@ -1,9 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import {
+  Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X,
+  Minus, Plus, CalendarDays, Ban, ChevronLeft,
+} from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X, Minus, Plus, CalendarDays, Ban } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
@@ -16,8 +19,8 @@ const FALLBACK_ROOMS: Product[] = [
 ];
 
 const ROOM_FEATURES = [
-  { icon: Wifi, label: 'Gigabit WiFi in every room' },
-  { icon: Coffee, label: 'Direct access to the café' },
+  { icon: Wifi, label: 'Gigabit WiFi' },
+  { icon: Coffee, label: 'Café access' },
   { icon: Wind, label: 'Air conditioning' },
   { icon: BedDouble, label: 'Premium bedding' },
 ];
@@ -61,43 +64,62 @@ interface RoomPicker {
   minDate: string;
 }
 
-export default function RoomsPage() {
+export default function RoomDetailPage() {
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { data: allProducts, loading, fromFirestore } = useFirestoreSlice<Product[]>(
-    'products',
-    FALLBACK_ROOMS,
-  );
+
+  const { data: allProducts, loading } = useFirestoreSlice<Product[]>('products', FALLBACK_ROOMS);
   const { data: stays } = useFirestoreSlice<Stay[]>('stays', []);
 
   const rooms = allProducts.filter((p) => p.category === 'rooms' && !p.archived);
   const displayRooms = rooms.length > 0 ? rooms : FALLBACK_ROOMS;
-
-  function getActiveStay(roomId: string): Stay | undefined {
-    return stays.find(s => s.status === 'active' && s.roomId === roomId);
-  }
-
-  function stayCheckOutStr(stay: Stay): string {
-    if (stay.checkOutAt) return toDateValue(new Date(stay.checkOutAt));
-    // Fall back to checkInAt + nights
-    const d = new Date(stay.checkInAt);
-    d.setDate(d.getDate() + stay.nights);
-    return toDateValue(d);
-  }
+  const room = displayRooms.find((r) => r.id === id);
 
   const todayStr = toDateValue(new Date());
   const [picker, setPicker] = useState<RoomPicker | null>(null);
 
-  function openPicker(room: Product) {
-    const activeStay = getActiveStay(room.id);
-    const minCheckIn = activeStay ? stayCheckOutStr(activeStay) : todayStr;
-    // Start the calendar on the first available date
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center gap-3 text-ink-muted">
+        <Loader2 className="w-5 h-5 animate-spin" />
+        <span className="text-sm">Loading…</span>
+      </div>
+    );
+  }
+
+  if (!room) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-4">
+        <BedDouble className="w-12 h-12 text-ink-faint" />
+        <h1 className="text-2xl font-bold text-ink">Room not found</h1>
+        <Link href="/rooms" className="text-brand text-sm font-medium hover:underline">← Back to all rooms</Link>
+      </div>
+    );
+  }
+
+  const activeStay = stays.find(s => s.status === 'active' && s.roomId === room.id);
+  const availableFrom = activeStay
+    ? (() => {
+        if (activeStay.checkOutAt) return toDateValue(new Date(activeStay.checkOutAt));
+        const d = new Date(activeStay.checkInAt);
+        d.setDate(d.getDate() + activeStay.nights);
+        return toDateValue(d);
+      })()
+    : null;
+
+  const isBlocked = room.blocked === true;
+  const cardPrice = getEffectivePrice(room, todayStr);
+
+  function openPicker() {
+    if (!room) return;
+    const minCheckIn = availableFrom ?? todayStr;
     const checkIn = minCheckIn > todayStr ? minCheckIn : todayStr;
-    setPicker({ room, checkIn, nights: 1, minDate: minCheckIn > todayStr ? minCheckIn : todayStr });
+    setPicker({ room, checkIn, nights: 1, minDate: checkIn });
   }
 
   function confirmPicker() {
-    if (!picker) return;
-    const { room, checkIn, nights } = picker;
+    if (!picker || !room) return;
+    const { checkIn, nights } = picker;
     const checkOut = addNights(checkIn, nights);
     const total = getEffectivePrice(room, checkIn) * nights;
     router.push(
@@ -108,135 +130,119 @@ export default function RoomsPage() {
 
   return (
     <>
-      {/* Header */}
-      <div className="pt-24 pb-16 bg-white border-b border-ink-faint/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div className="max-w-2xl">
-              <Badge variant="brand" className="mb-4">Rooms</Badge>
-              <h1 className="text-4xl sm:text-5xl font-bold text-ink mb-4">
-                Sleep above the café
-              </h1>
-              <p className="text-ink-muted text-lg leading-relaxed">
-                Roll out of bed, down the stairs and straight into your coworking day.
-                Clean, comfortable rooms with everything a remote worker needs.
-              </p>
+      {/* Hero */}
+      <div className="relative">
+        <div className="aspect-[16/7] sm:aspect-[16/6] bg-surface-raised overflow-hidden">
+          {room.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={room.image} alt={room.name} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <BedDouble className="w-16 h-16 text-ink-faint" />
             </div>
-            {fromFirestore && (
-              <span className="inline-flex items-center gap-1.5 text-xs text-green-600 bg-green-50 border border-green-200 px-3 py-1.5 rounded-full font-medium mt-1 self-start">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                Live from POS
+          )}
+          {/* Overlay badges */}
+          <div className="absolute top-4 left-4">
+            <Link
+              href="/rooms"
+              className="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-sm text-ink text-xs font-semibold px-3 py-1.5 rounded-full border border-white/40 shadow-sm hover:bg-white transition-colors"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              All rooms
+            </Link>
+          </div>
+          {isBlocked && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-ink text-sm font-semibold px-4 py-2 rounded-full border border-ink-faint/20 shadow">
+                <Ban className="w-4 h-4 text-red-500" />
+                Unavailable
               </span>
+            </div>
+          )}
+          {!isBlocked && availableFrom && (
+            <div className="absolute bottom-4 left-4">
+              <span className="inline-flex items-center gap-1.5 bg-amber-500/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow">
+                <Ban className="w-3 h-3" />
+                Occupied until {formatBookingDate(availableFrom)}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+          {/* Left: description */}
+          <div className="lg:col-span-2">
+            <Badge variant="brand" className="mb-4">Room</Badge>
+            <h1 className="text-3xl sm:text-4xl font-bold text-ink mb-4">{room.name}</h1>
+            <p className="text-ink-muted text-lg leading-relaxed mb-8">{room.description}</p>
+
+            {/* Features */}
+            <div className="flex flex-wrap gap-3 mb-10">
+              {ROOM_FEATURES.map(({ icon: Icon, label }) => (
+                <div key={label} className="flex items-center gap-2 bg-surface-muted border border-ink-faint/20 rounded-full px-4 py-2">
+                  <Icon className="w-4 h-4 text-brand" />
+                  <span className="text-sm font-medium text-ink-muted">{label}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Long description */}
+            {room.longDescription && (
+              <div className="prose prose-sm max-w-none text-ink-muted leading-relaxed space-y-4">
+                {room.longDescription.split('\n').filter(Boolean).map((para, i) => (
+                  <p key={i}>{para}</p>
+                ))}
+              </div>
             )}
           </div>
 
-          <div className="flex flex-wrap gap-4 mt-10">
-            {ROOM_FEATURES.map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-2 bg-surface-muted border border-ink-faint/20 rounded-full px-4 py-2">
-                <Icon className="w-4 h-4 text-brand" />
-                <span className="text-sm font-medium text-ink-muted">{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Room cards */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {loading ? (
-          <div className="flex items-center justify-center py-24 gap-3 text-ink-muted">
-            <Loader2 className="w-5 h-5 animate-spin" />
-            <span className="text-sm">Loading rooms…</span>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {displayRooms.map((room) => {
-              const activeStay = getActiveStay(room.id);
-              const availableFrom = activeStay ? stayCheckOutStr(activeStay) : null;
-              const isBlocked = room.blocked === true;
-              const cardPrice = getEffectivePrice(room, todayStr);
-              return (
-                <div
-                  key={room.id}
-                  className={`bg-white rounded-2xl border overflow-hidden shadow-sm transition-shadow group ${isBlocked ? 'border-ink-faint/10 opacity-60' : 'border-ink-faint/20 hover:shadow-md'}`}
-                >
-                  {/* Image */}
-                  <Link href={`/rooms/${room.id}`} className="block aspect-[4/3] bg-surface-raised overflow-hidden relative">
-                    {room.image ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={room.image}
-                        alt={room.name}
-                        className={`w-full h-full object-cover transition-transform duration-500 ${isBlocked ? 'grayscale' : 'group-hover:scale-105'}`}
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <BedDouble className="w-12 h-12 text-ink-faint" />
-                      </div>
-                    )}
-                    {isBlocked && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-ink text-xs font-semibold px-3 py-1.5 rounded-full border border-ink-faint/20 shadow-sm">
-                          <Ban className="w-3.5 h-3.5 text-red-500" />
-                          Unavailable
-                        </span>
-                      </div>
-                    )}
-                    {!isBlocked && availableFrom && (
-                      <div className="absolute top-3 left-3">
-                        <span className="inline-flex items-center gap-1.5 bg-amber-500/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm">
-                          <Ban className="w-3 h-3" />
-                          Occupied until {formatBookingDate(availableFrom)}
-                        </span>
-                      </div>
-                    )}
-                  </Link>
-
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-ink mb-2">{room.name}</h3>
-                    <p className="text-sm text-ink-muted leading-relaxed mb-5">{room.description}</p>
-
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-sm text-ink-muted mr-0.5">from</span>
-                          <span className={`text-2xl font-bold ${isBlocked ? 'text-ink-muted' : 'text-ink'}`}>฿{cardPrice.toLocaleString()}</span>
-                          <span className="text-sm text-ink-muted">/night</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Link
-                          href={`/rooms/${room.id}`}
-                          className="text-sm text-ink-muted font-medium hover:text-ink transition-colors"
-                        >
-                          More info
-                        </Link>
-                        {isBlocked ? (
-                          <span className="text-sm text-ink-muted font-medium px-5 py-2.5">Unavailable</span>
-                        ) : (
-                          <button
-                            onClick={() => openPicker(room)}
-                            className="flex items-center gap-1.5 bg-brand text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer"
-                          >
-                            Enquire
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+          {/* Right: booking card */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-28 bg-white rounded-2xl border border-ink-faint/20 shadow-sm p-6">
+              <div className="mb-5">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-sm text-ink-muted mr-0.5">from</span>
+                  <span className="text-3xl font-bold text-ink">฿{cardPrice.toLocaleString()}</span>
+                  <span className="text-sm text-ink-muted">/night</span>
                 </div>
-              );
-            })}
-          </div>
-        )}
+                <p className="text-xs text-ink-muted mt-1">Base rates — ask about weekly &amp; monthly discounts</p>
+              </div>
 
-        <div className="mt-12 bg-surface-muted rounded-2xl p-6 border border-ink-faint/20 text-sm text-ink-muted">
-          <strong className="text-ink">Note:</strong> Prices shown are base rates. Contact us directly for weekly or monthly rates — we offer significant discounts for longer stays. All rooms include access to the café, fast WiFi and coworking space.
+              {isBlocked ? (
+                <div className="flex items-center justify-center gap-2 py-3 rounded-full border border-ink-faint/20 text-sm text-ink-muted font-medium">
+                  <Ban className="w-4 h-4 text-red-400" />
+                  Unavailable for bookings
+                </div>
+              ) : (
+                <button
+                  onClick={openPicker}
+                  className="w-full flex items-center justify-center gap-2 bg-brand text-white py-3 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer"
+                >
+                  Enquire now
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+
+              {!isBlocked && availableFrom && (
+                <p className="text-xs text-amber-600 text-center mt-3">
+                  Next available: <strong>{formatBookingDate(availableFrom)}</strong>
+                </p>
+              )}
+
+              <p className="text-xs text-ink-muted text-center mt-4 leading-relaxed">
+                All rooms include café access, gigabit WiFi and coworking space.
+              </p>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      {/* Night picker modal */}
+      {/* Night picker modal — same as listing page */}
       {picker && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md"
@@ -244,7 +250,6 @@ export default function RoomsPage() {
         >
           <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl shadow-2xl w-full max-w-lg p-8 overflow-y-auto max-h-[95vh]">
 
-            {/* Header */}
             <div className="flex items-start justify-between mb-6">
               <div>
                 <h3 className="text-lg font-bold text-ink">{picker.room.name}</h3>
@@ -258,7 +263,6 @@ export default function RoomsPage() {
               </button>
             </div>
 
-            {/* Night counter */}
             <div className="flex items-center justify-center gap-6 my-8">
               <button
                 type="button"
@@ -282,7 +286,6 @@ export default function RoomsPage() {
               </button>
             </div>
 
-            {/* Estimated total */}
             {(() => {
               const nightRate = getEffectivePrice(picker.room, picker.checkIn);
               return (
@@ -296,7 +299,6 @@ export default function RoomsPage() {
               );
             })()}
 
-            {/* Check-in calendar */}
             <div className="mb-4">
               <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
                 Check-in date
@@ -319,7 +321,6 @@ export default function RoomsPage() {
               />
             </div>
 
-            {/* Check-out info */}
             {picker.checkIn && (
               <div className="flex items-center gap-2 text-sm text-ink-muted bg-surface-muted rounded-xl px-4 py-3 mb-6">
                 <CalendarDays className="w-4 h-4 shrink-0 text-brand" />
@@ -330,7 +331,6 @@ export default function RoomsPage() {
               </div>
             )}
 
-            {/* Actions */}
             <div className="flex gap-3">
               <button
                 type="button"
