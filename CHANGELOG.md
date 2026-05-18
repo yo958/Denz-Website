@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.10] - 2026-05-19
+### Changed
+- **Room detail page — gallery**: Photo grid now has page padding, rounded corners, and a clean back link above the grid — matching Airbnb's layout. "Show all photos" button styled as a solid white pill with border rather than backdrop-blur overlay.
+
 ## [0.3.9] - 2026-05-19
 ### Changed
 - **Room detail page — gallery**: Replaced single-image hero with an Airbnb-style photo grid. Large image left, 2×2 smaller images right. Overflow photos show a "+N" overlay on the last cell. "Show all photos" pill in the bottom-right corner. Clicking any photo opens a full-screen lightbox with prev/next arrows, keyboard nav (←/→/Esc), and a thumbnail strip. Single-image rooms fall back to the original full-width hero.

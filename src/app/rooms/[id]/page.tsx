@@ -150,108 +150,112 @@ export default function RoomDetailPage() {
 
   return (
     <>
-      {/* Photo grid */}
-      <div className="relative">
-        {/* ── Back link (always shown) ── */}
-        <div className="absolute top-4 left-4 z-10">
-          <Link
-            href="/rooms"
-            className="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-sm text-ink text-xs font-semibold px-3 py-1.5 rounded-full border border-white/40 shadow-sm hover:bg-white transition-colors"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" />
-            All rooms
-          </Link>
-        </div>
+      {/* Photo grid — contained with page padding */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
 
-        {allImages.length === 0 ? (
-          /* No images */
-          <div className="aspect-[16/7] bg-surface-raised flex items-center justify-center">
-            <BedDouble className="w-16 h-16 text-ink-faint" />
-          </div>
+        {/* Back link above the grid */}
+        <Link
+          href="/rooms"
+          className="inline-flex items-center gap-1.5 text-ink text-sm font-medium hover:text-brand transition-colors mb-4"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          All rooms
+        </Link>
 
-        ) : allImages.length === 1 ? (
-          /* Single image — full-width hero */
-          <button
-            onClick={() => setLightboxIdx(0)}
-            className="block w-full aspect-[16/7] bg-surface-raised overflow-hidden cursor-zoom-in"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={allImages[0]} alt={room.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-          </button>
+        {/* Grid container — rounded corners clip all images */}
+        <div className="relative rounded-xl overflow-hidden">
 
-        ) : (
-          /* Airbnb-style grid: large left + 2×2 right */
-          <div className="grid grid-cols-[55fr_22.5fr_22.5fr] grid-rows-2 gap-1 aspect-[16/7] overflow-hidden">
+          {allImages.length === 0 ? (
+            /* No images */
+            <div className="aspect-[16/7] bg-surface-raised flex items-center justify-center">
+              <BedDouble className="w-16 h-16 text-ink-faint" />
+            </div>
 
-            {/* Large left image */}
+          ) : allImages.length === 1 ? (
+            /* Single image — full-width hero */
             <button
               onClick={() => setLightboxIdx(0)}
-              className="row-span-2 relative overflow-hidden group focus:outline-none cursor-zoom-in"
-              aria-label="Open photo gallery"
+              className="block w-full aspect-[16/7] bg-surface-raised overflow-hidden cursor-zoom-in"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={allImages[0]} alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <img src={allImages[0]} alt={room.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
             </button>
 
-            {/* 4 right-side cells (indices 1–4) */}
-            {([1, 2, 3, 4] as const).map((i) => {
-              const src = allImages[i];
-              const isLastSlot = i === 4;
-              const extraCount = allImages.length - 5;
-              const showMore = isLastSlot && extraCount > 0;
+          ) : (
+            /* Airbnb-style grid: large left + 2×2 right */
+            <div className="grid grid-cols-[55fr_22.5fr_22.5fr] grid-rows-2 gap-1.5 aspect-[16/7]">
 
-              if (!src) {
-                return <div key={i} className="bg-surface-raised" />;
-              }
-              return (
-                <button
-                  key={i}
-                  onClick={() => setLightboxIdx(i)}
-                  className="relative overflow-hidden group focus:outline-none cursor-zoom-in"
-                  aria-label={`Photo ${i + 1}`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={src} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  {showMore && (
-                    <div className="absolute inset-0 bg-black/55 flex flex-col items-center justify-center text-white gap-1.5 pointer-events-none">
-                      <LayoutGrid className="w-5 h-5" />
-                      <span className="text-sm font-semibold">+{extraCount}</span>
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        )}
+              {/* Large left image */}
+              <button
+                onClick={() => setLightboxIdx(0)}
+                className="row-span-2 relative overflow-hidden group focus:outline-none cursor-zoom-in"
+                aria-label="Open photo gallery"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={allImages[0]} alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              </button>
 
-        {/* ── "Show all photos" pill — bottom-right corner ── */}
-        {allImages.length > 1 && (
-          <button
-            onClick={() => setLightboxIdx(0)}
-            className="absolute bottom-4 right-4 z-10 inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-ink text-xs font-semibold px-3 py-1.5 rounded-full border border-white/30 shadow-sm hover:bg-white transition-colors cursor-pointer"
-          >
-            <LayoutGrid className="w-3.5 h-3.5" />
-            Show all photos
-          </button>
-        )}
+              {/* 4 right-side cells (indices 1–4) */}
+              {([1, 2, 3, 4] as const).map((i) => {
+                const src = allImages[i];
+                const isLastSlot = i === 4;
+                const extraCount = allImages.length - 5;
+                const showMore = isLastSlot && extraCount > 0;
 
-        {/* ── Status badges ── */}
-        {isBlocked && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-            <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-ink text-sm font-semibold px-4 py-2 rounded-full border border-ink-faint/20 shadow">
-              <Ban className="w-4 h-4 text-red-500" />
-              Unavailable
-            </span>
-          </div>
-        )}
-        {!isBlocked && availableFrom && (
-          <div className="absolute bottom-4 left-4 z-10">
-            <span className="inline-flex items-center gap-1.5 bg-amber-500/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow">
-              <Ban className="w-3 h-3" />
-              Occupied until {formatBookingDate(availableFrom)}
-            </span>
-          </div>
-        )}
+                if (!src) {
+                  return <div key={i} className="bg-surface-raised" />;
+                }
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setLightboxIdx(i)}
+                    className="relative overflow-hidden group focus:outline-none cursor-zoom-in"
+                    aria-label={`Photo ${i + 1}`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    {showMore && (
+                      <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white gap-1.5 pointer-events-none">
+                        <LayoutGrid className="w-5 h-5" />
+                        <span className="text-sm font-semibold">+{extraCount}</span>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ── "Show all photos" pill — bottom-right of grid ── */}
+          {allImages.length > 1 && (
+            <button
+              onClick={() => setLightboxIdx(0)}
+              className="absolute bottom-4 right-4 z-10 inline-flex items-center gap-1.5 bg-white text-ink text-xs font-semibold px-3 py-2 rounded-lg border border-ink-faint/20 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              Show all photos
+            </button>
+          )}
+
+          {/* ── Status badges ── */}
+          {isBlocked && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+              <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-ink text-sm font-semibold px-4 py-2 rounded-full border border-ink-faint/20 shadow">
+                <Ban className="w-4 h-4 text-red-500" />
+                Unavailable
+              </span>
+            </div>
+          )}
+          {!isBlocked && availableFrom && (
+            <div className="absolute bottom-4 left-4 z-10">
+              <span className="inline-flex items-center gap-1.5 bg-amber-500/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow">
+                <Ban className="w-3 h-3" />
+                Occupied until {formatBookingDate(availableFrom)}
+              </span>
+            </div>
+          )}
+
+        </div>
       </div>
 
       {/* Content */}
