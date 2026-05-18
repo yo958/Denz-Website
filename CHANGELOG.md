@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.0] - 2026-05-18
+### Added
+- **Rooms page** — night picker modal when clicking "Enquire" on a room card. Includes a night counter (+/−), estimated total, check-in date calendar, and check-out date display. Navigates to the order form with `bookingDate`, `nights`, `checkOut`, and `estimatedTotal` in the query string.
+- **Order page** — room enquiry summary now shows check-in date, check-out date, number of nights, and estimated total.
+
 ## [0.2.9] - 2026-05-14
 ### Fixed
 - **Coworking page** — "Most popular" badge now correctly targets "Standup Desk + 27". Previous substring check (`'standup + 27'`) never matched the full name `'Standup Desk + 27'`; updated to check for both `'standup'` and `'27'` independently.

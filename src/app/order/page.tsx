@@ -31,6 +31,8 @@ function OrderForm() {
 
   const estimatedTotalParam = params.get('estimatedTotal');
   const hoursParam = params.get('hours');
+  const nightsParam = params.get('nights');
+  const checkOutParam = params.get('checkOut');
   const isPrivateOffice = spaceTypeParam === 'private-office';
 
   // Look up the human-readable space/room name from Firestore
@@ -82,6 +84,8 @@ function OrderForm() {
         period: periodParam ?? null,
         bookingDate: bookingDateParam ?? null,
         bookingTime: bookingTimeParam ?? null,
+        nights: nightsParam ? parseInt(nightsParam) : null,
+        checkOut: checkOutParam ?? null,
       });
       clear();
       router.push(`/order/${id}`);
@@ -223,15 +227,36 @@ function OrderForm() {
             <span className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
               <BedDouble className="w-4 h-4" />
             </span>
-            <div>
+            <div className="flex-1 min-w-0">
               <p className="font-semibold text-sm leading-tight">{roomName}</p>
-              <p className="text-xs text-white/60 mt-0.5">Room enquiry</p>
+              <p className="text-xs text-white/60 mt-0.5">
+                Room enquiry{nightsParam ? ` · ${nightsParam} night${parseInt(nightsParam) !== 1 ? 's' : ''}` : ''}
+              </p>
             </div>
+            {estimatedTotalParam && (
+              <p className="font-bold text-lg leading-tight shrink-0">฿{parseInt(estimatedTotalParam).toLocaleString()}</p>
+            )}
           </div>
-          <div className="px-5 py-4">
-            <div className="flex items-start gap-2.5 text-xs text-ink-muted">
+          <div className="px-5 py-4 space-y-2.5">
+            {bookingDateParam && (
+              <div className="flex items-center gap-2.5 text-sm text-ink">
+                <CalendarDays className="w-4 h-4 text-ink-muted shrink-0" />
+                <span>
+                  Check-in: <strong>{new Date(bookingDateParam + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</strong>
+                </span>
+              </div>
+            )}
+            {checkOutParam && (
+              <div className="flex items-center gap-2.5 text-sm text-ink">
+                <CalendarDays className="w-4 h-4 text-ink-muted shrink-0" />
+                <span>
+                  Check-out: <strong>{new Date(checkOutParam + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</strong>
+                </span>
+              </div>
+            )}
+            <div className="flex items-start gap-2.5 text-xs text-ink-muted pt-1 border-t border-ink-faint/20">
               <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-              <span>We&apos;ll get back to you within a few hours to confirm dates, availability and pricing.</span>
+              <span>We&apos;ll get back to you within a few hours to confirm availability and pricing.</span>
             </div>
           </div>
         </div>
