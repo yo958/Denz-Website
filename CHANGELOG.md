@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.8] - 2026-05-19
+### Added
+- **Rooms — Gallery**: Room cards show a photo count badge (e.g. "4") when a gallery is present. Room detail pages display a full gallery: main image with prev/next arrows, a "X / Y" counter overlay, and a thumbnail strip below the hero for quick navigation.
+
 ## [0.3.7] - 2026-05-18
 ### Changed
 - **Room detail page** — long description now renders as HTML (from TipTap WYSIWYG) using `dangerouslySetInnerHTML`. Headings, bold, italic, and lists are fully styled. Removes `react-markdown` dependency path.

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
   Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X,
-  Minus, Plus, CalendarDays, Ban, ChevronLeft,
+  Minus, Plus, CalendarDays, Ban, ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
@@ -97,6 +97,13 @@ export default function RoomDetailPage() {
     );
   }
 
+  // Build the ordered image list: main image first, then gallery
+  const allImages = [
+    ...(room.image ? [room.image] : []),
+    ...(room.gallery ?? []),
+  ];
+  const [activeIdx, setActiveIdx] = useState(0);
+
   const activeStay = stays.find(s => s.status === 'active' && s.roomId === room.id);
   const availableFrom = activeStay
     ? (() => {
@@ -130,18 +137,25 @@ export default function RoomDetailPage() {
 
   return (
     <>
-      {/* Hero */}
+      {/* Gallery */}
       <div className="relative">
-        <div className="aspect-[16/7] sm:aspect-[16/6] bg-surface-raised overflow-hidden">
-          {room.image ? (
+        {/* Main image */}
+        <div className="aspect-[16/7] sm:aspect-[16/6] bg-surface-raised overflow-hidden relative">
+          {allImages.length > 0 ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={room.image} alt={room.name} className="w-full h-full object-cover" />
+            <img
+              key={activeIdx}
+              src={allImages[activeIdx]}
+              alt={`${room.name} — photo ${activeIdx + 1}`}
+              className="w-full h-full object-cover transition-opacity duration-300"
+            />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <BedDouble className="w-16 h-16 text-ink-faint" />
             </div>
           )}
-          {/* Overlay badges */}
+
+          {/* Back link */}
           <div className="absolute top-4 left-4">
             <Link
               href="/rooms"
@@ -151,6 +165,34 @@ export default function RoomDetailPage() {
               All rooms
             </Link>
           </div>
+
+          {/* Prev / next arrows — only when there are multiple images */}
+          {allImages.length > 1 && (
+            <>
+              <button
+                onClick={() => setActiveIdx(i => (i - 1 + allImages.length) % allImages.length)}
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition-colors cursor-pointer"
+                aria-label="Previous photo"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => setActiveIdx(i => (i + 1) % allImages.length)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition-colors cursor-pointer"
+                aria-label="Next photo"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+              {/* Photo counter */}
+              <div className="absolute bottom-4 right-4">
+                <span className="inline-flex items-center gap-1 bg-black/50 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full">
+                  {activeIdx + 1} / {allImages.length}
+                </span>
+              </div>
+            </>
+          )}
+
+          {/* Status badges */}
           {isBlocked && (
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-ink text-sm font-semibold px-4 py-2 rounded-full border border-ink-faint/20 shadow">
@@ -168,6 +210,25 @@ export default function RoomDetailPage() {
             </div>
           )}
         </div>
+
+        {/* Thumbnail strip — only when there are multiple images */}
+        {allImages.length > 1 && (
+          <div className="flex gap-2 px-4 sm:px-6 lg:px-8 py-3 bg-white border-b border-ink-faint/10 overflow-x-auto">
+            {allImages.map((src, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveIdx(i)}
+                className={`shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
+                  i === activeIdx ? 'border-brand opacity-100' : 'border-transparent opacity-60 hover:opacity-90'
+                }`}
+                aria-label={`Photo ${i + 1}`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt="" className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Content */}

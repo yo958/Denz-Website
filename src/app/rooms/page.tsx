@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X, Minus, Plus, CalendarDays, Ban } from 'lucide-react';
+import { Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X, Minus, Plus, CalendarDays, Ban, Images } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
@@ -187,6 +187,14 @@ export default function RoomsPage() {
                         <span className="inline-flex items-center gap-1.5 bg-amber-500/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm">
                           <Ban className="w-3 h-3" />
                           Occupied until {formatBookingDate(availableFrom)}
+                        </span>
+                      </div>
+                    )}
+                    {(room.gallery?.length ?? 0) > 0 && (
+                      <div className="absolute bottom-3 right-3">
+                        <span className="inline-flex items-center gap-1 bg-black/50 backdrop-blur-sm text-white text-xs font-medium px-2 py-1 rounded-full">
+                          <Images className="w-3 h-3" />
+                          {(room.gallery?.length ?? 0) + 1}
                         </span>
                       </div>
                     )}

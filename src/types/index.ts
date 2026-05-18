@@ -23,6 +23,8 @@ export interface Product {
   archived?: boolean;
   /** Extended description shown on the room's individual page. */
   longDescription?: string;
+  /** Gallery images (data URLs) shown on the room's detail page. */
+  gallery?: string[];
   /** Seasonal pricing — only used when category === 'rooms'. */
   seasons?: RoomSeason[];
   /** If true, room is blocked from website bookings (e.g. under renovation). */
