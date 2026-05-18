@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.1] - 2026-05-18
+### Added
+- **Rooms page** — unavailable state when a room's stock is set to 0 in the POS. Card becomes greyed out, image converts to greyscale with a "Currently unavailable" overlay badge, price is muted, and the Enquire button is replaced with plain "Unavailable" text.
+
 ## [0.3.0] - 2026-05-18
 ### Added
 - **Rooms page** — night picker modal when clicking "Enquire" on a room card. Includes a night counter (+/−), estimated total, check-in date calendar, and check-out date display. Navigates to the order form with `bookingDate`, `nights`, `checkOut`, and `estimatedTotal` in the query string.
