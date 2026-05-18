@@ -194,35 +194,31 @@ export default function RoomsPage() {
 
                   <div className="p-6">
                     <h3 className="text-xl font-bold text-ink mb-2">{room.name}</h3>
-                    <p className="text-sm text-ink-muted leading-relaxed mb-5">{room.description}</p>
+                    <p className="text-sm text-ink-muted leading-relaxed mb-2">{room.description}</p>
+                    <Link
+                      href={`/rooms/${room.id}`}
+                      className="text-xs text-brand font-medium hover:underline mb-5 inline-block"
+                    >
+                      More info →
+                    </Link>
 
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-sm text-ink-muted mr-0.5">from</span>
-                          <span className={`text-2xl font-bold ${isBlocked ? 'text-ink-muted' : 'text-ink'}`}>฿{cardPrice.toLocaleString()}</span>
-                          <span className="text-sm text-ink-muted">/night</span>
-                        </div>
+                    <div className="flex items-center justify-between mt-3 pt-4 border-t border-ink-faint/10">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-sm text-ink-muted mr-0.5">from</span>
+                        <span className={`text-2xl font-bold ${isBlocked ? 'text-ink-muted' : 'text-ink'}`}>฿{cardPrice.toLocaleString()}</span>
+                        <span className="text-sm text-ink-muted">/night</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Link
-                          href={`/rooms/${room.id}`}
-                          className="text-sm text-ink-muted font-medium hover:text-ink transition-colors"
+                      {isBlocked ? (
+                        <span className="text-sm text-ink-muted font-medium">Unavailable</span>
+                      ) : (
+                        <button
+                          onClick={() => openPicker(room)}
+                          className="flex items-center gap-1.5 bg-brand text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer"
                         >
-                          More info
-                        </Link>
-                        {isBlocked ? (
-                          <span className="text-sm text-ink-muted font-medium px-5 py-2.5">Unavailable</span>
-                        ) : (
-                          <button
-                            onClick={() => openPicker(room)}
-                            className="flex items-center gap-1.5 bg-brand text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer"
-                          >
-                            Enquire
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
+                          Enquire
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
