@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.7] - 2026-05-18
+### Changed
+- **Room detail page** — long description now renders as HTML (from TipTap WYSIWYG) using `dangerouslySetInnerHTML`. Headings, bold, italic, and lists are fully styled. Removes `react-markdown` dependency path.
+
 ## [0.3.6] - 2026-05-18
 ### Changed
 - **Room detail page** — long description now renders markdown formatting (headings, bold, italic, bullet lists) via `react-markdown`.

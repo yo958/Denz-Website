@@ -7,7 +7,6 @@ import {
   Minus, Plus, CalendarDays, Ban, ChevronLeft,
 } from 'lucide-react';
 import Link from 'next/link';
-import ReactMarkdown from 'react-markdown';
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
@@ -193,19 +192,20 @@ export default function RoomDetailPage() {
 
             {/* Long description */}
             {room.longDescription && (
-              <div className="
-                prose prose-sm max-w-none
-                prose-headings:text-ink prose-headings:font-bold
-                prose-h2:text-xl prose-h2:mt-6 prose-h2:mb-2
-                prose-h3:text-lg prose-h3:mt-5 prose-h3:mb-1
-                prose-p:text-ink-muted prose-p:leading-relaxed
-                prose-strong:text-ink prose-strong:font-semibold
-                prose-em:text-ink-muted
-                prose-ul:text-ink-muted prose-ul:leading-relaxed
-                prose-li:my-0.5
-              ">
-                <ReactMarkdown>{room.longDescription}</ReactMarkdown>
-              </div>
+              <div
+                className="
+                  text-sm text-ink-muted leading-relaxed
+                  [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-ink [&_h2]:mt-6 [&_h2]:mb-2
+                  [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-ink [&_h3]:mt-5 [&_h3]:mb-1
+                  [&_p]:my-2
+                  [&_strong]:font-semibold [&_strong]:text-ink
+                  [&_em]:italic
+                  [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2
+                  [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2
+                  [&_li]:my-0.5
+                "
+                dangerouslySetInnerHTML={{ __html: room.longDescription }}
+              />
             )}
           </div>
 
