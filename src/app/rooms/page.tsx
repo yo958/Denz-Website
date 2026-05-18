@@ -53,23 +53,6 @@ function getEffectivePrice(room: Product, dateStr: string): number {
   return room.price;
 }
 
-function getActiveSeason(room: Product, dateStr: string): RoomSeason | null {
-  if (!room.seasons?.length) return null;
-  const d = new Date(dateStr + 'T12:00:00');
-  const m = d.getMonth() + 1;
-  const day = d.getDate();
-  const cur = m * 100 + day;
-  for (const s of room.seasons as RoomSeason[]) {
-    const start = s.startMonth * 100 + s.startDay;
-    const end   = s.endMonth   * 100 + s.endDay;
-    const inRange = start <= end
-      ? cur >= start && cur <= end
-      : cur >= start || cur <= end;
-    if (inRange) return s;
-  }
-  return null;
-}
-
 interface RoomPicker {
   room: Product;
   checkIn: string;
@@ -171,7 +154,6 @@ export default function RoomsPage() {
               const availableFrom = activeStay ? stayCheckOutStr(activeStay) : null;
               const isBlocked = room.blocked === true;
               const cardPrice = getEffectivePrice(room, todayStr);
-              const activeSeason = getActiveSeason(room, todayStr);
               return (
                 <div
                   key={room.id}
@@ -219,11 +201,6 @@ export default function RoomsPage() {
                           <span className={`text-2xl font-bold ${isBlocked ? 'text-ink-muted' : 'text-ink'}`}>฿{cardPrice.toLocaleString()}</span>
                           <span className="text-sm text-ink-muted">/night</span>
                         </div>
-                        {activeSeason && (
-                          <p className="text-xs text-ink-muted mt-0.5">
-                            {activeSeason.name} · base ฿{room.price.toLocaleString()}
-                          </p>
-                        )}
                       </div>
                       {isBlocked ? (
                         <span className="text-sm text-ink-muted font-medium px-5 py-2.5">Unavailable</span>
@@ -298,18 +275,13 @@ export default function RoomsPage() {
             {/* Estimated total */}
             {(() => {
               const nightRate = getEffectivePrice(picker.room, picker.checkIn);
-              const pickerSeason = getActiveSeason(picker.room, picker.checkIn);
               return (
                 <div className="bg-surface-muted rounded-xl px-5 py-4 mb-6 text-center">
                   <p className="text-xs text-ink-muted mb-1">Estimated total</p>
                   <p className="text-3xl font-bold text-ink">฿{(nightRate * picker.nights).toLocaleString()}</p>
                   <p className="text-xs text-ink-muted mt-1">
                     ฿{nightRate.toLocaleString()} × {picker.nights} night{picker.nights !== 1 ? 's' : ''}
-                    {pickerSeason && ` · ${pickerSeason.name}`}
                   </p>
-                  {pickerSeason && nightRate !== picker.room.price && (
-                    <p className="text-xs text-ink-muted/70 mt-0.5">Base rate ฿{picker.room.price.toLocaleString()}/night</p>
-                  )}
                 </div>
               );
             })()}
