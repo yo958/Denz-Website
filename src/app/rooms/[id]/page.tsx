@@ -77,6 +77,7 @@ export default function RoomDetailPage() {
 
   const todayStr = toDateValue(new Date());
   const [picker, setPicker] = useState<RoomPicker | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
 
   if (loading) {
     return (
@@ -102,7 +103,6 @@ export default function RoomDetailPage() {
     ...(room.image ? [room.image] : []),
     ...(room.gallery ?? []),
   ];
-  const [activeIdx, setActiveIdx] = useState(0);
 
   const activeStay = stays.find(s => s.status === 'active' && s.roomId === room.id);
   const availableFrom = activeStay
