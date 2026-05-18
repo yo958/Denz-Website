@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.4] - 2026-05-18
+### Added
+- **Rooms page — seasonal pricing**: Room cards now display the price for the applicable season based on today's date. If a season is active, the season name and base rate are shown below the price. The night picker modal also shows the season-adjusted rate and recalculates the estimated total based on the selected check-in date.
+- **Rooms page — booking block**: Rooms marked as blocked in the POS show as "Unavailable" (greyscale, centred badge, no Enquire button). Independent of the occupied/stay status.
+
 ## [0.3.3] - 2026-05-18
 ### Changed
 - **Rooms page** — occupied rooms remain fully bookable for future dates. Card shows an amber "Occupied until [date]" badge on the image but keeps the Enquire button active. The night picker modal locks the calendar to the checkout date of the current stay and shows a notice explaining the earliest available check-in.

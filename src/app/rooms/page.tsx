@@ -6,7 +6,7 @@ import { Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X, Minus, Plus, Cal
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
-import type { Product, Stay } from '@/types';
+import type { Product, Stay, RoomSeason } from '@/types';
 
 const FALLBACK_ROOMS: Product[] = [
   { id: 'standard', name: 'Standard Room', price: 800, category: 'rooms', description: 'A clean, comfortable room with everything you need for a short stay. Perfect for solo travellers or couples passing through.', stock: null },
@@ -34,6 +34,40 @@ function addNights(dateStr: string, nights: number): string {
   const d = new Date(dateStr + 'T12:00:00');
   d.setDate(d.getDate() + nights);
   return toDateValue(d);
+}
+
+function getEffectivePrice(room: Product, dateStr: string): number {
+  if (!room.seasons?.length) return room.price;
+  const d = new Date(dateStr + 'T12:00:00');
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  const cur = m * 100 + day;
+  for (const s of room.seasons as RoomSeason[]) {
+    const start = s.startMonth * 100 + s.startDay;
+    const end   = s.endMonth   * 100 + s.endDay;
+    const inRange = start <= end
+      ? cur >= start && cur <= end
+      : cur >= start || cur <= end;
+    if (inRange) return s.price;
+  }
+  return room.price;
+}
+
+function getActiveSeason(room: Product, dateStr: string): RoomSeason | null {
+  if (!room.seasons?.length) return null;
+  const d = new Date(dateStr + 'T12:00:00');
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  const cur = m * 100 + day;
+  for (const s of room.seasons as RoomSeason[]) {
+    const start = s.startMonth * 100 + s.startDay;
+    const end   = s.endMonth   * 100 + s.endDay;
+    const inRange = start <= end
+      ? cur >= start && cur <= end
+      : cur >= start || cur <= end;
+    if (inRange) return s;
+  }
+  return null;
 }
 
 interface RoomPicker {
@@ -81,7 +115,7 @@ export default function RoomsPage() {
     if (!picker) return;
     const { room, checkIn, nights } = picker;
     const checkOut = addNights(checkIn, nights);
-    const total = room.price * nights;
+    const total = getEffectivePrice(room, checkIn) * nights;
     router.push(
       `/order?type=room-enquiry&room=${room.id}&bookingDate=${checkIn}&nights=${nights}&checkOut=${checkOut}&estimatedTotal=${total}`
     );
@@ -135,10 +169,13 @@ export default function RoomsPage() {
             {displayRooms.map((room) => {
               const activeStay = getActiveStay(room.id);
               const availableFrom = activeStay ? stayCheckOutStr(activeStay) : null;
+              const isBlocked = room.blocked === true;
+              const cardPrice = getEffectivePrice(room, todayStr);
+              const activeSeason = getActiveSeason(room, todayStr);
               return (
                 <div
                   key={room.id}
-                  className="bg-white rounded-2xl border border-ink-faint/20 overflow-hidden shadow-sm hover:shadow-md transition-shadow group"
+                  className={`bg-white rounded-2xl border overflow-hidden shadow-sm transition-shadow group ${isBlocked ? 'border-ink-faint/10 opacity-60' : 'border-ink-faint/20 hover:shadow-md'}`}
                 >
                   {/* Image */}
                   <div className="aspect-[4/3] bg-surface-raised overflow-hidden relative">
@@ -147,14 +184,22 @@ export default function RoomsPage() {
                       <img
                         src={room.image}
                         alt={room.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className={`w-full h-full object-cover transition-transform duration-500 ${isBlocked ? 'grayscale' : 'group-hover:scale-105'}`}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <BedDouble className="w-12 h-12 text-ink-faint" />
                       </div>
                     )}
-                    {availableFrom && (
+                    {isBlocked && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-ink text-xs font-semibold px-3 py-1.5 rounded-full border border-ink-faint/20 shadow-sm">
+                          <Ban className="w-3.5 h-3.5 text-red-500" />
+                          Unavailable
+                        </span>
+                      </div>
+                    )}
+                    {!isBlocked && availableFrom && (
                       <div className="absolute top-3 left-3">
                         <span className="inline-flex items-center gap-1.5 bg-amber-500/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm">
                           <Ban className="w-3 h-3" />
@@ -170,16 +215,27 @@ export default function RoomsPage() {
 
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-2xl font-bold text-ink">฿{room.price.toLocaleString()}</span>
-                        <span className="text-sm text-ink-muted ml-1">/night</span>
+                        <div className="flex items-baseline gap-1">
+                          <span className={`text-2xl font-bold ${isBlocked ? 'text-ink-muted' : 'text-ink'}`}>฿{cardPrice.toLocaleString()}</span>
+                          <span className="text-sm text-ink-muted">/night</span>
+                        </div>
+                        {activeSeason && (
+                          <p className="text-xs text-ink-muted mt-0.5">
+                            {activeSeason.name} · base ฿{room.price.toLocaleString()}
+                          </p>
+                        )}
                       </div>
-                      <button
-                        onClick={() => openPicker(room)}
-                        className="flex items-center gap-1.5 bg-brand text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer"
-                      >
-                        Enquire
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
+                      {isBlocked ? (
+                        <span className="text-sm text-ink-muted font-medium px-5 py-2.5">Unavailable</span>
+                      ) : (
+                        <button
+                          onClick={() => openPicker(room)}
+                          className="flex items-center gap-1.5 bg-brand text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer"
+                        >
+                          Enquire
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -240,13 +296,23 @@ export default function RoomsPage() {
             </div>
 
             {/* Estimated total */}
-            <div className="bg-surface-muted rounded-xl px-5 py-4 mb-6 text-center">
-              <p className="text-xs text-ink-muted mb-1">Estimated total</p>
-              <p className="text-3xl font-bold text-ink">฿{(picker.room.price * picker.nights).toLocaleString()}</p>
-              <p className="text-xs text-ink-muted mt-1">
-                ฿{picker.room.price.toLocaleString()} × {picker.nights} night{picker.nights !== 1 ? 's' : ''}
-              </p>
-            </div>
+            {(() => {
+              const nightRate = getEffectivePrice(picker.room, picker.checkIn);
+              const pickerSeason = getActiveSeason(picker.room, picker.checkIn);
+              return (
+                <div className="bg-surface-muted rounded-xl px-5 py-4 mb-6 text-center">
+                  <p className="text-xs text-ink-muted mb-1">Estimated total</p>
+                  <p className="text-3xl font-bold text-ink">฿{(nightRate * picker.nights).toLocaleString()}</p>
+                  <p className="text-xs text-ink-muted mt-1">
+                    ฿{nightRate.toLocaleString()} × {picker.nights} night{picker.nights !== 1 ? 's' : ''}
+                    {pickerSeason && ` · ${pickerSeason.name}`}
+                  </p>
+                  {pickerSeason && nightRate !== picker.room.price && (
+                    <p className="text-xs text-ink-muted/70 mt-0.5">Base rate ฿{picker.room.price.toLocaleString()}/night</p>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* Check-in calendar */}
             <div className="mb-4">

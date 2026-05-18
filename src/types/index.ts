@@ -2,6 +2,15 @@
 
 export type ProductCategory = 'food' | 'drinks' | 'dessert' | 'desks' | 'rooms' | 'equipment-rental';
 
+export interface RoomSeason {
+  name: string;
+  price: number;
+  startMonth: number;  // 1–12
+  startDay: number;    // 1–31
+  endMonth: number;    // 1–12
+  endDay: number;      // 1–31
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -12,6 +21,10 @@ export interface Product {
   image?: string | null;
   glyph?: string | null;
   archived?: boolean;
+  /** Seasonal pricing — only used when category === 'rooms'. */
+  seasons?: RoomSeason[];
+  /** If true, room is blocked from website bookings (e.g. under renovation). */
+  blocked?: boolean;
 }
 
 export type CoworkRatePeriod = 'hourly' | 'daily' | 'weekly' | '2-weeks' | 'monthly' | '3-months' | '6-months' | 'yearly';
