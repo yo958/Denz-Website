@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.9] - 2026-05-19
+### Changed
+- **Room detail page — gallery**: Replaced single-image hero with an Airbnb-style photo grid. Large image left, 2×2 smaller images right. Overflow photos show a "+N" overlay on the last cell. "Show all photos" pill in the bottom-right corner. Clicking any photo opens a full-screen lightbox with prev/next arrows, keyboard nav (←/→/Esc), and a thumbnail strip. Single-image rooms fall back to the original full-width hero.
+
 ## [0.3.8] - 2026-05-19
 ### Added
 - **Rooms — Gallery**: Room cards show a photo count badge (e.g. "4") when a gallery is present. Room detail pages display a full gallery: main image with prev/next arrows, a "X / Y" counter overlay, and a thumbnail strip below the hero for quick navigation.
