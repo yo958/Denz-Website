@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.2] - 2026-05-18
+### Changed
+- **Rooms page** — occupancy now syncs live from the POS `stays` slice in Firestore. A room shows "Occupied" (greyed out, greyscale image, no Enquire button) whenever there is an active check-in in the POS, matching the Occupied/Available logic on the POS Guestrooms page exactly. Removed the previous `stock === 0` workaround.
+
 ## [0.3.1] - 2026-05-18
 ### Added
 - **Rooms page** — unavailable state when a room's stock is set to 0 in the POS. Card becomes greyed out, image converts to greyscale with a "Currently unavailable" overlay badge, price is muted, and the Enquire button is replaced with plain "Unavailable" text.

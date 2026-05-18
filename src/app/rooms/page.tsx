@@ -6,11 +6,11 @@ import { Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X, Minus, Plus, Cal
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
-import type { Product } from '@/types';
+import type { Product, Stay } from '@/types';
 
 const FALLBACK_ROOMS: Product[] = [
   { id: 'standard', name: 'Standard Room', price: 800, category: 'rooms', description: 'A clean, comfortable room with everything you need for a short stay. Perfect for solo travellers or couples passing through.', stock: null },
-  { id: 'deluxe', name: 'Deluxe Room', price: 1200, category: 'rooms', description: 'More space, better views. A spacious room with a private balcony overlooking the mountains.', stock: 0 },
+  { id: 'deluxe', name: 'Deluxe Room', price: 1200, category: 'rooms', description: 'More space, better views. A spacious room with a private balcony overlooking the mountains.', stock: null },
   { id: 'suite', name: 'Studio Suite', price: 1800, category: 'rooms', description: 'A full studio suite with a dedicated workspace, kitchenette and mountain-view terrace. Ideal for longer stays.', stock: null },
 ];
 
@@ -48,9 +48,14 @@ export default function RoomsPage() {
     'products',
     FALLBACK_ROOMS,
   );
+  const { data: stays } = useFirestoreSlice<Stay[]>('stays', []);
 
   const rooms = allProducts.filter((p) => p.category === 'rooms' && !p.archived);
   const displayRooms = rooms.length > 0 ? rooms : FALLBACK_ROOMS;
+
+  function isOccupied(roomId: string): boolean {
+    return stays.some(s => s.status === 'active' && s.roomId === roomId);
+  }
 
   const todayStr = toDateValue(new Date());
   const [picker, setPicker] = useState<RoomPicker | null>(null);
@@ -115,7 +120,7 @@ export default function RoomsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {displayRooms.map((room) => {
-              const unavailable = room.stock === 0;
+              const unavailable = isOccupied(room.id);
               return (
                 <div
                   key={room.id}
@@ -138,8 +143,8 @@ export default function RoomsPage() {
                     {unavailable && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-ink text-xs font-semibold px-3 py-1.5 rounded-full border border-ink-faint/20 shadow-sm">
-                          <Ban className="w-3.5 h-3.5 text-red-500" />
-                          Currently unavailable
+                          <Ban className="w-3.5 h-3.5 text-amber-500" />
+                          Occupied
                         </span>
                       </div>
                     )}
@@ -156,7 +161,7 @@ export default function RoomsPage() {
                       </div>
                       {unavailable ? (
                         <span className="text-sm text-ink-muted font-medium px-5 py-2.5">
-                          Unavailable
+                          Occupied
                         </span>
                       ) : (
                         <button

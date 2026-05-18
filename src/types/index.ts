@@ -47,6 +47,14 @@ export interface Equipment {
   archived?: boolean;
 }
 
+// Room stays (mirrored from POS lib/types.ts — read from Firestore slices/stays)
+export type StayStatus = 'active' | 'checked-out';
+export interface Stay {
+  id: string;
+  roomId: string;
+  status: StayStatus;
+}
+
 // Venue settings (mirrored from POS lib/types.ts — read from Firestore slices/settings)
 export type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
 
