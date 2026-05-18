@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.6] - 2026-05-18
+### Changed
+- **Room detail page** — long description now renders markdown formatting (headings, bold, italic, bullet lists) via `react-markdown`.
+
 ## [0.3.5] - 2026-05-18
 ### Added
 - **Room detail pages** — individual landing page at `/rooms/[id]` for each room. Shows hero image, short description, feature tags, full long description (multi-paragraph), and a sticky booking card with the night picker. Clicking the room image on the listing page navigates here. A "More info" link also appears on each card.

@@ -7,6 +7,7 @@ import {
   Minus, Plus, CalendarDays, Ban, ChevronLeft,
 } from 'lucide-react';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
@@ -192,10 +193,18 @@ export default function RoomDetailPage() {
 
             {/* Long description */}
             {room.longDescription && (
-              <div className="prose prose-sm max-w-none text-ink-muted leading-relaxed space-y-4">
-                {room.longDescription.split('\n').filter(Boolean).map((para, i) => (
-                  <p key={i}>{para}</p>
-                ))}
+              <div className="
+                prose prose-sm max-w-none
+                prose-headings:text-ink prose-headings:font-bold
+                prose-h2:text-xl prose-h2:mt-6 prose-h2:mb-2
+                prose-h3:text-lg prose-h3:mt-5 prose-h3:mb-1
+                prose-p:text-ink-muted prose-p:leading-relaxed
+                prose-strong:text-ink prose-strong:font-semibold
+                prose-em:text-ink-muted
+                prose-ul:text-ink-muted prose-ul:leading-relaxed
+                prose-li:my-0.5
+              ">
+                <ReactMarkdown>{room.longDescription}</ReactMarkdown>
               </div>
             )}
           </div>
