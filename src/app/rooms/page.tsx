@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X, Minus, Plus, CalendarDays } from 'lucide-react';
+import { Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X, Minus, Plus, CalendarDays, Ban } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
@@ -10,7 +10,7 @@ import type { Product } from '@/types';
 
 const FALLBACK_ROOMS: Product[] = [
   { id: 'standard', name: 'Standard Room', price: 800, category: 'rooms', description: 'A clean, comfortable room with everything you need for a short stay. Perfect for solo travellers or couples passing through.', stock: null },
-  { id: 'deluxe', name: 'Deluxe Room', price: 1200, category: 'rooms', description: 'More space, better views. A spacious room with a private balcony overlooking the mountains.', stock: null },
+  { id: 'deluxe', name: 'Deluxe Room', price: 1200, category: 'rooms', description: 'More space, better views. A spacious room with a private balcony overlooking the mountains.', stock: 0 },
   { id: 'suite', name: 'Studio Suite', price: 1800, category: 'rooms', description: 'A full studio suite with a dedicated workspace, kitchenette and mountain-view terrace. Ideal for longer stays.', stock: null },
 ];
 
@@ -114,47 +114,64 @@ export default function RoomsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {displayRooms.map((room) => (
-              <div
-                key={room.id}
-                className="bg-white rounded-2xl border border-ink-faint/20 overflow-hidden shadow-sm hover:shadow-md transition-shadow group"
-              >
-                {/* Image */}
-                <div className="aspect-[4/3] bg-surface-raised overflow-hidden">
-                  {room.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={room.image}
-                      alt={room.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <BedDouble className="w-12 h-12 text-ink-faint" />
-                    </div>
-                  )}
-                </div>
+            {displayRooms.map((room) => {
+              const unavailable = room.stock === 0;
+              return (
+                <div
+                  key={room.id}
+                  className={`bg-white rounded-2xl border overflow-hidden shadow-sm transition-shadow group ${unavailable ? 'border-ink-faint/10 opacity-70' : 'border-ink-faint/20 hover:shadow-md'}`}
+                >
+                  {/* Image */}
+                  <div className="aspect-[4/3] bg-surface-raised overflow-hidden relative">
+                    {room.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={room.image}
+                        alt={room.name}
+                        className={`w-full h-full object-cover transition-transform duration-500 ${unavailable ? 'grayscale' : 'group-hover:scale-105'}`}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <BedDouble className={`w-12 h-12 ${unavailable ? 'text-ink-faint/40' : 'text-ink-faint'}`} />
+                      </div>
+                    )}
+                    {unavailable && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-ink text-xs font-semibold px-3 py-1.5 rounded-full border border-ink-faint/20 shadow-sm">
+                          <Ban className="w-3.5 h-3.5 text-red-500" />
+                          Currently unavailable
+                        </span>
+                      </div>
+                    )}
+                  </div>
 
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-ink mb-2">{room.name}</h3>
-                  <p className="text-sm text-ink-muted leading-relaxed mb-5">{room.description}</p>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-ink mb-2">{room.name}</h3>
+                    <p className="text-sm text-ink-muted leading-relaxed mb-5">{room.description}</p>
 
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-2xl font-bold text-ink">฿{room.price.toLocaleString()}</span>
-                      <span className="text-sm text-ink-muted ml-1">/night</span>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className={`text-2xl font-bold ${unavailable ? 'text-ink-muted' : 'text-ink'}`}>฿{room.price.toLocaleString()}</span>
+                        <span className="text-sm text-ink-muted ml-1">/night</span>
+                      </div>
+                      {unavailable ? (
+                        <span className="text-sm text-ink-muted font-medium px-5 py-2.5">
+                          Unavailable
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => openPicker(room)}
+                          className="flex items-center gap-1.5 bg-brand text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer"
+                        >
+                          Enquire
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
-                    <button
-                      onClick={() => openPicker(room)}
-                      className="flex items-center gap-1.5 bg-brand text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer"
-                    >
-                      Enquire
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
