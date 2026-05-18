@@ -53,6 +53,9 @@ export interface Stay {
   id: string;
   roomId: string;
   status: StayStatus;
+  checkInAt: string | Date;
+  checkOutAt?: string | Date;
+  nights: number;
 }
 
 // Venue settings (mirrored from POS lib/types.ts — read from Firestore slices/settings)

@@ -40,6 +40,7 @@ interface RoomPicker {
   room: Product;
   checkIn: string;
   nights: number;
+  minDate: string;
 }
 
 export default function RoomsPage() {
@@ -53,15 +54,27 @@ export default function RoomsPage() {
   const rooms = allProducts.filter((p) => p.category === 'rooms' && !p.archived);
   const displayRooms = rooms.length > 0 ? rooms : FALLBACK_ROOMS;
 
-  function isOccupied(roomId: string): boolean {
-    return stays.some(s => s.status === 'active' && s.roomId === roomId);
+  function getActiveStay(roomId: string): Stay | undefined {
+    return stays.find(s => s.status === 'active' && s.roomId === roomId);
+  }
+
+  function stayCheckOutStr(stay: Stay): string {
+    if (stay.checkOutAt) return toDateValue(new Date(stay.checkOutAt));
+    // Fall back to checkInAt + nights
+    const d = new Date(stay.checkInAt);
+    d.setDate(d.getDate() + stay.nights);
+    return toDateValue(d);
   }
 
   const todayStr = toDateValue(new Date());
   const [picker, setPicker] = useState<RoomPicker | null>(null);
 
   function openPicker(room: Product) {
-    setPicker({ room, checkIn: todayStr, nights: 1 });
+    const activeStay = getActiveStay(room.id);
+    const minCheckIn = activeStay ? stayCheckOutStr(activeStay) : todayStr;
+    // Start the calendar on the first available date
+    const checkIn = minCheckIn > todayStr ? minCheckIn : todayStr;
+    setPicker({ room, checkIn, nights: 1, minDate: minCheckIn > todayStr ? minCheckIn : todayStr });
   }
 
   function confirmPicker() {
@@ -120,11 +133,12 @@ export default function RoomsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {displayRooms.map((room) => {
-              const unavailable = isOccupied(room.id);
+              const activeStay = getActiveStay(room.id);
+              const availableFrom = activeStay ? stayCheckOutStr(activeStay) : null;
               return (
                 <div
                   key={room.id}
-                  className={`bg-white rounded-2xl border overflow-hidden shadow-sm transition-shadow group ${unavailable ? 'border-ink-faint/10 opacity-70' : 'border-ink-faint/20 hover:shadow-md'}`}
+                  className="bg-white rounded-2xl border border-ink-faint/20 overflow-hidden shadow-sm hover:shadow-md transition-shadow group"
                 >
                   {/* Image */}
                   <div className="aspect-[4/3] bg-surface-raised overflow-hidden relative">
@@ -133,18 +147,18 @@ export default function RoomsPage() {
                       <img
                         src={room.image}
                         alt={room.name}
-                        className={`w-full h-full object-cover transition-transform duration-500 ${unavailable ? 'grayscale' : 'group-hover:scale-105'}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <BedDouble className={`w-12 h-12 ${unavailable ? 'text-ink-faint/40' : 'text-ink-faint'}`} />
+                        <BedDouble className="w-12 h-12 text-ink-faint" />
                       </div>
                     )}
-                    {unavailable && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-ink text-xs font-semibold px-3 py-1.5 rounded-full border border-ink-faint/20 shadow-sm">
-                          <Ban className="w-3.5 h-3.5 text-amber-500" />
-                          Occupied
+                    {availableFrom && (
+                      <div className="absolute top-3 left-3">
+                        <span className="inline-flex items-center gap-1.5 bg-amber-500/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm">
+                          <Ban className="w-3 h-3" />
+                          Occupied until {formatBookingDate(availableFrom)}
                         </span>
                       </div>
                     )}
@@ -156,22 +170,16 @@ export default function RoomsPage() {
 
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className={`text-2xl font-bold ${unavailable ? 'text-ink-muted' : 'text-ink'}`}>฿{room.price.toLocaleString()}</span>
+                        <span className="text-2xl font-bold text-ink">฿{room.price.toLocaleString()}</span>
                         <span className="text-sm text-ink-muted ml-1">/night</span>
                       </div>
-                      {unavailable ? (
-                        <span className="text-sm text-ink-muted font-medium px-5 py-2.5">
-                          Occupied
-                        </span>
-                      ) : (
-                        <button
-                          onClick={() => openPicker(room)}
-                          className="flex items-center gap-1.5 bg-brand text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer"
-                        >
-                          Enquire
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </button>
-                      )}
+                      <button
+                        onClick={() => openPicker(room)}
+                        className="flex items-center gap-1.5 bg-brand text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer"
+                      >
+                        Enquire
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -250,9 +258,15 @@ export default function RoomsPage() {
                   </span>
                 )}
               </p>
+              {picker.minDate > todayStr && (
+                <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-3">
+                  <Ban className="w-3.5 h-3.5 shrink-0" />
+                  Currently occupied — earliest check-in is <strong className="ml-1">{formatBookingDate(picker.minDate)}</strong>
+                </div>
+              )}
               <Calendar
                 value={picker.checkIn}
-                minDate={todayStr}
+                minDate={picker.minDate}
                 onChange={(v) => setPicker(p => p ? { ...p, checkIn: v } : p)}
               />
             </div>

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.3] - 2026-05-18
+### Changed
+- **Rooms page** — occupied rooms remain fully bookable for future dates. Card shows an amber "Occupied until [date]" badge on the image but keeps the Enquire button active. The night picker modal locks the calendar to the checkout date of the current stay and shows a notice explaining the earliest available check-in.
+
 ## [0.3.2] - 2026-05-18
 ### Changed
 - **Rooms page** — occupancy now syncs live from the POS `stays` slice in Firestore. A room shows "Occupied" (greyed out, greyscale image, no Enquire button) whenever there is an active check-in in the POS, matching the Occupied/Available logic on the POS Guestrooms page exactly. Removed the previous `stock === 0` workaround.
