@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.12] - 2026-05-19
+### Fixed
+- **Rooms page — seasonal pricing total**: The estimated total in the night picker now correctly sums each individual night at its applicable season rate, rather than applying the check-in date's rate to all nights. A stay crossing a season boundary (e.g. Oct 31 → Nov 9) now shows the correct split breakdown (e.g. "฿1,200 × 1 night (Low Season) + ฿2,000 × 8 nights (High Season)").
+
 ## [0.3.11] - 2026-05-19
 ### Changed
 - **Room detail page — photo gallery**: Replaced dark lightbox modal with an Airbnb-style white full-page scrollable gallery. Sticky header shows a back arrow, "Photo tour" title, and photo count. A horizontal thumbnail strip below the header lets users jump to any photo. Main content is a 2-column grid of rounded photos with generous spacing. Esc key closes the gallery, body scroll is locked while open.

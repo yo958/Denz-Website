@@ -54,6 +54,49 @@ function getEffectivePrice(room: Product, dateStr: string): number {
   return room.price;
 }
 
+function getSeasonName(room: Product, dateStr: string): string | undefined {
+  if (!room.seasons?.length) return undefined;
+  const d = new Date(dateStr + 'T12:00:00');
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  const cur = m * 100 + day;
+  for (const s of room.seasons as RoomSeason[]) {
+    const start = s.startMonth * 100 + s.startDay;
+    const end   = s.endMonth   * 100 + s.endDay;
+    const inRange = start <= end
+      ? cur >= start && cur <= end
+      : cur >= start || cur <= end;
+    if (inRange) return s.name;
+  }
+  return undefined;
+}
+
+/** Sum nightly rates across each individual night of the stay. */
+function getTotalPrice(room: Product, checkInStr: string, nights: number): number {
+  let total = 0;
+  for (let i = 0; i < nights; i++) {
+    total += getEffectivePrice(room, addNights(checkInStr, i));
+  }
+  return total;
+}
+
+/** Group consecutive nights sharing the same rate for display. */
+function getPriceBreakdown(room: Product, checkInStr: string, nights: number): Array<{ nights: number; rate: number; seasonName?: string }> {
+  const segments: Array<{ nights: number; rate: number; seasonName?: string }> = [];
+  for (let i = 0; i < nights; i++) {
+    const nightStr = addNights(checkInStr, i);
+    const rate = getEffectivePrice(room, nightStr);
+    const seasonName = getSeasonName(room, nightStr);
+    const last = segments[segments.length - 1];
+    if (last && last.rate === rate) {
+      last.nights++;
+    } else {
+      segments.push({ nights: 1, rate, seasonName });
+    }
+  }
+  return segments;
+}
+
 interface RoomPicker {
   room: Product;
   checkIn: string;
@@ -99,7 +142,7 @@ export default function RoomsPage() {
     if (!picker) return;
     const { room, checkIn, nights } = picker;
     const checkOut = addNights(checkIn, nights);
-    const total = getEffectivePrice(room, checkIn) * nights;
+    const total = getTotalPrice(room, checkIn, nights);
     router.push(
       `/order?type=room-enquiry&room=${room.id}&bookingDate=${checkIn}&nights=${nights}&checkOut=${checkOut}&estimatedTotal=${total}`
     );
@@ -288,14 +331,20 @@ export default function RoomsPage() {
 
             {/* Estimated total */}
             {(() => {
-              const nightRate = getEffectivePrice(picker.room, picker.checkIn);
+              const total = getTotalPrice(picker.room, picker.checkIn, picker.nights);
+              const breakdown = getPriceBreakdown(picker.room, picker.checkIn, picker.nights);
               return (
                 <div className="bg-surface-muted rounded-xl px-5 py-4 mb-6 text-center">
                   <p className="text-xs text-ink-muted mb-1">Estimated total</p>
-                  <p className="text-3xl font-bold text-ink">฿{(nightRate * picker.nights).toLocaleString()}</p>
-                  <p className="text-xs text-ink-muted mt-1">
-                    ฿{nightRate.toLocaleString()} × {picker.nights} night{picker.nights !== 1 ? 's' : ''}
-                  </p>
+                  <p className="text-3xl font-bold text-ink">฿{total.toLocaleString()}</p>
+                  <div className="mt-1 space-y-0.5">
+                    {breakdown.map((seg, i) => (
+                      <p key={i} className="text-xs text-ink-muted">
+                        ฿{seg.rate.toLocaleString()} × {seg.nights} night{seg.nights !== 1 ? 's' : ''}
+                        {seg.seasonName ? <span className="ml-1 text-ink-muted/70">({seg.seasonName})</span> : null}
+                      </p>
+                    ))}
+                  </div>
                 </div>
               );
             })()}
