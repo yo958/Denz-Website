@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
   Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X,
-  Minus, Plus, CalendarDays, Ban, ChevronLeft, ChevronRight, LayoutGrid,
+  Minus, Plus, CalendarDays, Ban, ChevronLeft, LayoutGrid,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
@@ -86,17 +86,17 @@ export default function RoomDetailPage() {
     ...(room?.gallery ?? []),
   ];
 
-  // Keyboard navigation for lightbox
+  // Escape key closes the gallery; lock body scroll when open
   useEffect(() => {
     if (lightboxIdx < 0) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') setLightboxIdx(i => (i - 1 + allImages.length) % allImages.length);
-      if (e.key === 'ArrowRight') setLightboxIdx(i => (i + 1) % allImages.length);
-      if (e.key === 'Escape') setLightboxIdx(-1);
-    };
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setLightboxIdx(-1); };
     window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [lightboxIdx, allImages.length]);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', handler);
+      document.body.style.overflow = '';
+    };
+  }, [lightboxIdx]);
 
   if (loading) {
     return (
@@ -451,72 +451,72 @@ export default function RoomDetailPage() {
         </div>
       )}
 
-      {/* ── Lightbox ── */}
+      {/* ── Photo tour (Airbnb-style full-page scrollable gallery) ── */}
       {lightboxIdx >= 0 && (
-        <div
-          className="fixed inset-0 z-[60] bg-black/95 flex flex-col"
-          onClick={(e) => { if (e.target === e.currentTarget) setLightboxIdx(-1); }}
-        >
-          {/* Header */}
-          <div className="shrink-0 flex items-center justify-between px-5 py-3 border-b border-white/10">
-            <span className="text-white/50 text-sm font-medium">{room.name}</span>
-            <div className="flex items-center gap-4">
-              <span className="text-white/50 text-sm tabular-nums">{lightboxIdx + 1} / {allImages.length}</span>
+        <div className="fixed inset-0 z-[60] bg-white flex flex-col">
+
+          {/* Sticky header */}
+          <div className="shrink-0 bg-white border-b border-ink-faint/10 sticky top-0 z-10">
+            <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
               <button
                 onClick={() => setLightboxIdx(-1)}
-                className="text-white/60 hover:text-white transition-colors p-1 cursor-pointer"
-                aria-label="Close"
+                className="flex items-center justify-center w-9 h-9 rounded-full border border-ink-faint/30 hover:border-ink-faint/60 text-ink transition-colors cursor-pointer shrink-0"
+                aria-label="Close gallery"
               >
-                <X className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4" />
               </button>
+              <h2 className="text-sm font-semibold text-ink tracking-tight">Photo tour</h2>
+              <span className="text-sm text-ink-muted tabular-nums shrink-0">{allImages.length} photo{allImages.length !== 1 ? 's' : ''}</span>
             </div>
-          </div>
 
-          {/* Main image area */}
-          <div className="flex-1 relative flex items-center justify-center px-14 py-4 min-h-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              key={lightboxIdx}
-              src={allImages[lightboxIdx]}
-              alt={`${room.name} — photo ${lightboxIdx + 1}`}
-              className="max-h-full max-w-full object-contain rounded-lg"
-            />
+            {/* Thumbnail navigation strip */}
             {allImages.length > 1 && (
-              <>
-                <button
-                  onClick={() => setLightboxIdx(i => (i - 1 + allImages.length) % allImages.length)}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors"
-                  aria-label="Previous photo"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={() => setLightboxIdx(i => (i + 1) % allImages.length)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors"
-                  aria-label="Next photo"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </>
+              <div className="max-w-4xl mx-auto px-6 pb-4 flex gap-3 overflow-x-auto">
+                {allImages.map((src, i) => (
+                  <button
+                    key={i}
+                    onClick={() => document.getElementById(`gallery-img-${i}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                    className="shrink-0 flex flex-col items-center gap-1.5 cursor-pointer group"
+                    aria-label={`Jump to photo ${i + 1}`}
+                  >
+                    <div className="w-[72px] h-[52px] rounded-xl overflow-hidden ring-2 ring-transparent group-hover:ring-ink-faint/50 transition-all">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={src} alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <span className="text-[10px] text-ink-muted leading-none">Photo {i + 1}</span>
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 
-          {/* Thumbnail strip */}
-          <div className="shrink-0 flex gap-2 px-4 pb-4 pt-2 overflow-x-auto justify-center border-t border-white/10">
-            {allImages.map((src, i) => (
-              <button
-                key={i}
-                onClick={() => setLightboxIdx(i)}
-                className={`shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
-                  i === lightboxIdx ? 'border-white opacity-100 scale-105' : 'border-transparent opacity-40 hover:opacity-70'
-                }`}
-                aria-label={`Photo ${i + 1}`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt="" className="w-full h-full object-cover" />
-              </button>
-            ))}
+          {/* Scrollable photo grid */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="max-w-4xl mx-auto px-6 py-8 space-y-3">
+              {/* 2-column grid — pair photos */}
+              {Array.from({ length: Math.ceil(allImages.length / 2) }).map((_, rowIdx) => {
+                const a = allImages[rowIdx * 2];
+                const b = allImages[rowIdx * 2 + 1];
+                return (
+                  <div key={rowIdx} className={`grid gap-3 ${b ? 'grid-cols-2' : 'grid-cols-1 max-w-xl'}`}>
+                    <div id={`gallery-img-${rowIdx * 2}`} className="rounded-2xl overflow-hidden aspect-[4/3]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={a} alt={`${room.name} — photo ${rowIdx * 2 + 1}`} className="w-full h-full object-cover" />
+                    </div>
+                    {b && (
+                      <div id={`gallery-img-${rowIdx * 2 + 1}`} className="rounded-2xl overflow-hidden aspect-[4/3]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={b} alt={`${room.name} — photo ${rowIdx * 2 + 2}`} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {/* Bottom breathing room */}
+            <div className="h-12" />
           </div>
+
         </div>
       )}
     </>

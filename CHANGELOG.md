@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.11] - 2026-05-19
+### Changed
+- **Room detail page — photo gallery**: Replaced dark lightbox modal with an Airbnb-style white full-page scrollable gallery. Sticky header shows a back arrow, "Photo tour" title, and photo count. A horizontal thumbnail strip below the header lets users jump to any photo. Main content is a 2-column grid of rounded photos with generous spacing. Esc key closes the gallery, body scroll is locked while open.
+
 ## [0.3.10] - 2026-05-19
 ### Changed
 - **Room detail page — gallery**: Photo grid now has page padding, rounded corners, and a clean back link above the grid — matching Airbnb's layout. "Show all photos" button styled as a solid white pill with border rather than backdrop-blur overlay.
