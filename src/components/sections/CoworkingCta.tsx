@@ -68,21 +68,6 @@ export function CoworkingCta() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            {/* Private office photo */}
-            <div className="relative rounded-2xl overflow-hidden mb-8 aspect-[16/9]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/private-office.jpg"
-                alt="Private office studio at Denz"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />
-              <div className="absolute bottom-4 left-4">
-                <span className="inline-block bg-brand/90 text-white text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full">
-                  Private office available
-                </span>
-              </div>
-            </div>
             <span className="inline-block text-xs font-semibold uppercase tracking-widest text-brand mb-4">
               Coworking
             </span>
@@ -135,6 +120,12 @@ export function CoworkingCta() {
                   price: bundlePrice,
                 });
               }
+              rows.push({
+                key: 'private-office',
+                label: 'Private Office',
+                note: 'per hour',
+                price: 200,
+              });
               for (const row of FEATURED_PERIODS) {
                 const price = lowestRate(row.period);
                 if (price === null) continue;

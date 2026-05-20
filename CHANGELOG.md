@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.29] - 2026-05-20
+### Added
+- **Quick pricing card**: Added Private Office (฿200/hour) row below Desk + Mac Mini.
+### Changed
+- **Coworking section (homepage)**: Removed private office photo from pricing section to fix layout imbalance.
+- **Docker**: Added Dockerfile and docker-compose.yml for local development on port 3003.
+
 ## [0.3.28] - 2026-05-20
 ### Added
 - **Real Denz photos throughout the website**: Replaced broken placeholder images with actual Denz photos.
