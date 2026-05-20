@@ -9,13 +9,14 @@ import { useCart } from '@/store/cart';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthModal } from '@/components/auth/AuthModal';
 
-const NAV_LINKS = [
+const BASE_NAV_LINKS = [
   { label: 'Menu', href: '/menu' },
   { label: 'Coworking', href: '/coworking' },
   { label: 'Rooms', href: '/rooms' },
-  { label: 'My Orders', href: '/dashboard' },
   { label: 'Contact', href: '/contact' },
 ];
+
+const MY_ORDERS_LINK = { label: 'My Orders', href: '/dashboard' };
 
 export function Navbar() {
   const pathname = usePathname();
@@ -25,6 +26,10 @@ export function Navbar() {
   const [authOpen, setAuthOpen] = useState(false);
   const cartCount = useCart((s) => s.count());
   const { user, loading: authLoading, signOut } = useAuth();
+
+  const navLinks = mounted && user
+    ? [...BASE_NAV_LINKS, MY_ORDERS_LINK]
+    : BASE_NAV_LINKS;
 
   useEffect(() => setMounted(true), []);
 
@@ -62,7 +67,7 @@ export function Navbar() {
 
             {/* Desktop nav */}
             <nav className="hidden md:flex items-center gap-1">
-              {NAV_LINKS.map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -142,7 +147,7 @@ export function Navbar() {
       {open && (
         <div className="fixed inset-0 z-40 bg-white pt-16">
           <nav className="flex flex-col p-6 gap-1">
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

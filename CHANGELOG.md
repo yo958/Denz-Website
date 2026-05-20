@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.17] - 2026-05-20
+### Changed
+- **Navbar — hide "My Orders" when not signed in**: The My Orders link only appears in the nav (desktop and mobile) once the user is authenticated. Guests see no link to the dashboard until they sign in.
+
 ## [0.3.16] - 2026-05-20
 ### Changed
 - **My Orders page — auth-gated**: The dashboard now requires sign-in. Guests see a proper auth wall ("Sign in / Create account") with a feature overview instead of an email search form. Orders auto-load once signed in.
