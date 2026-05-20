@@ -119,6 +119,15 @@ function toDateValue(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
+function nextWorkdayAfter(d: Date): Date {
+  const next = new Date(d);
+  next.setDate(next.getDate() + 1);
+  const dow = next.getDay();
+  if (dow === 6) next.setDate(next.getDate() + 2);
+  if (dow === 0) next.setDate(next.getDate() + 1);
+  return next;
+}
+
 function workingDaysNote(period: CoworkRatePeriod): string | null {
   switch (period) {
     case 'weekly':    return 'We\'re open Mon – Fri only. A weekly pass covers 5 working days.';
@@ -235,13 +244,8 @@ export default function CoworkDetailPage() {
   const desksAvailable = Math.max(0, capacity - activeCount);
   const todayFull = desksAvailable === 0;
 
-  // Reactive min date for the booking modal calendar.
-  // Recomputed on every render so Firestore loading after the modal opens is handled.
-  const tomorrowDate = new Date(now);
-  tomorrowDate.setDate(now.getDate() + 1);
-  const tomorrowStr = toDateValue(tomorrowDate);
   const todayStr = toDateValue(now);
-  const calendarMin = picker && todayFull ? tomorrowStr : (pickerMinDate || todayStr);
+  const calendarMin = pickerMinDate || todayStr;
 
   // Hourly picker derived values
   const dayHours = getVenueHoursForDate(venueSettings.venue.openingHours, pickerDate);
@@ -249,13 +253,13 @@ export default function CoworkDetailPage() {
   const maxStartTime = minutesToTime(timeToMinutes(dayHours.close) - pickerQty * 60);
   const pickerTotal = picker?.kind === 'equipment' ? calcEquipTotal(picker.tiers, pickerQty) : 0;
 
-  // Correct pickerDate when todayFull changes after the modal is already open.
+  // Correct pickerDate if it falls below the minimum after Firestore data loads.
   useEffect(() => {
-    if (picker && todayFull && pickerDate <= todayStr) {
-      setPickerDate(tomorrowStr);
+    if (picker && pickerMinDate && pickerDate < pickerMinDate) {
+      setPickerDate(pickerMinDate);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [todayFull]);
+  }, [pickerMinDate]);
 
   // Update period to first bookable once Firestore data arrives.
   useEffect(() => {
@@ -297,9 +301,18 @@ export default function CoworkDetailPage() {
   function openPicker() {
     if (!selectedRate || !space) return;
     const today = new Date();
-    const tm = new Date(today);
-    tm.setDate(today.getDate() + 1);
-    const defaultDate = todayFull ? toDateValue(tm) : toDateValue(today);
+    let defaultDate: string;
+    if (todayFull) {
+      const activeTabs = tabs.filter((t) => isTabActiveForSpace(t, space.name, space.id, today));
+      let latestEndsAt: Date | null = null;
+      for (const t of activeTabs) {
+        const endsAt = tabEndsAt(t);
+        if (endsAt && (!latestEndsAt || endsAt > latestEndsAt)) latestEndsAt = endsAt;
+      }
+      defaultDate = toDateValue(nextWorkdayAfter(latestEndsAt ?? today));
+    } else {
+      defaultDate = toDateValue(today);
+    }
     if (period === 'hourly') {
       const openTime = getVenueHoursForDate(venueSettings.venue.openingHours, defaultDate).open;
       const tiers = selectedRate.tiers?.length ? selectedRate.tiers : [{ price: selectedRate.price }];

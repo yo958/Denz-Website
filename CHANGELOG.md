@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.20] - 2026-05-21
+### Fixed
+- **First-available date in booking modal**: When a desk is at capacity, the booking calendar now opens to the first workday *after the latest active booking ends*, rather than blindly defaulting to tomorrow. For example, if a weekly booking runs through Friday the 22nd, the calendar now opens to Monday the 25th. Applies to both the coworking listing page and the space detail page.
+
 ## [0.4.19] - 2026-05-21
 ### Fixed
 - **Booking calendar — yesterday selectable in UTC+7 timezone**: `toDateValue()` used `toISOString().slice(0, 10)` which returns the UTC date. In Thailand (UTC+7), before 7 AM local time this gives yesterday's date, making yesterday's date bookable. Fixed by using local `getFullYear()`/`getMonth()`/`getDate()` across all three coworking booking pages (listing, detail, equipment detail) — matching the approach already used by the Calendar component itself.

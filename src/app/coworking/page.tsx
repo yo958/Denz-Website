@@ -159,6 +159,33 @@ function inferDeskBookingPeriod(t: BookingTab): CoworkRatePeriod | null {
 const SHORT_TERM_PERIODS = new Set<CoworkRatePeriod>(['hourly', 'daily']);
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
+function nextWorkdayAfter(d: Date): Date {
+  const next = new Date(d);
+  next.setDate(next.getDate() + 1);
+  const dow = next.getDay();
+  if (dow === 6) next.setDate(next.getDate() + 2);
+  if (dow === 0) next.setDate(next.getDate() + 1);
+  return next;
+}
+
+function latestEndsAtForSpace(tabs: BookingTab[], spaceId: string, spaceName: string): Date | null {
+  let latest: Date | null = null;
+  for (const t of tabs) {
+    if (!t.bookingEndsAt) continue;
+    const endsAt = new Date(t.bookingEndsAt as string);
+    if (endsAt.getTime() < 1000) continue;
+    const matchesSpace =
+      (t.type === 'desk' && t.label === spaceName) ||
+      t.items.some(item =>
+        item.product.category === 'desks' &&
+        (item.productId === spaceId || item.productId.startsWith(spaceId + '-')),
+      );
+    if (!matchesSpace) continue;
+    if (!latest || endsAt > latest) latest = endsAt;
+  }
+  return latest;
+}
+
 function countActiveForSpace(
   tabs: BookingTab[],
   spaces: CoworkSpace[],
@@ -324,9 +351,8 @@ export default function CoworkingPage() {
       const slots = activeSpaces.find(s => s.id === spaceId)?.capacity ?? 1;
       const booked = countActiveForSpace(bookingTabs, activeSpaces, spaceId, spaceName, spacePeriod);
       if (booked >= slots) {
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-        defaultDate = toDateValue(tomorrow);
+        const latestEndsAt = latestEndsAtForSpace(bookingTabs, spaceId, spaceName);
+        defaultDate = toDateValue(nextWorkdayAfter(latestEndsAt ?? today));
       }
     }
     const openTime = getVenueHoursForDate(venueSettings.venue.openingHours, defaultDate).open;
