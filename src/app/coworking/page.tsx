@@ -199,15 +199,14 @@ function countActiveForSpace(
 
     let matches = false;
     if (t.type === 'desk') {
-      let key = t.label;
-      if (!spaces.find(s => s.name === key)) {
-        const deskItem = t.items.find(li => li.product.category === 'desks');
-        if (deskItem) {
-          const s = spaces.find(x => deskItem.productId.startsWith(x.id + '-') || x.id === deskItem.productId);
-          if (s) key = s.name;
-        }
-      }
-      matches = key === spaceName;
+      // Match by label (primary space) OR by any desk item in the tab.
+      // The second check handles multi-desk tabs where the label is the first space
+      // but the tab also contains items for other spaces (e.g. "Girl + Friend" booked
+      // "Standup Desk + 27"" and "Desk + Dual 24"" in a single tab).
+      matches = t.label === spaceName || t.items.some(item => {
+        if (item.product.category !== 'desks') return false;
+        return item.productId === spaceId || item.productId.startsWith(spaceId + '-');
+      });
     } else {
       matches = t.items.some(item =>
         item.product.category === 'desks' &&

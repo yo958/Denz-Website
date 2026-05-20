@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.5] - 2026-05-20
+### Fixed
+- **Coworking listing page — multi-desk tab availability**: A single tab covering two desk spaces (e.g. two customers booking "Standup Desk + 27\"" and "Desk + Dual 24\"" together) now correctly marks both spaces as occupied on the `/coworking` card grid. Previously only the tab's primary label space was counted; all desk items in the tab are now scanned.
+
 ## [0.4.4] - 2026-05-20
 ### Fixed
 - **Desk detail page — booking blocked when full**: When the desk is currently occupied, the "Per day" period button is disabled ("Full today" label) and the book button changes to "Not available today" with a note to choose a weekly or monthly option. Weekly/monthly periods remain bookable as advance reservations.
