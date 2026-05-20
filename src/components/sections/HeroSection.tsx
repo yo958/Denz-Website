@@ -17,8 +17,8 @@ export function HeroSection() {
       <div className="absolute inset-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/images/hero-coworking.jpg"
-          alt="Denz Coworking Cafe open area at sunset"
+          src="/images/hero-bay-view.webp"
+          alt="Denz CoWorking outdoor terrace with Patong bay view"
           className="w-full h-full object-cover"
         />
         {/* Gradient overlay */}
