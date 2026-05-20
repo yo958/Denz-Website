@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.9] - 2026-05-20
+### Fixed
+- **Coworking detail page — "Not available today" shown even on weekly/monthly periods**: The book button now only shows "Not available today" when the desk is full AND the selected period is daily. Weekly/monthly periods always go to the order form (which defaults to the next available date).
+- **Coworking detail page — auto-advances period from daily when full**: On page load, if the desk is full today and daily is the default period, the page automatically selects the next bookable period (e.g. weekly) so the user never lands on a blocked state.
+- **Coworking detail page — React error #310**: The availability `useEffect` was placed after conditional early returns, violating React's rules of hooks. Moved all availability computation and hooks before the loading/not-found guards using null-safe access.
+
 ## [0.4.8] - 2026-05-20
 ### Fixed
 - **Coworking booking picker — today blocked when desk is full**: When the calendar defaults to tomorrow because the desk is occupied, today is now also disabled (not just pre-skipped). Previously the user could click back to today and still submit a booking for a full desk.

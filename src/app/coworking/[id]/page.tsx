@@ -152,13 +152,32 @@ export default function CoworkDetailPage() {
 
   const [period, setPeriod] = useState<CoworkRatePeriod>('daily');
 
-  // Update period to first bookable once Firestore data arrives
+  // Count active bookings — computed before early returns so hooks stay unconditional.
+  // Uses null-safe access because `space` may be undefined before Firestore resolves.
+  const now = new Date();
+  const activeCount = space
+    ? tabs.filter((t) => isTabActiveForSpace(t, space.name, space.id, now)).length
+    : 0;
+  const capacity = space?.capacity ?? 1;
+  const desksAvailable = Math.max(0, capacity - activeCount);
+
+  // Update period to first bookable once Firestore data arrives.
   useEffect(() => {
     if (fromFirestore && bookablePeriods.length > 0) {
       setPeriod(bookablePeriods[0]);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromFirestore]);
+
+  // When tabs load and today is full, auto-advance from 'daily' to the next available period
+  // so the book button isn't stuck on "Not available today" on page load.
+  useEffect(() => {
+    if (period === 'daily' && desksAvailable === 0 && bookablePeriods.length > 1) {
+      const next = bookablePeriods.find((p) => p !== 'daily');
+      if (next) setPeriod(next);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [desksAvailable]);
 
   if (loading) {
     return (
@@ -188,19 +207,10 @@ export default function CoworkDetailPage() {
     ? space.rates.filter((r) => r.enabled && r.period !== 'hourly')
     : [];
 
-  // Count active bookings for this space from the POS tabs slice.
-  // Mirrors the POS coworking board logic: paid daily tabs active if opened today,
-  // paid non-daily tabs active if bookingEndsAt is in the future.
-  const now = new Date();
-  const activeCount = tabs.filter((t) => isTabActiveForSpace(t, space.name, space.id, now)).length;
-  const capacity = space.capacity ?? 1;
-  const desksAvailable = Math.max(0, capacity - activeCount);
-
-  // Booking is blocked when the space is full AND the selected period maps to today
-  // (daily walk-in and walk-in packages) or the space is fully booked for the period
-  // (private office, walk-in packages).
-  const bookingBlocked =
-    desksAvailable === 0 && (isWalkInPackage || isPrivateOffice || period === 'daily');
+  // Only block booking when the space is full AND the selected period is daily.
+  // Weekly/monthly periods are always bookable — the booking form defaults to
+  // the next available date. Walk-in packages and private offices follow the same rule.
+  const bookingBlocked = desksAvailable === 0 && period === 'daily';
 
   function book() {
     if (!selectedRate) return;
