@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Check, ArrowRight, Wifi, Coffee, Printer, Lock, Users, Zap, Loader2, X, Minus, Plus, Crown } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
@@ -485,10 +486,18 @@ export default function CoworkingPage() {
                       {space.name}
                     </h3>
                     {space.description && (
-                      <p className={`text-sm mb-6 ${isPrivateOffice ? 'text-white/70' : isHighlighted ? 'text-white/60' : 'text-ink-muted'}`}>
+                      <p className={`text-sm mb-2 ${isPrivateOffice ? 'text-white/70' : isHighlighted ? 'text-white/60' : 'text-ink-muted'}`}>
                         {space.description}
                       </p>
                     )}
+                    <Link
+                      href={`/coworking/${space.id}`}
+                      className={`text-xs font-medium hover:underline mb-5 inline-block ${
+                        isPrivateOffice ? 'text-white/70' : isHighlighted ? 'text-white/60' : 'text-brand'
+                      }`}
+                    >
+                      More info →
+                    </Link>
 
                     {/* Price */}
                     <div className="mb-8">

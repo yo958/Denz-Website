@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.0] - 2026-05-20
+### Added
+- **Desk detail pages**: New `/coworking/[id]` route showing individual desk package pages with name, description, amenity pills, features list, rich long description (from POS), and a sticky booking card with period selector.
+- **"More info →" links**: Each space card on `/coworking` now has a "More info →" link pointing to its detail page.
+- **`CoworkSpace.longDescription`**: Added optional `longDescription` field to the website `CoworkSpace` type, mirroring the POS addition.
+
 ## [0.3.29] - 2026-05-20
 ### Added
 - **Quick pricing card**: Added Private Office (฿200/hour) row below Desk + Mac Mini.

@@ -50,6 +50,8 @@ export interface CoworkSpace {
   name: string;
   type: CoworkSpaceType;
   description?: string;
+  /** Extended description shown on the space's individual page on the website. */
+  longDescription?: string;
   rates: CoworkSpaceRate[];
   dedicatedRates?: CoworkSpaceRate[];
   capacity?: number;
