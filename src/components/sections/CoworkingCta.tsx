@@ -15,9 +15,8 @@ const PERKS = [
   'Community events',
 ];
 
-// Periods to show on the homepage card, in order
+// Periods to show on the homepage card, in order (no standalone hourly — not offered)
 const FEATURED_PERIODS: { period: CoworkRatePeriod; label: string; note: string }[] = [
-  { period: 'hourly',  label: 'Hourly',    note: 'per hour' },
   { period: 'daily',   label: 'Day Pass',  note: 'full day' },
   { period: 'weekly',  label: 'Weekly',    note: '7 days' },
   { period: 'monthly', label: 'Monthly',   note: 'calendar month' },
@@ -50,14 +49,12 @@ export function CoworkingCta() {
     return best;
   }
 
-  const deskHourly  = lowestRate('hourly');
   const macRate     = lowestMacMiniRate();
   // Mac Mini rental includes desk access — bundle price is just the Mac Mini rate
   const bundlePrice = macRate;
 
-  // Derive the "from" headline price (hourly desk)
-  const fromPrice = deskHourly;
-  const fromLabel = fromPrice != null ? `฿${fromPrice.toLocaleString()}/hr.` : '฿50/hr.';
+  // "From" headline uses the Mac Mini rate — the actual entry hourly option
+  const fromLabel = macRate != null ? `฿${macRate.toLocaleString()}/hr.` : '฿150/hr.';
 
   return (
     <section className="py-24 bg-ink overflow-hidden">
@@ -112,21 +109,20 @@ export function CoworkingCta() {
               Quick pricing
             </p>
             {(() => {
-              // Build the visible rows: standard periods + Mac Mini bundle after Hourly
+              // Build visible rows: Mac Mini bundle first (entry hourly), then day/week/month
               const rows: { key: string; label: string; note: string; price: number }[] = [];
+              if (bundlePrice !== null) {
+                rows.push({
+                  key: 'mac-bundle',
+                  label: 'Desk + Mac Mini',
+                  note: 'per hour · desk included',
+                  price: bundlePrice,
+                });
+              }
               for (const row of FEATURED_PERIODS) {
                 const price = lowestRate(row.period);
                 if (price === null) continue;
                 rows.push({ key: row.period, label: row.label, note: row.note, price });
-                // Insert Mac Mini bundle immediately after the Hourly row
-                if (row.period === 'hourly' && bundlePrice !== null) {
-                  rows.push({
-                    key: 'mac-bundle',
-                    label: 'Desk + Mac Mini',
-                    note: 'per hour · desk included',
-                    price: bundlePrice,
-                  });
-                }
               }
               return rows.map((row, i) => (
                 <div

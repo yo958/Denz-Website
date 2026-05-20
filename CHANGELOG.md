@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.23] - 2026-05-20
+### Fixed
+- **Homepage — removed ฿50/hr standalone desk row**: Hourly desk-only is not an offered package. The Hourly row is removed from the Quick Pricing card. The "From X/hr" headline and the first card row now both use the Mac Mini rate (฿150) as the real entry-level hourly option.
+
 ## [0.3.22] - 2026-05-20
 ### Fixed
 - **Homepage — Desk + Mac Mini price**: Mac Mini rental includes desk access, so bundle price is the Mac Mini rate alone (฿150), not desk + Mac Mini added together. Note updated to "per hour · desk included".
