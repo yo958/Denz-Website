@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.16] - 2026-05-20
+### Added
+- **Equipment detail pages** (`/coworking/equipment/[id]`): each Mac Mini rental now has its own detail page showing name, description, tiered hourly pricing table, feature pills, and a "Rent this" button that opens the same hourly quantity + time picker modal as the listing page.
+- **"More info →" links on equipment cards**: the equipment section on the coworking listing page now links to each item's detail page.
+- `longDescription` field added to `Equipment` type (website) for future rich content support.
+
 ## [0.4.15] - 2026-05-20
 ### Fixed
 - **Coworking detail page — hourly period opens quantity+time picker**: Clicking "Book this space" with "Per hour" selected now shows the same hourly modal as the listing page (hour stepper, estimated total, calendar, and start time picker). Previously it incorrectly showed the standard desk calendar modal.

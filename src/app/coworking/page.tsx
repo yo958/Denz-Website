@@ -600,8 +600,14 @@ export default function CoworkingPage() {
                       <div key={equip.id} className="rounded-2xl p-8 bg-white border border-ink-faint/30 shadow-sm">
                         <h3 className="text-xl font-bold text-ink mb-1">{equip.name}</h3>
                         {equip.description && (
-                          <p className="text-sm text-ink-muted mb-6">{equip.description}</p>
+                          <p className="text-sm text-ink-muted mb-4">{equip.description}</p>
                         )}
+                        <Link
+                          href={`/coworking/equipment/${equip.id}`}
+                          className="text-xs font-medium text-brand hover:underline mb-5 inline-block"
+                        >
+                          More info →
+                        </Link>
                         <div className="mb-8">
                           <span className="text-4xl font-bold text-ink">฿{hourlyPrice.toLocaleString()}</span>
                           <span className="text-sm ml-1 text-ink-muted">/ per hour</span>

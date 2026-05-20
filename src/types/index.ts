@@ -62,6 +62,7 @@ export interface Equipment {
   id: string;
   name: string;
   description?: string;
+  longDescription?: string;
   tiers: EquipmentTier[];
   archived?: boolean;
 }
