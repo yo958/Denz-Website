@@ -3,13 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
-  Wifi, Coffee, Printer, Lock, Users, Zap, ArrowRight, Loader2, ChevronLeft, Monitor, X,
+  Wifi, Coffee, Printer, Lock, Users, Zap, ArrowRight, Loader2, ChevronLeft, Monitor, X, Minus, Plus,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
+import { TimePicker } from '@/components/ui/TimePicker';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
-import type { CoworkSpace, CoworkRatePeriod, CoworkSpaceRate } from '@/types';
+import { useVenueSettings } from '@/hooks/useVenueSettings';
+import type { CoworkSpace, CoworkRatePeriod, CoworkSpaceRate, DayOfWeek, EquipmentTier } from '@/types';
 
 interface DeskTab {
   id: string;
@@ -66,21 +68,53 @@ function isTabActiveForSpace(t: DeskTab, spaceName: string, spaceId: string, now
   return false;
 }
 
-type PickerItem = {
-  kind: 'desk';
-  id: string;
-  name: string;
-  bookingRate: number;
-  walkInRate?: number;
-  period: CoworkRatePeriod;
-  spaceType: string;
-  hotDeskOnly?: boolean;
-};
+type PickerItem =
+  | { kind: 'equipment'; id: string; name: string; tiers: EquipmentTier[] }
+  | { kind: 'desk'; id: string; name: string; bookingRate: number; walkInRate?: number; period: CoworkRatePeriod; spaceType: string; hotDeskOnly?: boolean };
+
+function calcEquipTotal(tiers: EquipmentTier[], qty: number): number {
+  if (!tiers.length) return 0;
+  const last = tiers[tiers.length - 1];
+  let total = 0;
+  for (let i = 0; i < qty; i++) total += (tiers[i] ?? last).price;
+  return total;
+}
+
+function equipBreakdown(tiers: EquipmentTier[], qty: number): string {
+  const last = tiers[tiers.length - 1];
+  const allSame = tiers.every((t) => t.price === tiers[0].price);
+  if (allSame) return `฿${(tiers[0]?.price ?? 0).toLocaleString()} × ${qty} hour${qty !== 1 ? 's' : ''}`;
+  const lines = Array.from({ length: qty }, (_, i) => `hr ${i + 1}: ฿${((tiers[i] ?? last).price).toLocaleString()}`);
+  return lines.join(' · ');
+}
+
+function timeToMinutes(t: string): number {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + (m ?? 0);
+}
+
+function minutesToTime(mins: number): string {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+function getVenueHoursForDate(
+  openingHours: Partial<Record<DayOfWeek, { open: string; close: string; closed: boolean }>> | undefined,
+  dateStr: string,
+): { open: string; close: string } {
+  if (!openingHours || !dateStr) return { open: '10:00', close: '23:30' };
+  const day = new Date(dateStr + 'T12:00:00')
+    .toLocaleDateString('en-US', { weekday: 'long' })
+    .toLowerCase() as DayOfWeek;
+  const h = openingHours[day];
+  if (!h || h.closed) return { open: '10:00', close: '23:30' };
+  return { open: h.open, close: h.close };
+}
 
 function toDateValue(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
-
 
 function workingDaysNote(period: CoworkRatePeriod): string | null {
   switch (period) {
@@ -179,10 +213,14 @@ export default function CoworkDetailPage() {
         )
     : [];
 
+  const venueSettings = useVenueSettings();
+
   const [period, setPeriod] = useState<CoworkRatePeriod>('daily');
   const [picker, setPicker] = useState<PickerItem | null>(null);
+  const [pickerQty, setPickerQty] = useState(1);
   const [pickerDate, setPickerDate] = useState('');
   const [pickerMinDate, setPickerMinDate] = useState('');
+  const [pickerTime, setPickerTime] = useState('10:00');
 
   // Count active bookings — computed before early returns so hooks stay unconditional.
   // Uses null-safe access because `space` may be undefined before Firestore resolves.
@@ -201,6 +239,12 @@ export default function CoworkDetailPage() {
   const tomorrowStr = toDateValue(tomorrowDate);
   const todayStr = toDateValue(now);
   const calendarMin = picker && todayFull ? tomorrowStr : (pickerMinDate || todayStr);
+
+  // Hourly picker derived values
+  const dayHours = getVenueHoursForDate(venueSettings.venue.openingHours, pickerDate);
+  const maxHourlyHours = Math.floor((timeToMinutes(dayHours.close) - timeToMinutes(dayHours.open)) / 60);
+  const maxStartTime = minutesToTime(timeToMinutes(dayHours.close) - pickerQty * 60);
+  const pickerTotal = picker?.kind === 'equipment' ? calcEquipTotal(picker.tiers, pickerQty) : 0;
 
   // Correct pickerDate when todayFull changes after the modal is already open.
   useEffect(() => {
@@ -253,21 +297,31 @@ export default function CoworkDetailPage() {
     const tm = new Date(today);
     tm.setDate(today.getDate() + 1);
     const defaultDate = todayFull ? toDateValue(tm) : toDateValue(today);
-    const walkInRate = (!isWalkInPackage && !isPrivateOffice)
-      ? space.rates.find((r) => r.period === period && r.enabled)?.price
-      : undefined;
-    setPicker({
-      kind: 'desk',
-      id: space.id,
-      name: space.name,
-      bookingRate: selectedRate.price,
-      walkInRate,
-      period,
-      spaceType: space.type,
-      hotDeskOnly: isWalkInPackage,
-    });
-    setPickerDate(defaultDate);
-    setPickerMinDate(defaultDate);
+    if (period === 'hourly') {
+      const openTime = getVenueHoursForDate(venueSettings.venue.openingHours, defaultDate).open;
+      const tiers = selectedRate.tiers?.length ? selectedRate.tiers : [{ price: selectedRate.price }];
+      setPicker({ kind: 'equipment', id: space.id, name: space.name, tiers });
+      setPickerQty(1);
+      setPickerDate(defaultDate);
+      setPickerMinDate(defaultDate);
+      setPickerTime(openTime);
+    } else {
+      const walkInRate = (!isWalkInPackage && !isPrivateOffice)
+        ? space.rates.find((r) => r.period === period && r.enabled)?.price
+        : undefined;
+      setPicker({
+        kind: 'desk',
+        id: space.id,
+        name: space.name,
+        bookingRate: selectedRate.price,
+        walkInRate,
+        period,
+        spaceType: space.type,
+        hotDeskOnly: isWalkInPackage,
+      });
+      setPickerDate(defaultDate);
+      setPickerMinDate(defaultDate);
+    }
   }
 
   function confirmPicker() {
@@ -280,9 +334,14 @@ export default function CoworkDetailPage() {
       next.setDate(next.getDate() + (dow === 6 ? 2 : 1));
       dateParam = toDateValue(next);
     }
-    router.push(
-      `/order?type=coworking&space=${picker.id}&period=${picker.period}&spaceType=${picker.spaceType}&estimatedTotal=${picker.bookingRate}&bookingDate=${dateParam}`
-    );
+    if (picker.kind === 'equipment') {
+      const total = calcEquipTotal(picker.tiers, pickerQty);
+      router.push(`/order?type=coworking&space=${picker.id}&period=hourly&hours=${pickerQty}&estimatedTotal=${total}&bookingDate=${dateParam}&bookingTime=${pickerTime}`);
+    } else {
+      const isHourly = picker.period === 'hourly';
+      const timeSegment = isHourly ? `&bookingTime=${pickerTime}` : '';
+      router.push(`/order?type=coworking&space=${picker.id}&period=${picker.period}&spaceType=${picker.spaceType}&estimatedTotal=${picker.bookingRate}&bookingDate=${dateParam}${timeSegment}`);
+    }
     setPicker(null);
   }
 
@@ -484,7 +543,9 @@ export default function CoworkDetailPage() {
               <div>
                 <h3 className="text-lg font-bold text-ink">{picker.name}</h3>
                 <p className="text-sm text-ink-muted mt-0.5">
-                  {picker.hotDeskOnly
+                  {picker.kind === 'equipment'
+                    ? 'How many hours do you need?'
+                    : picker.hotDeskOnly
                     ? 'Walk-in hot desk pricing'
                     : picker.spaceType === 'private-office'
                     ? 'Book your private office'
@@ -496,7 +557,60 @@ export default function CoworkDetailPage() {
               </button>
             </div>
 
-            {picker.hotDeskOnly ? (
+            {picker.kind === 'equipment' ? (
+              <>
+                {/* Hourly quantity stepper */}
+                <div className="flex items-center justify-center gap-6 my-8">
+                  <button
+                    onClick={() => setPickerQty((q) => Math.max(1, q - 1))}
+                    disabled={pickerQty <= 1}
+                    className="w-10 h-10 rounded-full border border-ink-faint/40 flex items-center justify-center text-ink hover:bg-surface-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <div className="text-center">
+                    <span className="text-5xl font-bold text-ink">{pickerQty}</span>
+                    <p className="text-sm text-ink-muted mt-1">hour{pickerQty !== 1 ? 's' : ''}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      const newQty = Math.min(maxHourlyHours, pickerQty + 1);
+                      setPickerQty(newQty);
+                      const newMax = minutesToTime(timeToMinutes(dayHours.close) - newQty * 60);
+                      if (pickerTime > newMax) setPickerTime(newMax);
+                    }}
+                    disabled={pickerQty >= maxHourlyHours}
+                    className="w-10 h-10 rounded-full border border-ink-faint/40 flex items-center justify-center text-ink hover:bg-surface-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="bg-surface-muted rounded-xl px-5 py-4 mb-6 text-center">
+                  <p className="text-xs text-ink-muted mb-1">Estimated total</p>
+                  <p className="text-3xl font-bold text-ink">฿{pickerTotal.toLocaleString()}</p>
+                  <p className="text-xs text-ink-muted mt-1">{equipBreakdown(picker.tiers, pickerQty)}</p>
+                </div>
+                <div className="mb-6">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
+                    Start date{pickerDate && <span className="normal-case font-normal ml-1.5 text-ink">— {formatBookingDate(pickerDate)}</span>}
+                  </p>
+                  <Calendar value={pickerDate} minDate={calendarMin} onChange={setPickerDate} disableWeekends />
+                  <div className="mt-3">
+                    <TimePicker value={pickerTime} min={dayHours.open} max={maxStartTime} onChange={setPickerTime} />
+                  </div>
+                  <p className="text-xs text-ink-muted mt-2">Select today to arrive now, or a future date to reserve your spot.</p>
+                </div>
+                <div className="flex gap-3">
+                  <button onClick={() => setPicker(null)} className="flex-1 py-3 rounded-full text-sm font-medium border border-ink-faint/30 text-ink-muted hover:text-ink hover:border-ink-faint/60 transition-colors">
+                    Cancel
+                  </button>
+                  <button onClick={confirmPicker} className="flex-1 py-3 rounded-full text-sm font-semibold bg-ink text-white hover:bg-ink/80 transition-colors flex items-center justify-center gap-2">
+                    Continue
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </>
+            ) : picker.hotDeskOnly ? (
               <>
                 <div className="rounded-xl border border-ink-faint/30 bg-surface-muted p-5 mb-6">
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-ink-muted mb-3">Walk-in Hot Desk</p>
@@ -517,6 +631,15 @@ export default function CoworkDetailPage() {
                   </p>
                   <Calendar value={pickerDate} minDate={calendarMin} onChange={setPickerDate} disableWeekends />
                   <p className="text-xs text-ink-muted mt-2">Select today to arrive now, or a future date to reserve your spot.</p>
+                </div>
+                <div className="flex gap-3">
+                  <button onClick={() => setPicker(null)} className="flex-1 py-3 rounded-full text-sm font-medium border border-ink-faint/30 text-ink-muted hover:text-ink hover:border-ink-faint/60 transition-colors">
+                    Cancel
+                  </button>
+                  <button onClick={confirmPicker} className="flex-1 py-3 rounded-full text-sm font-semibold bg-brand text-white hover:bg-brand-dark transition-colors flex items-center justify-center gap-2">
+                    Continue to book
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
                 </div>
               </>
             ) : (
@@ -555,18 +678,17 @@ export default function CoworkDetailPage() {
                   <Calendar value={pickerDate} minDate={calendarMin} onChange={setPickerDate} disableWeekends />
                   <p className="text-xs text-ink-muted mt-2">Select today to arrive now, or a future date to reserve your spot.</p>
                 </div>
+                <div className="flex gap-3">
+                  <button onClick={() => setPicker(null)} className="flex-1 py-3 rounded-full text-sm font-medium border border-ink-faint/30 text-ink-muted hover:text-ink hover:border-ink-faint/60 transition-colors">
+                    Cancel
+                  </button>
+                  <button onClick={confirmPicker} className="flex-1 py-3 rounded-full text-sm font-semibold bg-brand text-white hover:bg-brand-dark transition-colors flex items-center justify-center gap-2">
+                    Continue to book
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
               </>
             )}
-
-            <div className="flex gap-3">
-              <button onClick={() => setPicker(null)} className="flex-1 py-3 rounded-full text-sm font-medium border border-ink-faint/30 text-ink-muted hover:text-ink hover:border-ink-faint/60 transition-colors">
-                Cancel
-              </button>
-              <button onClick={confirmPicker} className="flex-1 py-3 rounded-full text-sm font-semibold bg-brand text-white hover:bg-brand-dark transition-colors flex items-center justify-center gap-2">
-                Continue to book
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
           </div>
         </div>
       )}

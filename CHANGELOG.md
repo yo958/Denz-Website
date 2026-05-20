@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.15] - 2026-05-20
+### Fixed
+- **Coworking detail page — hourly period opens quantity+time picker**: Clicking "Book this space" with "Per hour" selected now shows the same hourly modal as the listing page (hour stepper, estimated total, calendar, and start time picker). Previously it incorrectly showed the standard desk calendar modal.
+
 ## [0.4.14] - 2026-05-20
 ### Fixed
 - **Coworking detail page — today blocked for all periods when desk is full**: Previously only the daily period blocked today when the desk was at capacity. Weekly, monthly, and longer periods now also default to tomorrow as the earliest selectable date when today is full.
