@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
   Wifi, Coffee, Printer, Lock, Users, Zap, ArrowRight, Loader2, ChevronLeft, Monitor,
@@ -76,14 +76,23 @@ export default function CoworkDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
 
-  const { data: spaces, loading } = useFirestoreSlice<CoworkSpace[]>('spaces', FALLBACK_SPACES);
+  const { data: spaces, loading, fromFirestore } = useFirestoreSlice<CoworkSpace[]>('spaces', FALLBACK_SPACES);
   const displaySpaces = spaces.length > 0 ? spaces : FALLBACK_SPACES;
   const space = displaySpaces.find((s) => s.id === id && !s.archived);
 
-  // Build available periods for this space
-  const availablePeriods = PERIOD_ORDER.filter((p) => getRateForPeriod(space!, p) !== undefined);
-  const defaultPeriod = availablePeriods[0] ?? 'daily';
-  const [period, setPeriod] = useState<CoworkRatePeriod>(defaultPeriod);
+  // Guard against undefined space before Firestore loads
+  const availablePeriods = space
+    ? PERIOD_ORDER.filter((p) => getRateForPeriod(space, p) !== undefined)
+    : [];
+  const [period, setPeriod] = useState<CoworkRatePeriod>('daily');
+
+  // Update period to first available once Firestore data arrives
+  useEffect(() => {
+    if (fromFirestore && availablePeriods.length > 0) {
+      setPeriod(availablePeriods[0]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromFirestore]);
 
   if (loading) {
     return (
