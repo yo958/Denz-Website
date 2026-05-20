@@ -7,14 +7,16 @@ import { useAuth } from '@/hooks/useAuth';
 interface AuthModalProps {
   /** Pre-fill the email field — useful when shown after a booking */
   defaultEmail?: string;
+  /** Which tab to open first (default: 'signin') */
+  initialMode?: 'signin' | 'signup';
   onClose: () => void;
 }
 
 type Mode = 'signin' | 'signup';
 
-export function AuthModal({ defaultEmail = '', onClose }: AuthModalProps) {
+export function AuthModal({ defaultEmail = '', initialMode = 'signin', onClose }: AuthModalProps) {
   const { signIn, signUp } = useAuth();
-  const [mode, setMode] = useState<Mode>('signin');
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [name, setName] = useState('');
   const [email, setEmail] = useState(defaultEmail);
   const [password, setPassword] = useState('');

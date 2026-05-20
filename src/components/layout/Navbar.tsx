@@ -104,7 +104,7 @@ export function Navbar() {
                 ) : (
                   <button
                     onClick={() => setAuthOpen(true)}
-                    className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-ink-muted hover:text-ink hover:bg-surface-raised transition-colors cursor-pointer"
+                    className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border border-ink-faint/40 text-ink hover:bg-surface-muted transition-colors cursor-pointer"
                   >
                     <LogIn className="w-4 h-4" />
                     Sign in

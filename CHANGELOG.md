@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.16] - 2026-05-20
+### Changed
+- **My Orders page — auth-gated**: The dashboard now requires sign-in. Guests see a proper auth wall ("Sign in / Create account") with a feature overview instead of an email search form. Orders auto-load once signed in.
+- **AuthModal — `initialMode` prop**: Can be opened directly to sign-up or sign-in from the auth gate on the dashboard page.
+- **Navbar — Sign in button style**: Made more prominent with an outlined border so it's clearly visible to users who need to sign in.
+
 ## [0.3.15] - 2026-05-20
 ### Added
 - **Firebase Auth — sign in / create account**: Customers can now sign in or create an account (email + password) via a modal accessible from the Navbar ("Sign in" button). Once signed in their name/email is shown in the nav with a sign-out button.
