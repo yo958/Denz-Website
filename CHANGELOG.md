@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.12] - 2026-05-20
+### Fixed
+- **Coworking detail page — today still selectable in modal when desk is full**: The booking modal's calendar minDate was computed once when the modal opened. If Firestore tab data arrived after the modal was already open, the calendar remained stuck on today even when the desk was fully booked. minDate is now computed reactively on every render, and a useEffect corrects the selected date to tomorrow if Firestore later confirms today is full.
+
 ## [0.4.11] - 2026-05-20
 ### Fixed
 - **Coworking detail page — daily bookings blocked for tomorrow when today is full**: The "Per day" period button was disabled and auto-advanced away when today was at capacity, making it impossible to book a daily slot starting tomorrow. The daily button is now always clickable; if today is full the booking modal opens with tomorrow as the earliest selectable date. A "Today full" note appears on the button as informational only, and the hint text below the book button explains the next step.

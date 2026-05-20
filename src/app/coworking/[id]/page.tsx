@@ -192,6 +192,21 @@ export default function CoworkDetailPage() {
     : 0;
   const capacity = space?.capacity ?? 1;
   const desksAvailable = Math.max(0, capacity - activeCount);
+  const todayFull = desksAvailable === 0;
+
+  // Reactive min date for the booking modal calendar.
+  // Recomputed on every render so Firestore loading after the modal opens is handled.
+  const tomorrowStr = toDateValue(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1));
+  const todayStr = toDateValue(now);
+  const calendarMin = picker && todayFull && picker.period === 'daily' ? tomorrowStr : (pickerMinDate || todayStr);
+
+  // Correct pickerDate when todayFull changes after the modal is already open.
+  useEffect(() => {
+    if (picker && todayFull && picker.period === 'daily' && pickerDate <= todayStr) {
+      setPickerDate(tomorrowStr);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [todayFull, picker?.period]);
 
   // Update period to first bookable once Firestore data arrives.
   useEffect(() => {
@@ -229,9 +244,6 @@ export default function CoworkDetailPage() {
   const walkInInfoRates = (!isWalkInPackage && !isPrivateOffice)
     ? space.rates.filter((r) => r.enabled && r.period !== 'hourly')
     : [];
-
-  // Today's count is full — the modal will default the calendar to tomorrow for daily bookings.
-  const todayFull = desksAvailable === 0;
 
   function openPicker() {
     if (!selectedRate || !space) return;
@@ -501,7 +513,7 @@ export default function CoworkDetailPage() {
                   <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
                     Start date{pickerDate && <span className="normal-case font-normal ml-1.5 text-ink">— {formatBookingDate(pickerDate)}</span>}
                   </p>
-                  <Calendar value={pickerDate} minDate={pickerMinDate || toDateValue(new Date())} onChange={setPickerDate} disableWeekends />
+                  <Calendar value={pickerDate} minDate={calendarMin} onChange={setPickerDate} disableWeekends />
                   <p className="text-xs text-ink-muted mt-2">Select today to arrive now, or a future date to reserve your spot.</p>
                 </div>
               </>
@@ -538,7 +550,7 @@ export default function CoworkDetailPage() {
                   <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
                     Start date{pickerDate && <span className="normal-case font-normal ml-1.5 text-ink">— {formatBookingDate(pickerDate)}</span>}
                   </p>
-                  <Calendar value={pickerDate} minDate={pickerMinDate || toDateValue(new Date())} onChange={setPickerDate} disableWeekends />
+                  <Calendar value={pickerDate} minDate={calendarMin} onChange={setPickerDate} disableWeekends />
                   <p className="text-xs text-ink-muted mt-2">Select today to arrive now, or a future date to reserve your spot.</p>
                 </div>
               </>
