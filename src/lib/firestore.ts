@@ -75,6 +75,22 @@ export async function fetchOrdersByEmail(email: string): Promise<Record<string, 
   }
 }
 
+/** Query all website orders for a given Firebase Auth user ID. */
+export async function fetchOrdersByUserId(uid: string): Promise<Record<string, unknown>[]> {
+  try {
+    const q = query(
+      collection(db, 'website-orders'),
+      where('userId', '==', uid),
+      orderBy('createdAt', 'desc'),
+    );
+    const snap = await getDocs(q);
+    return snap.docs.map((d) => d.data() as Record<string, unknown>);
+  } catch (e) {
+    console.warn('[firestore] fetchOrdersByUserId error', e);
+    return [];
+  }
+}
+
 /** Subscribe to a single website order for status polling. */
 export function watchWebOrder(
   id: string,

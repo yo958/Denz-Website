@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import { Loader2, Search, ArrowRight, Clock, CheckCircle2, ChefHat, Package, XCircle, CheckCheck } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Loader2, Search, ArrowRight, Clock, CheckCircle2, ChefHat, Package, XCircle, CheckCheck, LogIn, LogOut } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { fetchOrdersByEmail } from '@/lib/firestore';
+import { useAuth } from '@/hooks/useAuth';
+import { AuthModal } from '@/components/auth/AuthModal';
 import Link from 'next/link';
 
 type OrderStatus = 'pending' | 'accepted' | 'preparing' | 'ready' | 'done' | 'cancelled';
@@ -115,11 +117,26 @@ function OrderCard({ order }: { order: Order }) {
 }
 
 export default function DashboardPage() {
+  const { user, loading: authLoading, signOut } = useAuth();
+  const [authOpen, setAuthOpen] = useState(false);
+
   const [email, setEmail] = useState('');
   const [submittedEmail, setSubmittedEmail] = useState('');
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+
+  // When a user is signed in, auto-fetch their orders by email
+  useEffect(() => {
+    if (!user?.email) return;
+    setLoading(true);
+    setSearched(false);
+    fetchOrdersByEmail(user.email).then(results => {
+      setOrders(results as unknown as Order[]);
+      setSubmittedEmail(user.email!);
+      setSearched(true);
+    }).finally(() => setLoading(false));
+  }, [user]);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,30 +163,62 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Badge variant="brand" className="mb-4">Dashboard</Badge>
           <h1 className="text-4xl sm:text-5xl font-bold text-ink mb-2">Your orders</h1>
-          <p className="text-ink-muted">Enter the email you used when placing your order to see your history.</p>
+          {user ? (
+            <div className="flex items-center gap-3 flex-wrap">
+              <p className="text-ink-muted">Signed in as <strong className="text-ink">{user.displayName ?? user.email}</strong></p>
+              <button
+                onClick={() => signOut()}
+                className="inline-flex items-center gap-1.5 text-sm text-ink-muted hover:text-ink transition-colors cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" /> Sign out
+              </button>
+            </div>
+          ) : (
+            <p className="text-ink-muted">Enter the email you used when placing your order to see your history.</p>
+          )}
         </div>
       </div>
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Search form */}
-        <form onSubmit={handleSearch} className="flex gap-3 mb-10">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
-            required
-            className="flex-1 bg-white border border-ink-faint/40 rounded-xl px-4 py-3 text-sm text-ink placeholder:text-ink-subtle focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand/50 transition"
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex items-center gap-2 bg-brand text-white px-5 py-3 rounded-xl text-sm font-semibold hover:bg-brand-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-          >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-            {loading ? 'Searching…' : 'Search'}
-          </button>
-        </form>
+        {/* Show auth loading shimmer */}
+        {authLoading && (
+          <div className="flex items-center justify-center py-16 gap-3 text-ink-muted">
+            <Loader2 className="w-5 h-5 animate-spin" />
+          </div>
+        )}
+
+        {/* Search form — only shown when not signed in */}
+        {!authLoading && !user && (
+          <>
+            <form onSubmit={handleSearch} className="flex gap-3 mb-6">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                className="flex-1 bg-white border border-ink-faint/40 rounded-xl px-4 py-3 text-sm text-ink placeholder:text-ink-subtle focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand/50 transition"
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex items-center gap-2 bg-brand text-white px-5 py-3 rounded-xl text-sm font-semibold hover:bg-brand-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                {loading ? 'Searching…' : 'Search'}
+              </button>
+            </form>
+
+            {/* Sign-in prompt */}
+            <div className="flex items-center gap-3 mb-10 px-4 py-3 bg-surface-muted rounded-xl border border-ink-faint/20">
+              <LogIn className="w-4 h-4 text-brand shrink-0" />
+              <p className="text-sm text-ink-muted flex-1">
+                <button onClick={() => setAuthOpen(true)} className="text-brand font-semibold hover:underline cursor-pointer">Sign in</button>
+                {' '}to automatically see all your orders without searching.
+              </p>
+            </div>
+          </>
+        )}
 
         {/* Results */}
         {loading && (
@@ -228,7 +277,8 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {!searched && !loading && (
+        {/* Empty state when not signed in and no search yet */}
+        {!searched && !loading && !authLoading && !user && (
           <div className="text-center py-12 text-ink-muted">
             <div className="w-14 h-14 rounded-full bg-surface-muted flex items-center justify-center mx-auto mb-4 border border-ink-faint/20">
               <Search className="w-6 h-6 text-ink-faint" />
@@ -237,6 +287,8 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
     </>
   );
 }

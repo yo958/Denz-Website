@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/Badge';
 import { useCart } from '@/store/cart';
 import { submitWebOrder } from '@/lib/firestore';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
+import { useAuth } from '@/hooks/useAuth';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
@@ -44,6 +45,7 @@ function OrderForm() {
     ?? roomParam?.replace(/-/g, ' ') ?? '';
 
   const { items, updateQty, removeItem, clear, total } = useCart();
+  const { user } = useAuth();
   const [orderType, setOrderType] = useState<OrderType>(typeParam ?? 'cafe');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -79,6 +81,7 @@ function OrderForm() {
         customerName: name.trim(),
         customerEmail: email.trim() || null,
         customerPhone: phone.trim() || null,
+        userId: user?.uid ?? null,
         tableOrSpace: tableOrSpace.trim() || null,
         duration: duration.trim() || null,
         notes: notes.trim() || null,

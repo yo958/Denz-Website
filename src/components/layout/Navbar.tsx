@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag } from 'lucide-react';
+import { Menu, X, ShoppingBag, LogIn, LogOut, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/store/cart';
+import { useAuth } from '@/hooks/useAuth';
+import { AuthModal } from '@/components/auth/AuthModal';
 
 const NAV_LINKS = [
   { label: 'Menu', href: '/menu' },
@@ -20,7 +22,9 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const cartCount = useCart((s) => s.count());
+  const { user, loading: authLoading, signOut } = useAuth();
 
   useEffect(() => setMounted(true), []);
 
@@ -76,6 +80,38 @@ export function Navbar() {
 
             {/* Right side */}
             <div className="flex items-center gap-2">
+              {/* Auth button — desktop */}
+              {mounted && !authLoading && (
+                user ? (
+                  <div className="hidden md:flex items-center gap-1.5">
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-ink-muted hover:text-ink hover:bg-surface-raised transition-colors"
+                      title={user.email ?? ''}
+                    >
+                      <User className="w-4 h-4 shrink-0" />
+                      <span className="max-w-[100px] truncate">{user.displayName ?? user.email}</span>
+                    </Link>
+                    <button
+                      onClick={() => signOut()}
+                      className="p-2 rounded-full text-ink-muted hover:text-ink hover:bg-surface-raised transition-colors cursor-pointer"
+                      aria-label="Sign out"
+                      title="Sign out"
+                    >
+                      <LogOut className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setAuthOpen(true)}
+                    className="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-ink-muted hover:text-ink hover:bg-surface-raised transition-colors cursor-pointer"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    Sign in
+                  </button>
+                )
+              )}
+
               <Link
                 href="/order"
                 className="hidden md:flex items-center gap-2 bg-brand text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors duration-150 relative"
@@ -120,7 +156,7 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <div className="mt-4 pt-4 border-t border-ink-faint/30">
+            <div className="mt-4 pt-4 border-t border-ink-faint/30 space-y-2">
               <Link
                 href="/order"
                 className="flex items-center justify-center gap-2 bg-brand text-white px-6 py-3 rounded-full text-base font-semibold hover:bg-brand-dark transition-colors"
@@ -128,10 +164,32 @@ export function Navbar() {
                 <ShoppingBag className="w-4 h-4" />
                 Place an Order
               </Link>
+              {mounted && !authLoading && (
+                user ? (
+                  <button
+                    onClick={() => { signOut(); setOpen(false); }}
+                    className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-full text-base font-medium text-ink-muted hover:text-ink hover:bg-surface-raised transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign out ({user.displayName ?? user.email})
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => { setAuthOpen(true); setOpen(false); }}
+                    className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-full text-base font-medium text-ink-muted hover:text-ink hover:bg-surface-raised transition-colors cursor-pointer"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    Sign in
+                  </button>
+                )
+              )}
             </div>
           </nav>
         </div>
       )}
+
+      {/* Auth modal */}
+      {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
     </>
   );
 }

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.15] - 2026-05-20
+### Added
+- **Firebase Auth — sign in / create account**: Customers can now sign in or create an account (email + password) via a modal accessible from the Navbar ("Sign in" button). Once signed in their name/email is shown in the nav with a sign-out button.
+- **Dashboard — auto-load orders when signed in**: The My Orders page automatically fetches and displays orders for the logged-in user's email. A "Sign in" prompt is shown below the email search form for guests, and a sign-in CTA is available for one-click access.
+- **Order submission stores userId**: When an authenticated user places a booking, their Firebase Auth `userId` is stored on the order document for future querying.
+
 ## [0.3.14] - 2026-05-20
 ### Changed
 - **Order page — email & phone required for desk and room bookings**: Email and phone are now marked required (red `*`) and validated before submission for Desk booking and Room enquiry order types. Café orders continue to need only a name.
