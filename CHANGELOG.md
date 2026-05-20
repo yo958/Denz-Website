@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.25] - 2026-05-20
+### Fixed
+- **Homepage — Weekly note corrected to "5 days"**: Open 5 days per week, not 7.
+
 ## [0.3.24] - 2026-05-20
 ### Changed
 - **Homepage — headline changed to "From ฿X/day"**: Big headline now uses the day pass rate instead of the hourly Mac Mini rate.

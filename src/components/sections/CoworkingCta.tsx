@@ -18,7 +18,7 @@ const PERKS = [
 // Periods to show on the homepage card, in order (no standalone hourly — not offered)
 const FEATURED_PERIODS: { period: CoworkRatePeriod; label: string; note: string }[] = [
   { period: 'daily',   label: 'Day Pass',  note: 'full day' },
-  { period: 'weekly',  label: 'Weekly',    note: '7 days' },
+  { period: 'weekly',  label: 'Weekly',    note: '5 days' },
   { period: 'monthly', label: 'Monthly',   note: 'calendar month' },
 ];
 
