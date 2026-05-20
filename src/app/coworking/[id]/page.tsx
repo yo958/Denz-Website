@@ -196,7 +196,9 @@ export default function CoworkDetailPage() {
 
   // Reactive min date for the booking modal calendar.
   // Recomputed on every render so Firestore loading after the modal opens is handled.
-  const tomorrowStr = toDateValue(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1));
+  const tomorrowDate = new Date(now);
+  tomorrowDate.setDate(now.getDate() + 1);
+  const tomorrowStr = toDateValue(tomorrowDate);
   const todayStr = toDateValue(now);
   const calendarMin = picker && todayFull && picker.period === 'daily' ? tomorrowStr : (pickerMinDate || todayStr);
 
@@ -248,9 +250,9 @@ export default function CoworkDetailPage() {
   function openPicker() {
     if (!selectedRate || !space) return;
     const today = new Date();
-    const defaultDate = todayFull && period === 'daily'
-      ? toDateValue(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1))
-      : toDateValue(today);
+    const tm = new Date(today);
+    tm.setDate(today.getDate() + 1);
+    const defaultDate = todayFull && period === 'daily' ? toDateValue(tm) : toDateValue(today);
     const walkInRate = (!isWalkInPackage && !isPrivateOffice)
       ? space.rates.find((r) => r.period === period && r.enabled)?.price
       : undefined;

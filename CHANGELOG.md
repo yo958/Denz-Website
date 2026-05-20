@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.13] - 2026-05-20
+### Fixed
+- **Coworking detail page — today still selectable when desk is full (timezone bug)**: `tomorrowStr` was computed using `new Date(y, m, d+1)` which creates midnight local time. Since `toISOString()` returns UTC, in UTC+7 midnight local is the previous day in UTC — so `tomorrowStr` equalled `todayStr` and the calendar treated tomorrow as today. Fixed by using `setDate(d+1)` which preserves the time component so the UTC date string is correct in all timezones.
+
 ## [0.4.12] - 2026-05-20
 ### Fixed
 - **Coworking detail page — today still selectable in modal when desk is full**: The booking modal's calendar minDate was computed once when the modal opened. If Firestore tab data arrived after the modal was already open, the calendar remained stuck on today even when the desk was fully booked. minDate is now computed reactively on every render, and a useEffect corrects the selected date to tomorrow if Firestore later confirms today is full.
