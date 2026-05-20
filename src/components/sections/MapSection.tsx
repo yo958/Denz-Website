@@ -28,8 +28,8 @@ export function MapSection() {
                 <div>
                   <p className="font-semibold text-ink">Address</p>
                   <p className="text-ink-muted text-sm mt-1">
-                    Kathu, Pa Tong<br />
-                    Phuket 83120, Thailand
+                    2/124 Soi Khuanyang, Pa Tong<br />
+                    Kathu District, Phuket 83120, Thailand
                   </p>
                 </div>
               </li>
@@ -62,7 +62,7 @@ export function MapSection() {
             </ul>
 
             <a
-              href="https://maps.google.com/?q=Denz+Coworking+Phuket"
+              href="https://maps.app.goo.gl/DvhWG46V5XLVdurTA"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-8 inline-flex items-center gap-2 bg-ink text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-ink/80 transition-colors"
@@ -75,7 +75,7 @@ export function MapSection() {
           {/* Map embed */}
           <div className="rounded-2xl overflow-hidden shadow-sm border border-ink-faint/20 aspect-[4/3]">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.1!2d98.3167!3d7.9156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwNTQnNTYuMiJOIDk4wrAxOCc1OS45IkU!5e0!3m2!1sen!2sth!4v1234567890"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.3!2d98.31809068833462!3d7.904440952130485!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30502f1b3e7d9c7d%3A0x0!2zN8KwNTQnMTYuMCJOIDk4wrAxOScwNS4xIkU!5e0!3m2!1sen!2sth!4v1700000000000!5m2!1sen!2sth"
               width="100%"
               height="100%"
               style={{ border: 0 }}
