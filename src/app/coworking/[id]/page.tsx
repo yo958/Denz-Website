@@ -201,15 +201,6 @@ export default function CoworkDetailPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromFirestore]);
 
-  // When tabs load and today is full, auto-advance from 'daily' to the next available period
-  // so the book button isn't stuck on "Not available today" on page load.
-  useEffect(() => {
-    if (period === 'daily' && desksAvailable === 0 && bookablePeriods.length > 1) {
-      const next = bookablePeriods.find((p) => p !== 'daily');
-      if (next) setPeriod(next);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [desksAvailable]);
 
   if (loading) {
     return (
@@ -239,15 +230,13 @@ export default function CoworkDetailPage() {
     ? space.rates.filter((r) => r.enabled && r.period !== 'hourly')
     : [];
 
-  // Only block booking when the space is full AND the selected period is daily.
-  // Weekly/monthly periods are always bookable — the booking form defaults to
-  // the next available date. Walk-in packages and private offices follow the same rule.
-  const bookingBlocked = desksAvailable === 0 && period === 'daily';
+  // Today's count is full — the modal will default the calendar to tomorrow for daily bookings.
+  const todayFull = desksAvailable === 0;
 
   function openPicker() {
     if (!selectedRate || !space) return;
     const today = new Date();
-    const defaultDate = desksAvailable === 0 && period === 'daily'
+    const defaultDate = todayFull && period === 'daily'
       ? toDateValue(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1))
       : toDateValue(today);
     const walkInRate = (!isWalkInPackage && !isPrivateOffice)
@@ -420,28 +409,27 @@ export default function CoworkDetailPage() {
                 <div className="flex flex-col gap-1 mb-5">
                   {bookablePeriods.map((p) => {
                     const rate = getRateForPeriod(space, p);
-                    const periodFull = p === 'daily' && desksAvailable === 0;
+                    const dailyFullToday = p === 'daily' && todayFull;
                     return (
                       <button
                         key={p}
-                        onClick={() => !periodFull && setPeriod(p)}
-                        disabled={periodFull}
-                        className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm transition-colors border ${
-                          periodFull
-                            ? 'border-ink-faint/10 text-ink-faint/50 cursor-not-allowed opacity-50'
-                            : period === p
-                              ? 'bg-ink text-white border-ink cursor-pointer'
-                              : 'border-ink-faint/20 text-ink-muted hover:border-ink-faint/40 hover:text-ink cursor-pointer'
+                        onClick={() => setPeriod(p)}
+                        className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm transition-colors border cursor-pointer ${
+                          period === p
+                            ? 'bg-ink text-white border-ink'
+                            : 'border-ink-faint/20 text-ink-muted hover:border-ink-faint/40 hover:text-ink'
                         }`}
                       >
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{PERIOD_LABELS[p]}</span>
-                          {periodFull && (
-                            <span className="text-xs text-amber-600 font-normal">Full today</span>
+                          {dailyFullToday && (
+                            <span className={`text-xs font-normal ${period === p ? 'text-white/60' : 'text-amber-600'}`}>
+                              Today full
+                            </span>
                           )}
                         </div>
                         {rate && (
-                          <span className={`font-bold tabular-nums ${period === p && !periodFull ? 'text-white' : 'text-ink'}`}>
+                          <span className={`font-bold tabular-nums ${period === p ? 'text-white' : 'text-ink'}`}>
                             ฿{rate.price.toLocaleString()}
                           </span>
                         )}
@@ -453,16 +441,16 @@ export default function CoworkDetailPage() {
 
               <button
                 onClick={openPicker}
-                disabled={!selectedRate || bookingBlocked}
+                disabled={!selectedRate}
                 className="w-full flex items-center justify-center gap-2 bg-brand text-white py-3 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {bookingBlocked ? 'Not available today' : 'Book this space'}
+                Book this space
                 <ArrowRight className="w-4 h-4" />
               </button>
 
               <p className="text-xs text-ink-muted text-center mt-4 leading-relaxed">
-                {bookingBlocked && !isPrivateOffice && !isWalkInPackage
-                  ? 'Walk-in full today · choose a weekly or monthly option above'
+                {todayFull && period === 'daily' && !isPrivateOffice
+                  ? 'Today is full · you\'ll pick a date from tomorrow in the next step'
                   : 'Includes café access, gigabit WiFi and printing.'}
               </p>
             </div>

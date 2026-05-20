@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.11] - 2026-05-20
+### Fixed
+- **Coworking detail page — daily bookings blocked for tomorrow when today is full**: The "Per day" period button was disabled and auto-advanced away when today was at capacity, making it impossible to book a daily slot starting tomorrow. The daily button is now always clickable; if today is full the booking modal opens with tomorrow as the earliest selectable date. A "Today full" note appears on the button as informational only, and the hint text below the book button explains the next step.
+
 ## [0.4.10] - 2026-05-20
 ### Changed
 - **Coworking detail page — "Book this space" now opens the booking modal**: Clicking the button on a space detail page now shows the same date-picker modal used on the listing page cards (walk-in vs dedicated desk comparison, calendar, "Continue to book"), instead of navigating directly to the order page.
