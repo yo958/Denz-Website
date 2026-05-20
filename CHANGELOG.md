@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.18] - 2026-05-21
+### Changed
+- **Working days notice — red styling**: The Mon–Fri notice in booking modals (weekly, 2-week, monthly, etc.) is now a red pill with red border and bold red text instead of a muted grey box, making it much harder to miss.
+
 ## [0.4.17] - 2026-05-20
 ### Changed
 - **Coworking house rules updated** with the real Denz rules: Karma, No Outside Food or Drink, Share Equipment Considerately, The Cooling Fans Are for Everyone, Jukebox Etiquette, Don't Feed the Dogs, Maintain a Low-Noise Atmosphere, Keep It Clean, Respect Personal Space, Follow Staff Guidance. Each rule now shows a title + description instead of a single line.

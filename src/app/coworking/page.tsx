@@ -702,7 +702,7 @@ export default function CoworkingPage() {
                       </p>
                     </div>
                     {workingDaysNote(picker.period) && (
-                      <p className="text-xs text-ink-muted bg-surface-muted rounded-xl px-4 py-3 mb-6">
+                      <p className="text-xs font-medium text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-6">
                         📅 {workingDaysNote(picker.period)}
                       </p>
                     )}
@@ -749,7 +749,7 @@ export default function CoworkingPage() {
                       </div>
                     </div>
                     {workingDaysNote(picker.period) && (
-                      <p className="text-xs text-ink-muted bg-surface-muted rounded-xl px-4 py-3 mb-6">
+                      <p className="text-xs font-medium text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3 mb-6">
                         📅 {workingDaysNote(picker.period)}
                       </p>
                     )}
