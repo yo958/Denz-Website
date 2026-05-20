@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
-import type { CoworkSpace, CoworkRatePeriod } from '@/types';
+import type { CoworkSpace, CoworkRatePeriod, Equipment } from '@/types';
 
 const PERKS = [
   '1 Gbps fibre internet',
@@ -24,7 +24,8 @@ const FEATURED_PERIODS: { period: CoworkRatePeriod; label: string; note: string 
 ];
 
 export function CoworkingCta() {
-  const { data: spaces } = useFirestoreSlice<CoworkSpace[]>('spaces', []);
+  const { data: spaces }    = useFirestoreSlice<CoworkSpace[]>('spaces', []);
+  const { data: equipment } = useFirestoreSlice<Equipment[]>('equipment', []);
 
   // For each featured period, find the lowest price across all non-archived desk spaces
   function lowestRate(period: CoworkRatePeriod): number | null {
@@ -37,8 +38,25 @@ export function CoworkingCta() {
     return best;
   }
 
-  // Derive the "from" headline price (hourly)
-  const fromPrice = lowestRate('hourly');
+  // Lowest Mac Mini (or any equipment) tier-1 hourly rate
+  function lowestMacMiniRate(): number | null {
+    let best: number | null = null;
+    for (const equip of equipment) {
+      if (equip.archived) continue;
+      if (!equip.name.toLowerCase().includes('mac')) continue;
+      const tier1 = equip.tiers?.[0]?.price;
+      if (tier1 != null && (best === null || tier1 < best)) best = tier1;
+    }
+    return best;
+  }
+
+  const deskHourly  = lowestRate('hourly');
+  const macRate     = lowestMacMiniRate();
+  // Bundle = cheapest desk + cheapest Mac Mini
+  const bundlePrice = deskHourly != null && macRate != null ? deskHourly + macRate : null;
+
+  // Derive the "from" headline price (hourly desk)
+  const fromPrice = deskHourly;
   const fromLabel = fromPrice != null ? `฿${fromPrice.toLocaleString()}/hr.` : '฿50/hr.';
 
   return (
@@ -93,23 +111,36 @@ export function CoworkingCta() {
             <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-6">
               Quick pricing
             </p>
-            {FEATURED_PERIODS.map((row, i) => {
-              const price = lowestRate(row.period);
-              // Hide rows where no space offers this period
-              if (price === null) return null;
-              return (
+            {(() => {
+              // Build the visible rows: standard periods + Mac Mini bundle after Hourly
+              const rows: { key: string; label: string; note: string; price: number }[] = [];
+              for (const row of FEATURED_PERIODS) {
+                const price = lowestRate(row.period);
+                if (price === null) continue;
+                rows.push({ key: row.period, label: row.label, note: row.note, price });
+                // Insert Mac Mini bundle immediately after the Hourly row
+                if (row.period === 'hourly' && bundlePrice !== null) {
+                  rows.push({
+                    key: 'mac-bundle',
+                    label: 'Desk + Mac Mini',
+                    note: 'per hour, all-in',
+                    price: bundlePrice,
+                  });
+                }
+              }
+              return rows.map((row, i) => (
                 <div
-                  key={row.period}
-                  className={`flex items-center justify-between py-4 ${i < FEATURED_PERIODS.length - 1 ? 'border-b border-white/10' : ''}`}
+                  key={row.key}
+                  className={`flex items-center justify-between py-4 ${i < rows.length - 1 ? 'border-b border-white/10' : ''}`}
                 >
                   <div>
                     <p className="font-semibold text-white">{row.label}</p>
                     <p className="text-xs text-white/40">{row.note}</p>
                   </div>
-                  <p className="text-xl font-bold text-white">฿{price.toLocaleString()}</p>
+                  <p className="text-xl font-bold text-white">฿{row.price.toLocaleString()}</p>
                 </div>
-              );
-            })}
+              ));
+            })()}
             <Link
               href="/coworking"
               className="mt-6 flex items-center justify-center gap-2 border border-white/20 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-white/10 transition-colors w-full"

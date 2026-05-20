@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.21] - 2026-05-20
+### Added
+- **Homepage — Desk + Mac Mini bundle row**: The Quick Pricing card now shows a "Desk + Mac Mini / per hour, all-in" row (฿150) immediately after the base Hourly rate. The price is computed live from Firestore: cheapest enabled hourly desk rate + cheapest Mac Mini equipment tier-1 price.
+
 ## [0.3.20] - 2026-05-20
 ### Changed
 - **Homepage — coworking pricing pulled live from Firestore**: The "Quick Pricing" card in the homepage coworking section now reads rates directly from the POS `spaces` slice instead of using hardcoded values. The lowest enabled rate for each period (hourly, daily, weekly, monthly) across all active spaces is displayed. The "From ฿X/hr" headline also updates automatically. Periods with no matching space rate are hidden rather than showing a stale price.
