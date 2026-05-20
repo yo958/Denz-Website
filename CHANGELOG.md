@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.14] - 2026-05-20
+### Changed
+- **Order page — email & phone required for desk and room bookings**: Email and phone are now marked required (red `*`) and validated before submission for Desk booking and Room enquiry order types. Café orders continue to need only a name.
+
 ## [0.3.13] - 2026-05-20
 ### Fixed
 - **Order page — Firestore write fails with "undefined field value"**: Submitting a booking when any cart item had no note set caused `setDoc()` to throw a FirebaseError because `note: undefined` is not a valid Firestore value. Fixed by converting `undefined` → `null` in both the order item mapping and in `submitWebOrder()` itself (a belt-and-braces sanitiser using a JSON reviver, so all future callers are also protected).

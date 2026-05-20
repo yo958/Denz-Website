@@ -60,6 +60,8 @@ function OrderForm() {
     e.preventDefault();
     if (!name.trim()) { setError('Please enter your name.'); return; }
     if (orderType === 'cafe' && !hasItems) { setError('Please add at least one item.'); return; }
+    if (orderType !== 'cafe' && !email.trim()) { setError('Please enter your email address so we can confirm your booking.'); return; }
+    if (orderType !== 'cafe' && !phone.trim()) { setError('Please enter your phone number so we can confirm your booking.'); return; }
     if (isPrivateOffice && !duration.trim()) { setError('Please enter how long you need the office.'); return; }
     setError('');
     setSubmitting(true);
@@ -282,22 +284,28 @@ function OrderForm() {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-ink mb-1.5">Email</label>
+            <label className="block text-sm font-medium text-ink mb-1.5">
+              Email {orderType !== 'cafe' && <span className="text-brand">*</span>}
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@email.com"
+              required={orderType !== 'cafe'}
               className="w-full bg-white border border-ink-faint/40 rounded-xl px-4 py-3 text-sm text-ink placeholder:text-ink-subtle focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand/50 transition"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-ink mb-1.5">Phone</label>
+            <label className="block text-sm font-medium text-ink mb-1.5">
+              Phone {orderType !== 'cafe' && <span className="text-brand">*</span>}
+            </label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+66 …"
+              required={orderType !== 'cafe'}
               className="w-full bg-white border border-ink-faint/40 rounded-xl px-4 py-3 text-sm text-ink placeholder:text-ink-subtle focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand/50 transition"
             />
           </div>
