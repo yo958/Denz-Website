@@ -200,15 +200,15 @@ export default function CoworkDetailPage() {
   tomorrowDate.setDate(now.getDate() + 1);
   const tomorrowStr = toDateValue(tomorrowDate);
   const todayStr = toDateValue(now);
-  const calendarMin = picker && todayFull && picker.period === 'daily' ? tomorrowStr : (pickerMinDate || todayStr);
+  const calendarMin = picker && todayFull ? tomorrowStr : (pickerMinDate || todayStr);
 
   // Correct pickerDate when todayFull changes after the modal is already open.
   useEffect(() => {
-    if (picker && todayFull && picker.period === 'daily' && pickerDate <= todayStr) {
+    if (picker && todayFull && pickerDate <= todayStr) {
       setPickerDate(tomorrowStr);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [todayFull, picker?.period]);
+  }, [todayFull]);
 
   // Update period to first bookable once Firestore data arrives.
   useEffect(() => {
@@ -252,7 +252,7 @@ export default function CoworkDetailPage() {
     const today = new Date();
     const tm = new Date(today);
     tm.setDate(today.getDate() + 1);
-    const defaultDate = todayFull && period === 'daily' ? toDateValue(tm) : toDateValue(today);
+    const defaultDate = todayFull ? toDateValue(tm) : toDateValue(today);
     const walkInRate = (!isWalkInPackage && !isPrivateOffice)
       ? space.rates.find((r) => r.period === period && r.enabled)?.price
       : undefined;

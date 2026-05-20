@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.14] - 2026-05-20
+### Fixed
+- **Coworking detail page — today blocked for all periods when desk is full**: Previously only the daily period blocked today when the desk was at capacity. Weekly, monthly, and longer periods now also default to tomorrow as the earliest selectable date when today is full.
+
 ## [0.4.13] - 2026-05-20
 ### Fixed
 - **Coworking detail page — today still selectable when desk is full (timezone bug)**: `tomorrowStr` was computed using `new Date(y, m, d+1)` which creates midnight local time. Since `toISOString()` returns UTC, in UTC+7 midnight local is the previous day in UTC — so `tomorrowStr` equalled `todayStr` and the calendar treated tomorrow as today. Fixed by using `setDate(d+1)` which preserves the time component so the UTC date string is correct in all timezones.
