@@ -1,5 +1,6 @@
 import { HeroSection } from '@/components/sections/HeroSection';
 import { FeaturesSection } from '@/components/sections/FeaturesSection';
+import { PhotoStrip } from '@/components/sections/PhotoStrip';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { CoworkingCta } from '@/components/sections/CoworkingCta';
 import { ReviewsSection } from '@/components/sections/ReviewsSection';
@@ -10,6 +11,7 @@ export default function HomePage() {
     <>
       <HeroSection />
       <FeaturesSection />
+      <PhotoStrip />
       <AboutSection />
       <CoworkingCta />
       <ReviewsSection />

@@ -350,8 +350,19 @@ export default function CoworkingPage() {
 
   return (
     <>
+      {/* Hero photo */}
+      <div className="relative h-64 sm:h-80 overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/coworking-evening.jpg"
+          alt="Denz Coworking Cafe open area"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/10 to-white" />
+      </div>
+
       {/* Header */}
-      <div className="pt-24 pb-16 bg-white border-b border-ink-faint/20">
+      <div className="pb-16 bg-white border-b border-ink-faint/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Badge variant="brand">Coworking</Badge>
@@ -366,7 +377,7 @@ export default function CoworkingPage() {
             Flexible workspace<br />in Phuket
           </h1>
           <p className="text-ink-muted text-lg max-w-xl mx-auto">
-            From hourly hot desks to dedicated private offices. Fast internet, great food, and a community of people getting things done.
+            From day passes to dedicated private offices. Fast internet, great food, and a community of people getting things done.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2 mt-10">
             {AMENITIES.map(({ icon: Icon, label }) => (

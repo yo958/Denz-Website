@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.3.28] - 2026-05-20
+### Added
+- **Real Denz photos throughout the website**: Replaced broken placeholder images with actual Denz photos.
+  - **Hero section**: Background now uses the wide Denz coworking open-area photo (sunset light, panoramic windows).
+  - **About section**: Shows a real standup desk photo of a customer working at Denz.
+  - **Features section**: Each of the three feature cards (Coworking, Café, Rooms) now has a real photo — standup desk, Thai green curry, and Honey Moon Suite respectively. Cards redesigned with photo-on-top layout and hover scale effect.
+  - **Photo strip**: New 4-photo gallery grid added between the Features and About sections — coworking evening atmosphere, private office studio, cashew chicken, and Phuket sunset view.
+  - **Coworking section (homepage)**: Private office studio photo added above the pricing text with a "Private office available" badge.
+  - **Coworking page**: Full-width hero photo of the open coworking space at the top of the page.
+  - **Menu page**: Three-panel food photo banner (green curry, cashew chicken, western wrap) at the top of the menu page.
+### Fixed
+- **About section stat**: "From ฿50/hour" corrected to "From ฿200/day".
+- **Features section copy**: "Start from just ฿50/hour" corrected to "Start from just ฿200/day".
+- **Coworking page copy**: "From hourly hot desks" changed to "From day passes" to match actual offering.
+
 ## [0.3.27] - 2026-05-20
 ### Fixed
 - **Homepage — coworking body copy updated**: Changed "for an hour or a private office for a year" to "for a day or a private office for a month" to accurately reflect available packages.

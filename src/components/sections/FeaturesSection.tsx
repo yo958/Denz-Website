@@ -1,45 +1,39 @@
 'use client';
 
 import Link from 'next/link';
-import { Wifi, UtensilsCrossed, BedDouble, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const FEATURES = [
   {
-    icon: Wifi,
     eyebrow: 'Coworking',
     title: 'Your office away from home',
     description:
-      'Gigabit WiFi, standing desks, meeting rooms and flexible packages from hourly to yearly. Start from just ฿50/hour.',
+      'Gigabit WiFi, standing desks, private offices and flexible packages from day passes to monthly. Start from just ฿200/day.',
     href: '/coworking',
     cta: 'View packages',
-    accent: 'bg-blue-50',
-    iconBg: 'bg-blue-100',
-    iconColor: 'text-blue-600',
+    photo: '/images/about-standup.jpg',
+    photoAlt: 'Standup desk at Denz Coworking Cafe',
   },
   {
-    icon: UtensilsCrossed,
     eyebrow: 'Café',
     title: 'Thai & western food, done right',
     description:
       'Freshly cooked Thai classics, western breakfasts, great coffee and fresh smoothies — all day, every day.',
     href: '/menu',
     cta: 'See the menu',
-    accent: 'bg-orange-50',
-    iconBg: 'bg-orange-100',
-    iconColor: 'text-orange-600',
+    photo: '/images/food-green-curry.jpg',
+    photoAlt: 'Thai green curry at Denz Cafe',
   },
   {
-    icon: BedDouble,
     eyebrow: 'Stay',
     title: 'Sleep, work, repeat',
     description:
       'Clean, comfortable rooms right above the café. Wake up, grab a coffee and get straight to work.',
     href: '/rooms',
     cta: 'See rooms',
-    accent: 'bg-green-50',
-    iconBg: 'bg-green-100',
-    iconColor: 'text-green-600',
+    photo: '/images/room-honeymoon.png',
+    photoAlt: 'Honey Moon Suite at Denz',
   },
 ];
 
@@ -67,20 +61,29 @@ export function FeaturesSection() {
           >
             <Link
               href={feat.href}
-              className={`group block rounded-2xl p-8 ${feat.accent} border border-transparent hover:border-ink-faint/30 hover:shadow-md transition-all duration-200 h-full`}
+              className="group block rounded-2xl overflow-hidden border border-ink-faint/20 hover:shadow-lg transition-all duration-200 h-full bg-white"
             >
-              <div className={`inline-flex p-3 rounded-xl ${feat.iconBg} mb-5`}>
-                <feat.icon className={`w-6 h-6 ${feat.iconColor}`} />
+              {/* Photo */}
+              <div className="aspect-[4/3] overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={feat.photo}
+                  alt={feat.photoAlt}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
               </div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-1">
-                {feat.eyebrow}
-              </p>
-              <h3 className="text-xl font-bold text-ink mb-3">{feat.title}</h3>
-              <p className="text-sm text-ink-muted leading-relaxed mb-5">{feat.description}</p>
-              <span className="inline-flex items-center gap-1 text-sm font-semibold text-ink group-hover:gap-2 transition-all">
-                {feat.cta}
-                <ArrowRight className="w-4 h-4" />
-              </span>
+              {/* Text */}
+              <div className="p-6">
+                <p className="text-xs font-semibold uppercase tracking-widest text-brand mb-1">
+                  {feat.eyebrow}
+                </p>
+                <h3 className="text-xl font-bold text-ink mb-3">{feat.title}</h3>
+                <p className="text-sm text-ink-muted leading-relaxed mb-5">{feat.description}</p>
+                <span className="inline-flex items-center gap-1 text-sm font-semibold text-ink group-hover:gap-2 transition-all">
+                  {feat.cta}
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
             </Link>
           </motion.div>
         ))}

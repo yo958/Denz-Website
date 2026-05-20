@@ -66,8 +66,21 @@ export default function MenuPage() {
 
   return (
     <>
+      {/* Food photo banner */}
+      <div className="relative h-56 sm:h-72 overflow-hidden">
+        <div className="grid grid-cols-3 h-full gap-1">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/food-green-curry.jpg" alt="Thai green curry" className="w-full h-full object-cover" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/food-cashew-chicken.jpg" alt="Cashew chicken" className="w-full h-full object-cover" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/food-wrap.jpg" alt="Western food at Denz" className="w-full h-full object-cover" />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent" />
+      </div>
+
       {/* Header */}
-      <div className="pt-24 pb-12 bg-white border-b border-ink-faint/20">
+      <div className="pb-12 bg-white border-b border-ink-faint/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>

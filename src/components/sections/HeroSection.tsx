@@ -17,12 +17,9 @@ export function HeroSection() {
       <div className="absolute inset-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://denzphuket.com/wp-content/uploads/2024/11/denz-coworking-exterior.jpg"
-          alt="Denz Coworking Cafe terrace"
+          src="/images/hero-coworking.jpg"
+          alt="Denz Coworking Cafe open area at sunset"
           className="w-full h-full object-cover"
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = 'none';
-          }}
         />
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/20" />

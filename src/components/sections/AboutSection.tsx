@@ -5,7 +5,7 @@ import { useVenueSettings, getTodayHours } from '@/hooks/useVenueSettings';
 
 const STATS = [
   { value: '1 Gbps', label: 'Fibre internet' },
-  { value: '฿50', label: 'From per hour' },
+  { value: '฿200', label: 'From per day' },
   { value: '10+', label: 'Desk options' },
   { value: '5★', label: 'Avg. review' },
 ];
@@ -29,13 +29,9 @@ export function AboutSection() {
             <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-surface-raised shadow-lg">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://denzphuket.com/wp-content/uploads/2024/11/denz-interior.jpg"
-                alt="Denz interior"
+                src="/images/about-standup.jpg"
+                alt="Working at a standup desk at Denz Coworking Cafe"
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  const el = e.target as HTMLImageElement;
-                  el.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect fill="%23F5F5F3"/></svg>';
-                }}
               />
             </div>
             {/* Floating card */}
