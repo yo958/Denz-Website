@@ -69,7 +69,7 @@ function OrderForm() {
         name: i.name,
         price: i.price,
         qty: i.qty,
-        note: i.note,
+        note: i.note ?? null,
       }));
       const id = await submitWebOrder({
         type: orderType,

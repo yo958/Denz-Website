@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.13] - 2026-05-20
+### Fixed
+- **Order page — Firestore write fails with "undefined field value"**: Submitting a booking when any cart item had no note set caused `setDoc()` to throw a FirebaseError because `note: undefined` is not a valid Firestore value. Fixed by converting `undefined` → `null` in both the order item mapping and in `submitWebOrder()` itself (a belt-and-braces sanitiser using a JSON reviver, so all future callers are also protected).
+
 ## [0.3.12] - 2026-05-19
 ### Fixed
 - **Rooms page — seasonal pricing total**: The estimated total in the night picker now correctly sums each individual night at its applicable season rate, rather than applying the check-in date's rate to all nights. A stay crossing a season boundary (e.g. Oct 31 → Nov 9) now shows the correct split breakdown (e.g. "฿1,200 × 1 night (Low Season) + ฿2,000 × 8 nights (High Season)").

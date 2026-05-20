@@ -52,7 +52,10 @@ export function watchSlice<T>(
 export async function submitWebOrder(order: Record<string, unknown>): Promise<string> {
   const id = `wo_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   const ref = doc(collection(db, 'website-orders'), id);
-  await setDoc(ref, { ...order, id, createdAt: new Date().toISOString() });
+  // Firestore rejects `undefined` values — replace any with null before writing.
+  const sanitised = JSON.parse(JSON.stringify({ ...order, id, createdAt: new Date().toISOString() },
+    (_, v) => v === undefined ? null : v));
+  await setDoc(ref, sanitised);
   return id;
 }
 
