@@ -76,7 +76,7 @@ export function CoworkingCta() {
               <span className="text-white/50">No commitment needed.</span>
             </h2>
             <p className="text-white/60 text-lg leading-relaxed mb-8">
-              Whether you need a desk for an hour or a private office for a year,
+              Whether you need a desk for a day or a private office for a month,
               we have a package that works. Bring your laptop and we&apos;ll handle the rest.
             </p>
 

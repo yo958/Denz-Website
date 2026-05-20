@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.27] - 2026-05-20
+### Fixed
+- **Homepage — coworking body copy updated**: Changed "for an hour or a private office for a year" to "for a day or a private office for a month" to accurately reflect available packages.
+
 ## [0.3.26] - 2026-05-20
 ### Fixed
 - **Homepage — coworking perks updated**: Replaced "Lockers available" with "Backup internet line".
