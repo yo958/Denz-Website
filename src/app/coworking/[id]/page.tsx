@@ -196,6 +196,12 @@ export default function CoworkDetailPage() {
   const capacity = space.capacity ?? 1;
   const desksAvailable = Math.max(0, capacity - activeCount);
 
+  // Booking is blocked when the space is full AND the selected period maps to today
+  // (daily walk-in and walk-in packages) or the space is fully booked for the period
+  // (private office, walk-in packages).
+  const bookingBlocked =
+    desksAvailable === 0 && (isWalkInPackage || isPrivateOffice || period === 'daily');
+
   function book() {
     if (!selectedRate) return;
     router.push(
@@ -340,19 +346,28 @@ export default function CoworkDetailPage() {
                 <div className="flex flex-col gap-1 mb-5">
                   {bookablePeriods.map((p) => {
                     const rate = getRateForPeriod(space, p);
+                    const periodFull = p === 'daily' && desksAvailable === 0;
                     return (
                       <button
                         key={p}
-                        onClick={() => setPeriod(p)}
-                        className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm transition-colors cursor-pointer border ${
-                          period === p
-                            ? 'bg-ink text-white border-ink'
-                            : 'border-ink-faint/20 text-ink-muted hover:border-ink-faint/40 hover:text-ink'
+                        onClick={() => !periodFull && setPeriod(p)}
+                        disabled={periodFull}
+                        className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm transition-colors border ${
+                          periodFull
+                            ? 'border-ink-faint/10 text-ink-faint/50 cursor-not-allowed opacity-50'
+                            : period === p
+                              ? 'bg-ink text-white border-ink cursor-pointer'
+                              : 'border-ink-faint/20 text-ink-muted hover:border-ink-faint/40 hover:text-ink cursor-pointer'
                         }`}
                       >
-                        <span className="font-medium">{PERIOD_LABELS[p]}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{PERIOD_LABELS[p]}</span>
+                          {periodFull && (
+                            <span className="text-xs text-amber-600 font-normal">Full today</span>
+                          )}
+                        </div>
                         {rate && (
-                          <span className={`font-bold tabular-nums ${period === p ? 'text-white' : 'text-ink'}`}>
+                          <span className={`font-bold tabular-nums ${period === p && !periodFull ? 'text-white' : 'text-ink'}`}>
                             ฿{rate.price.toLocaleString()}
                           </span>
                         )}
@@ -364,15 +379,17 @@ export default function CoworkDetailPage() {
 
               <button
                 onClick={book}
-                disabled={!selectedRate}
+                disabled={!selectedRate || bookingBlocked}
                 className="w-full flex items-center justify-center gap-2 bg-brand text-white py-3 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Book this space
+                {bookingBlocked ? 'Not available today' : 'Book this space'}
                 <ArrowRight className="w-4 h-4" />
               </button>
 
               <p className="text-xs text-ink-muted text-center mt-4 leading-relaxed">
-                Includes café access, gigabit WiFi and printing.
+                {bookingBlocked && !isPrivateOffice && !isWalkInPackage
+                  ? 'Walk-in full today · choose a weekly or monthly option above'
+                  : 'Includes café access, gigabit WiFi and printing.'}
               </p>
             </div>
           </div>

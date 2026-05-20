@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.4] - 2026-05-20
+### Fixed
+- **Desk detail page — booking blocked when full**: When the desk is currently occupied, the "Per day" period button is disabled ("Full today" label) and the book button changes to "Not available today" with a note to choose a weekly or monthly option. Weekly/monthly periods remain bookable as advance reservations.
+
 ## [0.4.3] - 2026-05-20
 ### Fixed
 - **Desk detail page — availability counting**: Paid daily desk tabs where `openedAt` is today now correctly count as occupied (matching POS coworking board logic). Previously only `open`-status tabs were counted, causing prepaid customers to not register as taking the spot.
