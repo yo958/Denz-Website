@@ -199,7 +199,18 @@ export default function CoworkDetailPage() {
           <div className="lg:col-span-1">
             <div className="sticky top-28 bg-white rounded-2xl border border-ink-faint/20 shadow-sm p-6">
 
-              {/* Period toggle */}
+              {/* Prominent price for selected period */}
+              {selectedRate && (
+                <div className="mb-5">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-sm text-ink-muted mr-0.5">from</span>
+                    <span className="text-3xl font-bold text-ink">฿{selectedRate.price.toLocaleString()}</span>
+                    <span className="text-sm text-ink-muted ml-1">/ {PERIOD_LABELS[period]?.toLowerCase()}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Period selector */}
               {availablePeriods.length > 1 && (
                 <div className="flex flex-col gap-1 mb-5">
                   {availablePeriods.map((p) => {
@@ -223,16 +234,6 @@ export default function CoworkDetailPage() {
                       </button>
                     );
                   })}
-                </div>
-              )}
-
-              {/* Price display (single period) */}
-              {availablePeriods.length === 1 && selectedRate && (
-                <div className="mb-5">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-bold text-ink">฿{selectedRate.price.toLocaleString()}</span>
-                    <span className="text-sm text-ink-muted ml-1">/ {PERIOD_LABELS[period]?.toLowerCase()}</span>
-                  </div>
                 </div>
               )}
 
