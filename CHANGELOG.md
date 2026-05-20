@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.1] - 2026-05-20
+### Changed
+- **Desk detail page — booking card**: Walk-in rates (from `space.rates`) are now shown above the dedicated rates as informational only ("Walk-in rate · Drop in anytime") and cannot be selected for booking. Only dedicated desk rates (`space.dedicatedRates`) appear in the period selector and route to the order form. Exception: spaces named "Hot Desk" or "No Desk" remain fully bookable with all rates selectable.
+
 ## [0.4.0] - 2026-05-20
 ### Added
 - **Desk detail pages**: New `/coworking/[id]` route showing individual desk package pages with name, description, amenity pills, features list, rich long description (from POS), and a sticky booking card with period selector.

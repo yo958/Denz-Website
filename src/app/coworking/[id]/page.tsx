@@ -80,16 +80,26 @@ export default function CoworkDetailPage() {
   const displaySpaces = spaces.length > 0 ? spaces : FALLBACK_SPACES;
   const space = displaySpaces.find((s) => s.id === id && !s.archived);
 
-  // Guard against undefined space before Firestore loads
-  const availablePeriods = space
-    ? PERIOD_ORDER.filter((p) => getRateForPeriod(space, p) !== undefined)
+  // "Hot Desk" and "No Desk" packages are walk-in only — all their rates are bookable directly
+  const isWalkInPackage = space
+    ? space.name.toLowerCase().includes('hot') || space.name.toLowerCase().includes('no desk')
+    : false;
+
+  // Periods available to book: for regular desks, only dedicated rates; for walk-in packages and private offices, all rates
+  const bookablePeriods = space
+    ? (isWalkInPackage || space.type === 'private-office')
+      ? PERIOD_ORDER.filter((p) => getRateForPeriod(space, p) !== undefined)
+      : PERIOD_ORDER.filter(
+          (p) => p !== 'hourly' && (space.dedicatedRates ?? []).some((r) => r.period === p && r.enabled),
+        )
     : [];
+
   const [period, setPeriod] = useState<CoworkRatePeriod>('daily');
 
-  // Update period to first available once Firestore data arrives
+  // Update period to first bookable once Firestore data arrives
   useEffect(() => {
-    if (fromFirestore && availablePeriods.length > 0) {
-      setPeriod(availablePeriods[0]);
+    if (fromFirestore && bookablePeriods.length > 0) {
+      setPeriod(bookablePeriods[0]);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromFirestore]);
@@ -116,6 +126,11 @@ export default function CoworkDetailPage() {
   const selectedRate = getRateForPeriod(space, period);
   const features = SPACE_FEATURES[space.type] ?? SPACE_FEATURES['desk'];
   const isPrivateOffice = space.type === 'private-office';
+
+  // Walk-in rates shown as informational only (non-hourly rates from space.rates, for regular desks)
+  const walkInInfoRates = (!isWalkInPackage && !isPrivateOffice)
+    ? space.rates.filter((r) => r.enabled && r.period !== 'hourly')
+    : [];
 
   function book() {
     if (!selectedRate) return;
@@ -199,21 +214,37 @@ export default function CoworkDetailPage() {
           <div className="lg:col-span-1">
             <div className="sticky top-28 bg-white rounded-2xl border border-ink-faint/20 shadow-sm p-6">
 
-              {/* Prominent price for selected period */}
+              {/* Walk-in info (regular desks only — not bookable, just informational) */}
+              {walkInInfoRates.length > 0 && (
+                <div className="mb-5 pb-5 border-b border-ink-faint/20">
+                  <p className="text-xs font-medium text-ink-muted uppercase tracking-wide mb-2.5">Walk-in rate</p>
+                  {walkInInfoRates.map((r) => (
+                    <div key={r.period} className="flex items-center justify-between text-sm mb-1">
+                      <span className="text-ink-muted">{PERIOD_LABELS[r.period]}</span>
+                      <span className="font-bold text-ink tabular-nums">฿{r.price.toLocaleString()}</span>
+                    </div>
+                  ))}
+                  <p className="text-xs text-ink-muted mt-2">Drop in anytime · no advance booking needed</p>
+                </div>
+              )}
+
+              {/* Prominent price for selected bookable period */}
               {selectedRate && (
                 <div className="mb-5">
+                  <p className="text-xs font-medium text-ink-muted uppercase tracking-wide mb-1.5">
+                    {walkInInfoRates.length > 0 ? 'Dedicated desk' : 'From'}
+                  </p>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-sm text-ink-muted mr-0.5">from</span>
                     <span className="text-3xl font-bold text-ink">฿{selectedRate.price.toLocaleString()}</span>
                     <span className="text-sm text-ink-muted ml-1">/ {PERIOD_LABELS[period]?.toLowerCase()}</span>
                   </div>
                 </div>
               )}
 
-              {/* Period selector */}
-              {availablePeriods.length > 1 && (
+              {/* Bookable period selector */}
+              {bookablePeriods.length > 1 && (
                 <div className="flex flex-col gap-1 mb-5">
-                  {availablePeriods.map((p) => {
+                  {bookablePeriods.map((p) => {
                     const rate = getRateForPeriod(space, p);
                     return (
                       <button
