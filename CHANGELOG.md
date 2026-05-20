@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.20] - 2026-05-20
+### Changed
+- **Homepage — coworking pricing pulled live from Firestore**: The "Quick Pricing" card in the homepage coworking section now reads rates directly from the POS `spaces` slice instead of using hardcoded values. The lowest enabled rate for each period (hourly, daily, weekly, monthly) across all active spaces is displayed. The "From ฿X/hr" headline also updates automatically. Periods with no matching space rate are hidden rather than showing a stale price.
+
 ## [0.3.19] - 2026-05-20
 ### Fixed
 - **Room detail page — picker ignored seasonal pricing**: The estimated total in the night picker was calculated as `baseRate × nights` (flat) instead of summing per-night rates. Stays that span season boundaries now show a correct per-segment breakdown (e.g. "฿1,200 × 3 nights (Low Season) + ฿1,800 × 7 nights (High Season)"). The total passed to the order URL is also corrected.
