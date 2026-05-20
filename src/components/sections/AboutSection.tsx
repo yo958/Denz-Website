@@ -29,8 +29,8 @@ export function AboutSection() {
             <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-surface-raised shadow-lg">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/about-standup.jpg"
-                alt="Working at a standup desk at Denz Coworking Cafe"
+                src="/images/about-coworking.jpg"
+                alt="Denz Coworking Cafe open area at sunset"
                 className="w-full h-full object-cover"
               />
             </div>
