@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.24] - 2026-05-20
+### Changed
+- **Homepage — headline changed to "From ฿X/day"**: Big headline now uses the day pass rate instead of the hourly Mac Mini rate.
+- **Homepage — pricing card shows "from" prefix on every row**: Each price now reads "from ฿X" to make clear these are starting prices.
+
 ## [0.3.23] - 2026-05-20
 ### Fixed
 - **Homepage — removed ฿50/hr standalone desk row**: Hourly desk-only is not an offered package. The Hourly row is removed from the Quick Pricing card. The "From X/hr" headline and the first card row now both use the Mac Mini rate (฿150) as the real entry-level hourly option.

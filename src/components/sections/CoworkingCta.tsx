@@ -53,8 +53,9 @@ export function CoworkingCta() {
   // Mac Mini rental includes desk access — bundle price is just the Mac Mini rate
   const bundlePrice = macRate;
 
-  // "From" headline uses the Mac Mini rate — the actual entry hourly option
-  const fromLabel = macRate != null ? `฿${macRate.toLocaleString()}/hr.` : '฿150/hr.';
+  // "From" headline uses the day pass rate
+  const dayRate   = lowestRate('daily');
+  const fromLabel = dayRate != null ? `฿${dayRate.toLocaleString()}/day.` : '฿200/day.';
 
   return (
     <section className="py-24 bg-ink overflow-hidden">
@@ -133,7 +134,7 @@ export function CoworkingCta() {
                     <p className="font-semibold text-white">{row.label}</p>
                     <p className="text-xs text-white/40">{row.note}</p>
                   </div>
-                  <p className="text-xl font-bold text-white">฿{row.price.toLocaleString()}</p>
+                  <p className="text-xl font-bold text-white"><span className="text-sm font-normal text-white/40 mr-1">from</span>฿{row.price.toLocaleString()}</p>
                 </div>
               ));
             })()}
