@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.19] - 2026-05-21
+### Fixed
+- **Booking calendar — yesterday selectable in UTC+7 timezone**: `toDateValue()` used `toISOString().slice(0, 10)` which returns the UTC date. In Thailand (UTC+7), before 7 AM local time this gives yesterday's date, making yesterday's date bookable. Fixed by using local `getFullYear()`/`getMonth()`/`getDate()` across all three coworking booking pages (listing, detail, equipment detail) — matching the approach already used by the Calendar component itself.
+
 ## [0.4.18] - 2026-05-21
 ### Changed
 - **Working days notice — red styling**: The Mon–Fri notice in booking modals (weekly, 2-week, monthly, etc.) is now a red pill with red border and bold red text instead of a muted grey box, making it much harder to miss.
