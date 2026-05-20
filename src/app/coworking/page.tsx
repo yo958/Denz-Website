@@ -145,6 +145,17 @@ function hasDailyDeskItem(t: BookingTab): boolean {
   return t.items.some(i => i.product.category === 'desks' && i.product.name.endsWith(` — ${PERIOD_LABEL_SUFFIX['daily']}`));
 }
 
+// Infer the booking's own period from the desk item product name (e.g. "… — Weekly" → 'weekly').
+function inferDeskBookingPeriod(t: BookingTab): CoworkRatePeriod | null {
+  for (const item of t.items) {
+    if (item.product.category !== 'desks') continue;
+    for (const [p, label] of Object.entries(PERIOD_LABEL_SUFFIX) as [CoworkRatePeriod, string][]) {
+      if (item.product.name.endsWith(` — ${label}`)) return p;
+    }
+  }
+  return null;
+}
+
 const SHORT_TERM_PERIODS = new Set<CoworkRatePeriod>(['hourly', 'daily']);
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -168,10 +179,14 @@ function countActiveForSpace(
     const openedDate = t.openedAt ? new Date(t.openedAt as string) : null;
     const isDaily = hasDailyDeskItem(t);
 
-    // For weekly/monthly/longer views, only count bookings that actually span multiple days.
-    // Skip anything hourly/daily, anything with no end time, or anything ending within 24h.
+    // For weekly/monthly/longer views, only count bookings of equal or longer duration.
+    // A weekly booking must not mark the monthly tab as full — the space is free next month.
     if (isMultiDay) {
       if (endsMs === null || endsMs <= nowMs + ONE_DAY_MS) continue;
+      const bookingPeriod = inferDeskBookingPeriod(t);
+      if (bookingPeriod !== null) {
+        if (PERIOD_ORDER.indexOf(bookingPeriod) < PERIOD_ORDER.indexOf(period)) continue;
+      }
     }
 
     const isOpenAndActive = t.status === 'open' && (() => {

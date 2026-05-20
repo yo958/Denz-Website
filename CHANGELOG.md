@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.7] - 2026-05-20
+### Fixed
+- **Coworking listing — weekly booking no longer marks monthly/longer tabs as "Full"**: A space with an active weekly booking now correctly shows as available on the weekly, monthly, and longer-period tabs. The fix infers each booking's own period from the desk product name (e.g. "… — Weekly") and only counts it on tabs of equal or longer duration. A weekly booking blocking today's daily slot does not block a future monthly reservation.
+
 ## [0.4.6] - 2026-05-20
 ### Changed
 - **Coworking availability badges — "N of M spots available" format**: Both the detail page (`/coworking/[id]`) and the listing card grid now show the full "X of Y spots available" label instead of "X available" or "X spots free".
