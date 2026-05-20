@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.10] - 2026-05-20
+### Changed
+- **Coworking detail page — "Book this space" now opens the booking modal**: Clicking the button on a space detail page now shows the same date-picker modal used on the listing page cards (walk-in vs dedicated desk comparison, calendar, "Continue to book"), instead of navigating directly to the order page.
+
 ## [0.4.9] - 2026-05-20
 ### Fixed
 - **Coworking detail page — "Not available today" shown even on weekly/monthly periods**: The book button now only shows "Not available today" when the desk is full AND the selected period is daily. Weekly/monthly periods always go to the order form (which defaults to the next available date).

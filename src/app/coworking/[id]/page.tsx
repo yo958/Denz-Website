@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
-  Wifi, Coffee, Printer, Lock, Users, Zap, ArrowRight, Loader2, ChevronLeft, Monitor,
+  Wifi, Coffee, Printer, Lock, Users, Zap, ArrowRight, Loader2, ChevronLeft, Monitor, X,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
+import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
 import type { CoworkSpace, CoworkRatePeriod, CoworkSpaceRate } from '@/types';
 
@@ -63,6 +64,34 @@ function isTabActiveForSpace(t: DeskTab, spaceName: string, spaceId: string, now
     return item.product.category === 'desks' && pid && (pid === spaceId || pid.startsWith(spaceId + '-'));
   })) return true;
   return false;
+}
+
+type PickerItem = {
+  kind: 'desk';
+  id: string;
+  name: string;
+  bookingRate: number;
+  walkInRate?: number;
+  period: CoworkRatePeriod;
+  spaceType: string;
+  hotDeskOnly?: boolean;
+};
+
+function toDateValue(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+
+function workingDaysNote(period: CoworkRatePeriod): string | null {
+  switch (period) {
+    case 'weekly':    return 'We\'re open Mon – Fri only. A weekly pass covers 5 working days.';
+    case '2-weeks':   return 'We\'re open Mon – Fri only. A 2-week pass covers 10 working days.';
+    case 'monthly':   return 'We\'re open Mon – Fri only. A monthly pass covers all working days in that month.';
+    case '3-months':  return 'We\'re open Mon – Fri only. This pass covers all working days across 3 months.';
+    case '6-months':  return 'We\'re open Mon – Fri only. This pass covers all working days across 6 months.';
+    case 'yearly':    return 'We\'re open Mon – Fri only. An annual pass covers all working days in the year.';
+    default:          return null;
+  }
 }
 
 const PERIOD_LABELS: Partial<Record<CoworkRatePeriod, string>> = {
@@ -151,6 +180,9 @@ export default function CoworkDetailPage() {
     : [];
 
   const [period, setPeriod] = useState<CoworkRatePeriod>('daily');
+  const [picker, setPicker] = useState<PickerItem | null>(null);
+  const [pickerDate, setPickerDate] = useState('');
+  const [pickerMinDate, setPickerMinDate] = useState('');
 
   // Count active bookings — computed before early returns so hooks stay unconditional.
   // Uses null-safe access because `space` may be undefined before Firestore resolves.
@@ -212,11 +244,43 @@ export default function CoworkDetailPage() {
   // the next available date. Walk-in packages and private offices follow the same rule.
   const bookingBlocked = desksAvailable === 0 && period === 'daily';
 
-  function book() {
-    if (!selectedRate) return;
+  function openPicker() {
+    if (!selectedRate || !space) return;
+    const today = new Date();
+    const defaultDate = desksAvailable === 0 && period === 'daily'
+      ? toDateValue(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1))
+      : toDateValue(today);
+    const walkInRate = (!isWalkInPackage && !isPrivateOffice)
+      ? space.rates.find((r) => r.period === period && r.enabled)?.price
+      : undefined;
+    setPicker({
+      kind: 'desk',
+      id: space.id,
+      name: space.name,
+      bookingRate: selectedRate.price,
+      walkInRate,
+      period,
+      spaceType: space.type,
+      hotDeskOnly: isWalkInPackage,
+    });
+    setPickerDate(defaultDate);
+    setPickerMinDate(defaultDate);
+  }
+
+  function confirmPicker() {
+    if (!picker) return;
+    let dateParam = pickerDate || toDateValue(new Date());
+    const chosen = new Date(dateParam + 'T12:00:00');
+    const dow = chosen.getDay();
+    if (dow === 0 || dow === 6) {
+      const next = new Date(chosen);
+      next.setDate(next.getDate() + (dow === 6 ? 2 : 1));
+      dateParam = toDateValue(next);
+    }
     router.push(
-      `/order?type=coworking&space=${space!.id}&period=${period}&spaceType=${space!.type}&estimatedTotal=${selectedRate.price}`
+      `/order?type=coworking&space=${picker.id}&period=${picker.period}&spaceType=${picker.spaceType}&estimatedTotal=${picker.bookingRate}&bookingDate=${dateParam}`
     );
+    setPicker(null);
   }
 
   return (
@@ -388,7 +452,7 @@ export default function CoworkDetailPage() {
               )}
 
               <button
-                onClick={book}
+                onClick={openPicker}
                 disabled={!selectedRate || bookingBlocked}
                 className="w-full flex items-center justify-center gap-2 bg-brand text-white py-3 rounded-full text-sm font-semibold hover:bg-brand-dark transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -406,6 +470,104 @@ export default function CoworkDetailPage() {
 
         </div>
       </div>
+
+      {/* Booking modal */}
+      {picker && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md"
+          onClick={(e) => { if (e.target === e.currentTarget) setPicker(null); }}
+        >
+          <div className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl shadow-2xl w-full max-w-lg p-8 overflow-y-auto max-h-[95vh]">
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-bold text-ink">{picker.name}</h3>
+                <p className="text-sm text-ink-muted mt-0.5">
+                  {picker.hotDeskOnly
+                    ? 'Walk-in hot desk pricing'
+                    : picker.spaceType === 'private-office'
+                    ? 'Book your private office'
+                    : 'Choose how you want to use this desk'}
+                </p>
+              </div>
+              <button onClick={() => setPicker(null)} className="text-ink-muted hover:text-ink transition-colors -mt-1 -mr-1 p-1">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {picker.hotDeskOnly ? (
+              <>
+                <div className="rounded-xl border border-ink-faint/30 bg-surface-muted p-5 mb-6">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-ink-muted mb-3">Walk-in Hot Desk</p>
+                  <p className="text-3xl font-bold text-ink">฿{picker.bookingRate.toLocaleString()}</p>
+                  <p className="text-xs text-ink-muted mt-0.5">/ {PERIOD_LABELS[picker.period]?.toLowerCase()}</p>
+                  <p className="text-sm text-ink-muted mt-4 leading-relaxed">
+                    First come, first served — no desk is reserved. When you leave the premises you must take your belongings with you, and your desk may change when you return. Perfect for flexible short-stay working.
+                  </p>
+                </div>
+                {workingDaysNote(picker.period) && (
+                  <p className="text-xs text-ink-muted bg-surface-muted rounded-xl px-4 py-3 mb-6">
+                    📅 {workingDaysNote(picker.period)}
+                  </p>
+                )}
+                <div className="mb-6">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
+                    Start date{pickerDate && <span className="normal-case font-normal ml-1.5 text-ink">— {formatBookingDate(pickerDate)}</span>}
+                  </p>
+                  <Calendar value={pickerDate} minDate={pickerMinDate || toDateValue(new Date())} onChange={setPickerDate} disableWeekends />
+                  <p className="text-xs text-ink-muted mt-2">Select today to arrive now, or a future date to reserve your spot.</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={`grid gap-3 mb-6 ${picker.walkInRate ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                  {picker.walkInRate && (
+                    <div className="rounded-xl border border-ink-faint/30 bg-surface-muted p-4">
+                      <p className="text-[10px] font-semibold uppercase tracking-widest text-ink-muted mb-3">Walk-in Hot Desk</p>
+                      <p className="text-2xl font-bold text-ink">฿{picker.walkInRate.toLocaleString()}</p>
+                      <p className="text-xs text-ink-muted mt-0.5">/ {PERIOD_LABELS[picker.period]?.toLowerCase()}</p>
+                      <p className="text-xs text-ink-muted mt-3 leading-relaxed">First come, first served. Please note — you cannot leave your belongings at the desk when you leave the premises, and your desk may change when you return.</p>
+                    </div>
+                  )}
+                  <div className="rounded-xl border border-ink bg-ink p-4">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest text-white/50 mb-3">
+                      {picker.spaceType === 'private-office' ? 'Dedicated Office' : 'Dedicated Desk'}
+                    </p>
+                    <p className="text-2xl font-bold text-white">฿{picker.bookingRate.toLocaleString()}</p>
+                    <p className="text-xs text-white/50 mt-0.5">/ {PERIOD_LABELS[picker.period]?.toLowerCase()}</p>
+                    <p className="text-xs text-white/50 mt-3 leading-relaxed">
+                      {picker.spaceType === 'private-office'
+                        ? 'Your own private office for the full period — locked, yours alone. Leave your belongings, set up your space, come and go as you please.'
+                        : 'This desk is yours for the full opening hours — reserved just for you. Leave your belongings, rearrange things, make yourself at home. No one else will sit here.'}
+                    </p>
+                  </div>
+                </div>
+                {workingDaysNote(picker.period) && (
+                  <p className="text-xs text-ink-muted bg-surface-muted rounded-xl px-4 py-3 mb-6">
+                    📅 {workingDaysNote(picker.period)}
+                  </p>
+                )}
+                <div className="mb-6">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
+                    Start date{pickerDate && <span className="normal-case font-normal ml-1.5 text-ink">— {formatBookingDate(pickerDate)}</span>}
+                  </p>
+                  <Calendar value={pickerDate} minDate={pickerMinDate || toDateValue(new Date())} onChange={setPickerDate} disableWeekends />
+                  <p className="text-xs text-ink-muted mt-2">Select today to arrive now, or a future date to reserve your spot.</p>
+                </div>
+              </>
+            )}
+
+            <div className="flex gap-3">
+              <button onClick={() => setPicker(null)} className="flex-1 py-3 rounded-full text-sm font-medium border border-ink-faint/30 text-ink-muted hover:text-ink hover:border-ink-faint/60 transition-colors">
+                Cancel
+              </button>
+              <button onClick={confirmPicker} className="flex-1 py-3 rounded-full text-sm font-semibold bg-brand text-white hover:bg-brand-dark transition-colors flex items-center justify-center gap-2">
+                Continue to book
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
