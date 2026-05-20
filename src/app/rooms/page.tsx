@@ -116,7 +116,13 @@ export default function RoomsPage() {
   const displayRooms = rooms.length > 0 ? rooms : FALLBACK_ROOMS;
 
   function getActiveStay(roomId: string): Stay | undefined {
-    return stays.find(s => s.status === 'active' && s.roomId === roomId);
+    return stays.find(s => {
+      if (s.status !== 'active' || s.roomId !== roomId) return false;
+      // Only treat the stay as "currently occupied" if check-in is today or in the past.
+      // Future bookings (check-in date > today) should not block the room.
+      const checkIn = toDateValue(new Date(s.checkInAt));
+      return checkIn <= todayStr;
+    });
   }
 
   function stayCheckOutStr(stay: Stay): string {

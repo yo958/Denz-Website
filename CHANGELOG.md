@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.18] - 2026-05-20
+### Fixed
+- **Rooms page — future bookings incorrectly showing as "Occupied"**: A stay with `status: 'active'` whose check-in date is still in the future was causing the room card to display the amber "Occupied until…" badge today. `getActiveStay` now only flags a room as occupied when the check-in date is today or earlier.
+
 ## [0.3.17] - 2026-05-20
 ### Changed
 - **Navbar — hide "My Orders" when not signed in**: The My Orders link only appears in the nav (desktop and mobile) once the user is authenticated. Guests see no link to the dashboard until they sign in.
