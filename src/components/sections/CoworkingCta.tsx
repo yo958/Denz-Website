@@ -52,8 +52,8 @@ export function CoworkingCta() {
 
   const deskHourly  = lowestRate('hourly');
   const macRate     = lowestMacMiniRate();
-  // Bundle = cheapest desk + cheapest Mac Mini
-  const bundlePrice = deskHourly != null && macRate != null ? deskHourly + macRate : null;
+  // Mac Mini rental includes desk access — bundle price is just the Mac Mini rate
+  const bundlePrice = macRate;
 
   // Derive the "from" headline price (hourly desk)
   const fromPrice = deskHourly;
@@ -123,7 +123,7 @@ export function CoworkingCta() {
                   rows.push({
                     key: 'mac-bundle',
                     label: 'Desk + Mac Mini',
-                    note: 'per hour, all-in',
+                    note: 'per hour · desk included',
                     price: bundlePrice,
                   });
                 }

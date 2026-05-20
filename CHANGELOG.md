@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.22] - 2026-05-20
+### Fixed
+- **Homepage — Desk + Mac Mini price**: Mac Mini rental includes desk access, so bundle price is the Mac Mini rate alone (฿150), not desk + Mac Mini added together. Note updated to "per hour · desk included".
+
 ## [0.3.21] - 2026-05-20
 ### Added
 - **Homepage — Desk + Mac Mini bundle row**: The Quick Pricing card now shows a "Desk + Mac Mini / per hour, all-in" row (฿150) immediately after the base Hourly rate. The price is computed live from Firestore: cheapest enabled hourly desk rate + cheapest Mac Mini equipment tier-1 price.
