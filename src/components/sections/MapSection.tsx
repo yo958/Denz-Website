@@ -75,7 +75,7 @@ export function MapSection() {
           {/* Map embed */}
           <div className="rounded-2xl overflow-hidden shadow-sm border border-ink-faint/20 aspect-[4/3]">
             <iframe
-              src="https://maps.google.com/maps?q=place_id:ChIJzZJhnDIxUDARqO7zLdaDb5k&output=embed"
+              src="https://maps.google.com/maps?q=7.904440952130485,98.31809068833462&z=17&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}
