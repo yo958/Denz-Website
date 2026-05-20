@@ -75,7 +75,7 @@ export function MapSection() {
           {/* Map embed */}
           <div className="rounded-2xl overflow-hidden shadow-sm border border-ink-faint/20 aspect-[4/3]">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.3!2d98.31809068833462!3d7.904440952130485!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30502f1b3e7d9c7d%3A0x0!2zN8KwNTQnMTYuMCJOIDk4wrAxOScwNS4xIkU!5e0!3m2!1sen!2sth!4v1700000000000!5m2!1sen!2sth"
+              src="https://maps.google.com/maps?q=place_id:ChIJzZJhnDIxUDARqO7zLdaDb5k&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}
