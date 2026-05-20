@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.6] - 2026-05-20
+### Changed
+- **Coworking availability badges — "N of M spots available" format**: Both the detail page (`/coworking/[id]`) and the listing card grid now show the full "X of Y spots available" label instead of "X available" or "X spots free".
+- **Coworking listing cards — green availability badge**: The availability pill is now green (`bg-green-50 text-green-700`) on white cards when spots remain, matching the detail page colour. Dark/highlighted and private-office cards use appropriately tinted green variants.
+
 ## [0.4.5] - 2026-05-20
 ### Fixed
 - **Coworking listing page — multi-desk tab availability**: A single tab covering two desk spaces (e.g. two customers booking "Standup Desk + 27\"" and "Desk + Dual 24\"" together) now correctly marks both spaces as occupied on the `/coworking` card grid. Previously only the tab's primary label space was counted; all desk items in the tab are now scanned.

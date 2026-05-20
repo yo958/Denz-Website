@@ -480,10 +480,10 @@ export default function CoworkingPage() {
                           isFull
                             ? 'bg-red-100 text-red-600'
                             : isPrivateOffice
-                            ? 'bg-white/15 text-white/80'
+                            ? 'bg-green-400/20 text-green-200'
                             : isHighlighted
-                            ? 'bg-white/10 text-white/70'
-                            : 'bg-surface-raised text-ink-muted'
+                            ? 'bg-green-500/20 text-green-300'
+                            : 'bg-green-50 text-green-700'
                         }`}>
                           {isFull ? 'Full' : `${available} of ${slots} ${slots === 1 ? 'spot' : 'spots'} available`}
                         </span>

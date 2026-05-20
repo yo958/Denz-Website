@@ -295,7 +295,7 @@ export default function CoworkDetailPage() {
                         : 'bg-amber-50 text-amber-700'
                     }`}>
                       {desksAvailable > 0
-                        ? `${desksAvailable} spot${desksAvailable > 1 ? 's' : ''} free`
+                        ? `${desksAvailable} of ${capacity} spot${capacity === 1 ? '' : 's'} available`
                         : 'Currently occupied'}
                     </span>
                   </div>
@@ -322,7 +322,7 @@ export default function CoworkDetailPage() {
                       : 'bg-amber-50 text-amber-700'
                   }`}>
                     {desksAvailable > 0
-                      ? `${desksAvailable} available`
+                      ? `${desksAvailable} of ${capacity} spot${capacity === 1 ? '' : 's'} available`
                       : 'Currently occupied'}
                   </span>
                 </div>
