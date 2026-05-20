@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.26] - 2026-05-20
+### Fixed
+- **Homepage — coworking perks updated**: Replaced "Lockers available" with "Backup internet line".
+
 ## [0.3.25] - 2026-05-20
 ### Fixed
 - **Homepage — Weekly note corrected to "5 days"**: Open 5 days per week, not 7.

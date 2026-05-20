@@ -11,7 +11,7 @@ const PERKS = [
   'Unlimited coffee & tea',
   'Standing & sit desks',
   'Printing included',
-  'Lockers available',
+  'Backup internet line',
   'Community events',
 ];
 
