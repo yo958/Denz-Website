@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.2] - 2026-05-20
+### Added
+- **Desk detail page — live availability**: Booking card now reads the POS `tabs` Firestore slice and counts active bookings to show real-time desk availability. Walk-in section shows a green "X spots free" or amber "Currently occupied" badge. Message updates to "Walk-in full · book a dedicated desk to secure your spot" when the space is taken.
+
 ## [0.4.1] - 2026-05-20
 ### Changed
 - **Desk detail page — booking card**: Walk-in rates (from `space.rates`) are now shown above the dedicated rates as informational only ("Walk-in rate · Drop in anytime") and cannot be selected for booking. Only dedicated desk rates (`space.dedicatedRates`) appear in the period selector and route to the order form. Exception: spaces named "Hot Desk" or "No Desk" remain fully bookable with all rates selectable.

@@ -10,6 +10,15 @@ import { Badge } from '@/components/ui/Badge';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
 import type { CoworkSpace, CoworkRatePeriod, CoworkSpaceRate } from '@/types';
 
+interface DeskTab {
+  id: string;
+  type: string;
+  label?: string;
+  status: string;
+  bookingEndsAt?: string;
+  items?: Array<{ product: { category: string; id: string } }>;
+}
+
 const PERIOD_LABELS: Partial<Record<CoworkRatePeriod, string>> = {
   hourly: 'Per hour',
   daily: 'Per day',
@@ -77,6 +86,7 @@ export default function CoworkDetailPage() {
   const router = useRouter();
 
   const { data: spaces, loading, fromFirestore } = useFirestoreSlice<CoworkSpace[]>('spaces', FALLBACK_SPACES);
+  const { data: tabs } = useFirestoreSlice<DeskTab[]>('tabs', []);
   const displaySpaces = spaces.length > 0 ? spaces : FALLBACK_SPACES;
   const space = displaySpaces.find((s) => s.id === id && !s.archived);
 
@@ -131,6 +141,18 @@ export default function CoworkDetailPage() {
   const walkInInfoRates = (!isWalkInPackage && !isPrivateOffice)
     ? space.rates.filter((r) => r.enabled && r.period !== 'hourly')
     : [];
+
+  // Count active bookings for this space from the POS tabs slice
+  const now = new Date();
+  const activeCount = tabs.filter((t) => {
+    if (t.status !== 'open') return false;
+    if (t.bookingEndsAt && new Date(t.bookingEndsAt) <= now) return false;
+    if (t.type === 'desk' && t.label === space.name) return true;
+    if (t.items?.some((item) => item.product.category === 'desks' && item.product.id.startsWith(space.id))) return true;
+    return false;
+  }).length;
+  const capacity = space.capacity ?? 1;
+  const desksAvailable = Math.max(0, capacity - activeCount);
 
   function book() {
     if (!selectedRate) return;
@@ -217,14 +239,44 @@ export default function CoworkDetailPage() {
               {/* Walk-in info (regular desks only — not bookable, just informational) */}
               {walkInInfoRates.length > 0 && (
                 <div className="mb-5 pb-5 border-b border-ink-faint/20">
-                  <p className="text-xs font-medium text-ink-muted uppercase tracking-wide mb-2.5">Walk-in rate</p>
+                  <div className="flex items-center justify-between mb-2.5">
+                    <p className="text-xs font-medium text-ink-muted uppercase tracking-wide">Walk-in rate</p>
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                      desksAvailable > 0
+                        ? 'bg-green-50 text-green-700'
+                        : 'bg-amber-50 text-amber-700'
+                    }`}>
+                      {desksAvailable > 0
+                        ? `${desksAvailable} spot${desksAvailable > 1 ? 's' : ''} free`
+                        : 'Currently occupied'}
+                    </span>
+                  </div>
                   {walkInInfoRates.map((r) => (
                     <div key={r.period} className="flex items-center justify-between text-sm mb-1">
                       <span className="text-ink-muted">{PERIOD_LABELS[r.period]}</span>
                       <span className="font-bold text-ink tabular-nums">฿{r.price.toLocaleString()}</span>
                     </div>
                   ))}
-                  <p className="text-xs text-ink-muted mt-2">Drop in anytime · no advance booking needed</p>
+                  <p className="text-xs text-ink-muted mt-2">
+                    {desksAvailable > 0
+                      ? 'Drop in anytime · first come, first served'
+                      : 'Walk-in full · book a dedicated desk to secure your spot'}
+                  </p>
+                </div>
+              )}
+
+              {/* Availability for private offices and walk-in packages (no separate walk-in section) */}
+              {walkInInfoRates.length === 0 && (
+                <div className="flex justify-end mb-3">
+                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                    desksAvailable > 0
+                      ? 'bg-green-50 text-green-700'
+                      : 'bg-amber-50 text-amber-700'
+                  }`}>
+                    {desksAvailable > 0
+                      ? `${desksAvailable} available`
+                      : 'Currently occupied'}
+                  </span>
                 </div>
               )}
 
