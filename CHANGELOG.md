@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.17] - 2026-05-20
+### Changed
+- **Coworking house rules updated** with the real Denz rules: Karma, No Outside Food or Drink, Share Equipment Considerately, The Cooling Fans Are for Everyone, Jukebox Etiquette, Don't Feed the Dogs, Maintain a Low-Noise Atmosphere, Keep It Clean, Respect Personal Space, Follow Staff Guidance. Each rule now shows a title + description instead of a single line.
+
 ## [0.4.16] - 2026-05-20
 ### Added
 - **Equipment detail pages** (`/coworking/equipment/[id]`): each Mac Mini rental now has its own detail page showing name, description, tiered hourly pricing table, feature pills, and a "Rent this" button that opens the same hourly quantity + time picker modal as the listing page.

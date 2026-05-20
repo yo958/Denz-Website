@@ -632,21 +632,30 @@ export default function CoworkingPage() {
       {/* House rules */}
       <div className="bg-surface-muted py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-ink mb-6">House rules</h2>
+          <p className="text-xs font-bold uppercase tracking-[0.3em] text-brand mb-3">These rules were not made to be broken</p>
+          <h2 className="text-2xl font-bold text-ink mb-2">Denz CoWorking Rules</h2>
+          <p className="text-sm text-ink-muted mb-8">At Denz CoWorking Cafe, we value a relaxed yet productive environment. Please follow these guidelines to ensure everyone enjoys their time here.</p>
           <div className="bg-white rounded-2xl border border-ink-faint/20 divide-y divide-ink-faint/20">
             {[
-              'Keep noise levels considerate of other members.',
-              'Phone calls: please use the designated phone booths or step outside.',
-              'Clean up your workspace at the end of each session.',
-              'No food at standing desks.',
-              'Lockers must be vacated at end of booking unless on a dedicated package.',
-              'Guests must sign in at reception.',
+              { title: 'Karma', body: 'We believe in good karma — respect others, and they\'ll respect you in return. Kindness and consideration are key to building a great coworking community.' },
+              { title: 'No Outside Food or Drink', body: 'As a cafe, we provide a variety of delicious food and beverages. Please refrain from bringing outside food or drink onto the premises.' },
+              { title: 'Share Equipment Considerately', body: 'If you\'re using shared equipment and someone else needs it, please offer to share if you\'re not actively using it. Collaboration and cooperation make for a better environment.' },
+              { title: 'The Cooling Fans Are for Everyone', body: 'Please be mindful of fan placement. Ensure they are positioned to cool the shared space, not just one area. Sharing is caring — selfishness isn\'t welcome here.' },
+              { title: 'Jukebox Etiquette', body: 'Everyone can contribute to the jukebox playlist daily. However, keep in mind this is a coworking space — stick to chill or upbeat music that won\'t disrupt the flow of others.' },
+              { title: 'Don\'t Feed the Dogs', body: 'Our adorable dogs are on a strict diet due to their sensitive skin. Please resist their cute faces and avoid feeding them anything.' },
+              { title: 'Maintain a Low-Noise Atmosphere', body: 'Denz is a unique coworking space with a cafe vibe, complete with light background music and the gentle hum of activity. Keep conversations and entertainment, like TV or games, at a low volume to respect those who are working.' },
+              { title: 'Keep It Clean', body: 'Help us maintain a tidy space by cleaning up after yourself. Dispose of trash responsibly and leave your workspace as you found it — or better!' },
+              { title: 'Respect Personal Space', body: 'Everyone has their own way of working. Be mindful of others\' personal space and avoid unnecessary interruptions.' },
+              { title: 'Follow Staff Guidance', body: 'Our team is here to help you have the best experience. Please respect any instructions or requests from the staff.' },
             ].map((rule, i) => (
-              <div key={i} className="px-6 py-4 flex items-start gap-3 text-sm text-ink-muted">
+              <div key={i} className="px-6 py-4 flex items-start gap-3">
                 <span className="w-5 h-5 rounded-full bg-surface-raised text-xs font-semibold flex items-center justify-center text-ink-muted shrink-0 mt-0.5">
                   {i + 1}
                 </span>
-                {rule}
+                <div>
+                  <p className="text-sm font-semibold text-ink">{rule.title}</p>
+                  <p className="text-sm text-ink-muted mt-0.5">{rule.body}</p>
+                </div>
               </div>
             ))}
           </div>
