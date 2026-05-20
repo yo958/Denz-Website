@@ -446,7 +446,7 @@ export default function CoworkingPage() {
                 return (
                   <div
                     key={space.id}
-                    className={`rounded-2xl p-8 border transition-all ${
+                    className={`relative rounded-2xl p-8 border transition-all ${
                       isPrivateOffice
                         ? 'bg-gradient-to-br from-brand to-brand-dark border-brand-dark/30 shadow-xl shadow-brand/20 scale-[1.02]'
                         : isHighlighted
@@ -454,6 +454,14 @@ export default function CoworkingPage() {
                         : 'bg-white border-ink-faint/30 shadow-sm'
                     }`}
                   >
+                    <Link
+                      href={`/coworking/${space.id}`}
+                      className={`absolute top-5 right-5 text-xs font-medium hover:underline ${
+                        isPrivateOffice ? 'text-white/70' : isHighlighted ? 'text-white/60' : 'text-brand'
+                      }`}
+                    >
+                      More info →
+                    </Link>
                     {isPrivateOffice ? (
                       <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-white/20 mb-4">
                         <Crown className="w-3.5 h-3.5 text-white" />
@@ -486,18 +494,10 @@ export default function CoworkingPage() {
                       {space.name}
                     </h3>
                     {space.description && (
-                      <p className={`text-sm mb-2 ${isPrivateOffice ? 'text-white/70' : isHighlighted ? 'text-white/60' : 'text-ink-muted'}`}>
+                      <p className={`text-sm mb-6 ${isPrivateOffice ? 'text-white/70' : isHighlighted ? 'text-white/60' : 'text-ink-muted'}`}>
                         {space.description}
                       </p>
                     )}
-                    <Link
-                      href={`/coworking/${space.id}`}
-                      className={`text-xs font-medium hover:underline mb-5 inline-block ${
-                        isPrivateOffice ? 'text-white/70' : isHighlighted ? 'text-white/60' : 'text-brand'
-                      }`}
-                    >
-                      More info →
-                    </Link>
 
                     {/* Price */}
                     <div className="mb-8">
