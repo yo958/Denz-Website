@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.19] - 2026-05-20
+### Fixed
+- **Room detail page — picker ignored seasonal pricing**: The estimated total in the night picker was calculated as `baseRate × nights` (flat) instead of summing per-night rates. Stays that span season boundaries now show a correct per-segment breakdown (e.g. "฿1,200 × 3 nights (Low Season) + ฿1,800 × 7 nights (High Season)"). The total passed to the order URL is also corrected.
+- **Room detail page — future bookings incorrectly showing as "Occupied"**: Same fix applied as the listing page — `activeStay` now requires `checkInAt <= today`.
+
 ## [0.3.18] - 2026-05-20
 ### Fixed
 - **Rooms page — future bookings incorrectly showing as "Occupied"**: A stay with `status: 'active'` whose check-in date is still in the future was causing the room card to display the amber "Occupied until…" badge today. `getActiveStay` now only flags a room as occupied when the check-in date is today or earlier.
