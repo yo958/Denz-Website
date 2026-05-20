@@ -456,7 +456,7 @@ export default function CoworkingPage() {
                   >
                     <Link
                       href={`/coworking/${space.id}`}
-                      className={`absolute top-8 right-8 text-xs font-medium hover:underline ${
+                      className={`absolute top-10 right-10 text-xs font-medium hover:underline ${
                         isPrivateOffice ? 'text-white/70' : isHighlighted ? 'text-white/60' : 'text-brand'
                       }`}
                     >
