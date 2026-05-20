@@ -15,8 +15,54 @@ interface DeskTab {
   type: string;
   label?: string;
   status: string;
-  bookingEndsAt?: string;
-  items?: Array<{ product: { category: string; id: string } }>;
+  openedAt?: Date | string;
+  bookingEndsAt?: Date | string;
+  items?: Array<{ productId?: string; product: { category: string; id: string; name?: string } }>;
+}
+
+function sameCalDay(a: Date | string | undefined, b: Date): boolean {
+  if (!a) return false;
+  const d = a instanceof Date ? a : new Date(a as string);
+  return d.getFullYear() === b.getFullYear() && d.getMonth() === b.getMonth() && d.getDate() === b.getDate();
+}
+
+function tabEndsAt(t: DeskTab): Date | null {
+  if (!t.bookingEndsAt) return null;
+  return t.bookingEndsAt instanceof Date ? t.bookingEndsAt : new Date(t.bookingEndsAt as string);
+}
+
+function isTabActiveForSpace(t: DeskTab, spaceName: string, spaceId: string, now: Date): boolean {
+  // Tabs explicitly checked-out early have bookingEndsAt at epoch
+  const endsAt = tabEndsAt(t);
+  if (endsAt && endsAt.getTime() < 1000) return false;
+
+  // Does any item have a daily desk product?
+  const hasDaily = t.items?.some(
+    (i) => i.product?.category === 'desks' && i.product?.name?.endsWith(' — Per Day'),
+  ) ?? false;
+
+  const isActive = (() => {
+    if (t.status === 'open') {
+      if (endsAt && endsAt > now) return true;
+      if (hasDaily) return sameCalDay(t.openedAt, now);
+      return true;
+    }
+    if (t.status === 'paid') {
+      if (hasDaily) return sameCalDay(t.openedAt, now);
+      return !!endsAt && endsAt > now;
+    }
+    return false;
+  })();
+  if (!isActive) return false;
+
+  // Match by tab label (dedicated desk check-in)
+  if (t.type === 'desk' && t.label === spaceName) return true;
+  // Match by desk line item productId
+  if (t.items?.some((item) => {
+    const pid = item.productId ?? item.product.id;
+    return item.product.category === 'desks' && pid && (pid === spaceId || pid.startsWith(spaceId + '-'));
+  })) return true;
+  return false;
 }
 
 const PERIOD_LABELS: Partial<Record<CoworkRatePeriod, string>> = {
@@ -142,15 +188,11 @@ export default function CoworkDetailPage() {
     ? space.rates.filter((r) => r.enabled && r.period !== 'hourly')
     : [];
 
-  // Count active bookings for this space from the POS tabs slice
+  // Count active bookings for this space from the POS tabs slice.
+  // Mirrors the POS coworking board logic: paid daily tabs active if opened today,
+  // paid non-daily tabs active if bookingEndsAt is in the future.
   const now = new Date();
-  const activeCount = tabs.filter((t) => {
-    if (t.status !== 'open') return false;
-    if (t.bookingEndsAt && new Date(t.bookingEndsAt) <= now) return false;
-    if (t.type === 'desk' && t.label === space.name) return true;
-    if (t.items?.some((item) => item.product.category === 'desks' && item.product.id.startsWith(space.id))) return true;
-    return false;
-  }).length;
+  const activeCount = tabs.filter((t) => isTabActiveForSpace(t, space.name, space.id, now)).length;
   const capacity = space.capacity ?? 1;
   const desksAvailable = Math.max(0, capacity - activeCount);
 

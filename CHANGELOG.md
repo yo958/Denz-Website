@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.3] - 2026-05-20
+### Fixed
+- **Desk detail page — availability counting**: Paid daily desk tabs where `openedAt` is today now correctly count as occupied (matching POS coworking board logic). Previously only `open`-status tabs were counted, causing prepaid customers to not register as taking the spot.
+
 ## [0.4.2] - 2026-05-20
 ### Added
 - **Desk detail page — live availability**: Booking card now reads the POS `tabs` Firestore slice and counts active bookings to show real-time desk availability. Walk-in section shows a green "X spots free" or amber "Currently occupied" badge. Message updates to "Walk-in full · book a dedicated desk to secure your spot" when the space is taken.
