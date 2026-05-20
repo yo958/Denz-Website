@@ -294,6 +294,7 @@ export default function CoworkingPage() {
   const [picker, setPicker] = useState<PickerItem | null>(null);
   const [pickerQty, setPickerQty] = useState(1);
   const [pickerDate, setPickerDate] = useState('');
+  const [pickerMinDate, setPickerMinDate] = useState('');
   const [pickerTime, setPickerTime] = useState('10:00');
 
   const dayHours = getVenueHoursForDate(venueSettings.venue.openingHours, pickerDate);
@@ -329,6 +330,7 @@ export default function CoworkingPage() {
     setPicker(item);
     setPickerQty(1);
     setPickerDate(defaultDate);
+    setPickerMinDate(defaultDate);
     setPickerTime(openTime);
   }
 
@@ -693,7 +695,7 @@ export default function CoworkingPage() {
                       <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
                         Start date{pickerDate && <span className="normal-case font-normal ml-1.5 text-ink">— {formatBookingDate(pickerDate)}</span>}
                       </p>
-                      <Calendar value={pickerDate} minDate={toDateValue(new Date())} onChange={setPickerDate} disableWeekends />
+                      <Calendar value={pickerDate} minDate={pickerMinDate || toDateValue(new Date())} onChange={setPickerDate} disableWeekends />
                       <p className="text-xs text-ink-muted mt-2">Select today to arrive now, or a future date to reserve your spot.</p>
                     </div>
                     <div className="flex gap-3">
@@ -740,7 +742,7 @@ export default function CoworkingPage() {
                       <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
                         Start date{pickerDate && <span className="normal-case font-normal ml-1.5 text-ink">— {formatBookingDate(pickerDate)}</span>}
                       </p>
-                      <Calendar value={pickerDate} minDate={toDateValue(new Date())} onChange={setPickerDate} disableWeekends />
+                      <Calendar value={pickerDate} minDate={pickerMinDate || toDateValue(new Date())} onChange={setPickerDate} disableWeekends />
                       <p className="text-xs text-ink-muted mt-2">Select today to arrive now, or a future date to reserve your spot.</p>
                     </div>
                     <div className="flex gap-3">
@@ -794,7 +796,7 @@ export default function CoworkingPage() {
                   <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-2">
                     Start date{pickerDate && <span className="normal-case font-normal ml-1.5 text-ink">— {formatBookingDate(pickerDate)}</span>}
                   </p>
-                  <Calendar value={pickerDate} minDate={toDateValue(new Date())} onChange={setPickerDate} disableWeekends />
+                  <Calendar value={pickerDate} minDate={pickerMinDate || toDateValue(new Date())} onChange={setPickerDate} disableWeekends />
                   <div className="mt-3">
                     <TimePicker
                       value={pickerTime}

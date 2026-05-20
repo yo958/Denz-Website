@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.8] - 2026-05-20
+### Fixed
+- **Coworking booking picker — today blocked when desk is full**: When the calendar defaults to tomorrow because the desk is occupied, today is now also disabled (not just pre-skipped). Previously the user could click back to today and still submit a booking for a full desk.
+
 ## [0.4.7] - 2026-05-20
 ### Fixed
 - **Coworking listing — weekly booking no longer marks monthly/longer tabs as "Full"**: A space with an active weekly booking now correctly shows as available on the weekly, monthly, and longer-period tabs. The fix infers each booking's own period from the desk product name (e.g. "… — Weekly") and only counts it on tabs of equal or longer duration. A weekly booking blocking today's daily slot does not block a future monthly reservation.
