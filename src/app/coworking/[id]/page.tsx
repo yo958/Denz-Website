@@ -128,6 +128,21 @@ function nextWorkdayAfter(d: Date): Date {
   return next;
 }
 
+function firstAvailableFromEnd(endsAt: Date, today: Date): Date {
+  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const endsMidnight = new Date(endsAt.getFullYear(), endsAt.getMonth(), endsAt.getDate());
+  let result: Date;
+  if (endsMidnight <= todayMidnight) {
+    result = nextWorkdayAfter(today);
+  } else {
+    result = new Date(endsMidnight);
+    const dow = result.getDay();
+    if (dow === 6) result.setDate(result.getDate() + 2);
+    if (dow === 0) result.setDate(result.getDate() + 1);
+  }
+  return result;
+}
+
 function workingDaysNote(period: CoworkRatePeriod): string | null {
   switch (period) {
     case 'weekly':    return 'We\'re open Mon – Fri only. A weekly pass covers 5 working days.';
@@ -309,7 +324,9 @@ export default function CoworkDetailPage() {
         const endsAt = tabEndsAt(t);
         if (endsAt && (!latestEndsAt || endsAt > latestEndsAt)) latestEndsAt = endsAt;
       }
-      defaultDate = toDateValue(nextWorkdayAfter(latestEndsAt ?? today));
+      defaultDate = toDateValue(
+        latestEndsAt ? firstAvailableFromEnd(latestEndsAt, today) : nextWorkdayAfter(today),
+      );
     } else {
       defaultDate = toDateValue(today);
     }

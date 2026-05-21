@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.21] - 2026-05-21
+### Fixed
+- **First-available date — off by one for weekly/monthly bookings**: The booking calendar was opening to the day *after* `bookingEndsAt` (e.g. Tuesday 26th) when it should open to `bookingEndsAt`'s own date (Monday 25th). A weekly booking stores `bookingEndsAt` as `start + 7 calendar days` at closing time; that day is the first free day, not the last occupied one. The fix only advances by 1 day when the booking ends *today* (desk still occupied); for future end dates the calendar opens to that date directly, skipping weekends.
+
 ## [0.4.20] - 2026-05-21
 ### Fixed
 - **First-available date in booking modal**: When a desk is at capacity, the booking calendar now opens to the first workday *after the latest active booking ends*, rather than blindly defaulting to tomorrow. For example, if a weekly booking runs through Friday the 22nd, the calendar now opens to Monday the 25th. Applies to both the coworking listing page and the space detail page.

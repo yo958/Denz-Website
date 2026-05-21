@@ -168,6 +168,24 @@ function nextWorkdayAfter(d: Date): Date {
   return next;
 }
 
+// If the latest booking ends on a future date, the next booking can start on that same date
+// (the booking expires at closing time; a new booking opens at 10 AM that morning).
+// Only step forward by 1 day when the booking ends today (desk still occupied right now).
+function firstAvailableFromEnd(endsAt: Date, today: Date): Date {
+  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const endsMidnight = new Date(endsAt.getFullYear(), endsAt.getMonth(), endsAt.getDate());
+  let result: Date;
+  if (endsMidnight <= todayMidnight) {
+    result = nextWorkdayAfter(today);
+  } else {
+    result = new Date(endsMidnight);
+    const dow = result.getDay();
+    if (dow === 6) result.setDate(result.getDate() + 2);
+    if (dow === 0) result.setDate(result.getDate() + 1);
+  }
+  return result;
+}
+
 function latestEndsAtForSpace(tabs: BookingTab[], spaceId: string, spaceName: string): Date | null {
   let latest: Date | null = null;
   for (const t of tabs) {
@@ -352,7 +370,9 @@ export default function CoworkingPage() {
       const booked = countActiveForSpace(bookingTabs, activeSpaces, spaceId, spaceName, spacePeriod);
       if (booked >= slots) {
         const latestEndsAt = latestEndsAtForSpace(bookingTabs, spaceId, spaceName);
-        defaultDate = toDateValue(nextWorkdayAfter(latestEndsAt ?? today));
+        defaultDate = toDateValue(
+          latestEndsAt ? firstAvailableFromEnd(latestEndsAt, today) : nextWorkdayAfter(today),
+        );
       }
     }
     const openTime = getVenueHoursForDate(venueSettings.venue.openingHours, defaultDate).open;
