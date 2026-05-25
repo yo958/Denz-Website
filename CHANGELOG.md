@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.23] - 2026-05-25
+### Added
+- **Product-type schema on all main pages:**
+  - `/coworking` — `Service` JSON-LD with 5 pricing `Offer` nodes (Hot Desk hourly/daily, Dedicated Desk weekly/monthly, Private Office monthly), amenity features, and area served
+  - `/rooms` — `LodgingBusiness` JSON-LD with `containsPlace` containing `HotelRoom` (Standard ฿800/night), `HotelRoom` (Deluxe ฿1,200/night), and `Suite` (Studio ฿1,800/night), each with full amenity features and `UnitPriceSpecification`
+  - `/menu` — `Menu` JSON-LD with two `MenuSection` nodes (Food 8 items, Drinks 8 items), each `MenuItem` including name, description, price, and `suitableForDiet` where applicable
+- **Detail-page layouts (3 new files):**
+  - `coworking/[id]/layout.tsx` — `generateMetadata` sets correct per-space canonical and OG URL; `BreadcrumbList` schema with 3 levels
+  - `coworking/equipment/[id]/layout.tsx` — `generateMetadata` with equipment-specific metadata; `BreadcrumbList` + `Product` schema with hourly `Offer`
+  - `rooms/[id]/layout.tsx` — `generateMetadata` with known-room metadata lookup (standard/deluxe/suite) for correct title, description, OG image, and canonical; `BreadcrumbList` schema
+### Fixed
+- **Duplicate canonical bug** — `/coworking/[id]` and `/rooms/[id]` detail pages were inheriting the parent layout's canonical (`/coworking`, `/rooms`). Each now gets its own correct canonical via `generateMetadata`
+
 ## [0.4.22] - 2026-05-25
 ### Added
 - **robots.ts** — App Router `robots.ts` serving `/robots.txt`. Allows all crawlers on public routes, disallows `/order` and `/dashboard`. Includes sitemap URL.

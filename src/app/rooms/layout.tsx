@@ -29,6 +29,131 @@ export const metadata: Metadata = {
   },
 };
 
+// LodgingBusiness schema with individual HotelRoom types and pricing
+const roomsSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LodgingBusiness',
+  '@id': `${BASE_URL}/rooms#lodging`,
+  name: 'Denz — Rooms & Accommodation',
+  description:
+    'Hotel-style accommodation rooms in Kathu, Phuket. Standard, Deluxe, and Studio Suite — gigabit WiFi, mountain views, and direct café access.',
+  url: `${BASE_URL}/rooms`,
+  image: `${BASE_URL}/images/room-standard.png`,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Kathu',
+    addressLocality: 'Pa Tong',
+    addressRegion: 'Phuket',
+    postalCode: '83120',
+    addressCountry: 'TH',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 7.9044,
+    longitude: 98.3181,
+  },
+  amenityFeature: [
+    { '@type': 'LocationFeatureSpecification', name: 'Gigabit WiFi', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Air conditioning', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Café access', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Premium bedding', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Mountain views', value: true },
+  ],
+  containsPlace: [
+    {
+      '@type': 'HotelRoom',
+      '@id': `${BASE_URL}/rooms/standard#room`,
+      name: 'Standard Room',
+      description:
+        'A clean, comfortable room with everything you need for a short stay. Perfect for solo travellers or couples passing through.',
+      url: `${BASE_URL}/rooms/standard`,
+      image: `${BASE_URL}/images/room-standard.png`,
+      occupancy: { '@type': 'QuantitativeValue', maxValue: 2 },
+      amenityFeature: [
+        { '@type': 'LocationFeatureSpecification', name: 'Gigabit WiFi', value: true },
+        { '@type': 'LocationFeatureSpecification', name: 'Air conditioning', value: true },
+        { '@type': 'LocationFeatureSpecification', name: 'Café access', value: true },
+      ],
+      offers: {
+        '@type': 'Offer',
+        price: '800',
+        priceCurrency: 'THB',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '800',
+          priceCurrency: 'THB',
+          unitText: 'NIGHT',
+        },
+        url: `${BASE_URL}/rooms/standard`,
+      },
+    },
+    {
+      '@type': 'HotelRoom',
+      '@id': `${BASE_URL}/rooms/deluxe#room`,
+      name: 'Deluxe Room',
+      description:
+        'More space, better views. A spacious room with a private balcony overlooking the mountains.',
+      url: `${BASE_URL}/rooms/deluxe`,
+      image: `${BASE_URL}/images/room-honeymoon.png`,
+      occupancy: { '@type': 'QuantitativeValue', maxValue: 2 },
+      amenityFeature: [
+        { '@type': 'LocationFeatureSpecification', name: 'Gigabit WiFi', value: true },
+        { '@type': 'LocationFeatureSpecification', name: 'Mountain view balcony', value: true },
+        { '@type': 'LocationFeatureSpecification', name: 'Air conditioning', value: true },
+        { '@type': 'LocationFeatureSpecification', name: 'Café access', value: true },
+      ],
+      offers: {
+        '@type': 'Offer',
+        price: '1200',
+        priceCurrency: 'THB',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '1200',
+          priceCurrency: 'THB',
+          unitText: 'NIGHT',
+        },
+        url: `${BASE_URL}/rooms/deluxe`,
+      },
+    },
+    {
+      '@type': 'Suite',
+      '@id': `${BASE_URL}/rooms/suite#room`,
+      name: 'Studio Suite',
+      description:
+        'A full studio suite with a dedicated workspace, kitchenette and mountain-view terrace. Ideal for longer stays.',
+      url: `${BASE_URL}/rooms/suite`,
+      occupancy: { '@type': 'QuantitativeValue', maxValue: 2 },
+      amenityFeature: [
+        { '@type': 'LocationFeatureSpecification', name: 'Gigabit WiFi', value: true },
+        { '@type': 'LocationFeatureSpecification', name: 'Kitchenette', value: true },
+        { '@type': 'LocationFeatureSpecification', name: 'Mountain-view terrace', value: true },
+        { '@type': 'LocationFeatureSpecification', name: 'Dedicated workspace', value: true },
+        { '@type': 'LocationFeatureSpecification', name: 'Air conditioning', value: true },
+      ],
+      offers: {
+        '@type': 'Offer',
+        price: '1800',
+        priceCurrency: 'THB',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '1800',
+          priceCurrency: 'THB',
+          unitText: 'NIGHT',
+        },
+        url: `${BASE_URL}/rooms/suite`,
+      },
+    },
+  ],
+};
+
 export default function RoomsLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(roomsSchema) }}
+      />
+      {children}
+    </>
+  );
 }
