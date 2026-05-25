@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.22] - 2026-05-25
+### Added
+- **robots.ts** — App Router `robots.ts` serving `/robots.txt`. Allows all crawlers on public routes, disallows `/order` and `/dashboard`. Includes sitemap URL.
+- **sitemap.ts** — App Router `sitemap.ts` serving `/sitemap.xml` with all five public pages (home, coworking, rooms, menu, contact) with priorities and change frequencies.
+- **llms.txt** — AI search readiness file at `/llms.txt` with structured description of Denz, key pages, amenities, and location for LLM citation.
+- **Per-page metadata layouts** — New `layout.tsx` files in `coworking/`, `rooms/`, `menu/`, and `contact/` route directories. Each exports unique `title`, `description`, `keywords`, `openGraph`, and `alternates.canonical` metadata suited to that page's content and search intent.
+- **LocalBusiness + WebSite JSON-LD schema** — Structured data injected in root layout covering business name, address, geo coordinates, opening hours, amenities, social profiles, and `SearchAction`.
+- **Security headers** — `next.config.ts` now sets `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, and `Permissions-Policy` on all routes. `/order` and `/dashboard` additionally get `X-Robots-Tag: noindex, nofollow`.
+### Fixed
+- **og:url missing** — Added `metadataBase` to root layout metadata so Next.js resolves all OG/Twitter image URLs and `og:url` correctly as absolute URLs.
+- **OG image** — Changed from `denz-logo.png` to `hero-coworking.jpg` (1200×630) as the default social share image, with explicit dimensions. Per-page layouts use relevant hero images.
+- **Twitter card** — Added `twitter.card`, `twitter.images`, and `twitter.site` fields to root metadata.
+- **Canonical URLs** — Each page now has an explicit `alternates.canonical` pointing to its full URL.
+
 ## [0.4.21] - 2026-05-21
 ### Fixed
 - **First-available date — off by one for weekly/monthly bookings**: The booking calendar was opening to the day *after* `bookingEndsAt` (e.g. Tuesday 26th) when it should open to `bookingEndsAt`'s own date (Monday 25th). A weekly booking stores `bookingEndsAt` as `start + 7 calendar days` at closing time; that day is the first free day, not the last occupied one. The fix only advances by 1 day when the booking ends *today* (desk still occupied); for future end dates the calendar opens to that date directly, skipping weekends.
