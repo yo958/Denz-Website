@@ -64,7 +64,7 @@ function TableOfContents({ toc, activeId }: { toc: TocItem[]; activeId: string }
   }, []);
 
   // Track which H2s are open; auto-open the one containing the active item
-  const [open, setOpen] = useState<Set<string>>(() => new Set());
+  const [open, setOpen] = useState<Set<string>>(() => new Set(toc.filter(t => t.level === 2).map(t => t.id)));
   useEffect(() => {
     const active = toc.find(t => t.id === activeId);
     if (!active) return;
@@ -410,7 +410,7 @@ export default function BlogPostPage() {
 
         {/* Desktop sidebar */}
         <aside className="hidden lg:block">
-          <div className="sticky top-24 space-y-4">
+          <div className="space-y-4">
 
             {/* Coworking promo */}
             <Link href="/coworking" className="group flex items-start gap-3 rounded-2xl p-4 bg-blue-50 border border-transparent hover:border-blue-200 hover:shadow-md transition-all duration-200">

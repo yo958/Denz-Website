@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.22] - 2026-05-29
+### Changed
+- Guide post TOC: all H2 sections open by default instead of collapsed
+- Guide post sidebar: removed sticky positioning so ads scroll with the page
+
 ## [0.5.21] - 2026-05-29
 ### Added
 - Guide listing: show 20 posts initially with "Load more · N remaining" button for the rest; resets to 20 when switching category filter
