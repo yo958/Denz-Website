@@ -27,14 +27,14 @@ export async function generateMetadata({
   const { slug } = await params;
   const tag = await getTagBySlug(slug);
   const name = tag?.name ?? slug.replace(/-/g, ' ');
-  const title = `#${name} Articles | Denz Blog`;
+  const title = `#${name} Articles | Denz Guide`;
   const description = tag?.description ?? `Browse all articles tagged #${name} from Denz Coworking & Café, Kathu, Phuket.`;
 
   return {
     title,
     description,
-    openGraph: { title, description, url: `${BASE_URL}/blog/tag/${slug}` },
-    alternates: { canonical: `${BASE_URL}/blog/tag/${slug}` },
+    openGraph: { title, description, url: `${BASE_URL}/guide/tag/${slug}` },
+    alternates: { canonical: `${BASE_URL}/guide/tag/${slug}` },
   };
 }
 
@@ -54,18 +54,18 @@ export default async function TagLayout({
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE_URL}/blog` },
-      { '@type': 'ListItem', position: 3, name: `#${name}`, item: `${BASE_URL}/blog/tag/${slug}` },
+      { '@type': 'ListItem', position: 2, name: 'Guide', item: `${BASE_URL}/guide` },
+      { '@type': 'ListItem', position: 3, name: `#${name}`, item: `${BASE_URL}/guide/tag/${slug}` },
     ],
   };
 
   const collectionSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `#${name} — Denz Blog`,
+    name: `#${name} — Denz Guide`,
     description: tag?.description ?? `All articles tagged ${name}.`,
-    url: `${BASE_URL}/blog/tag/${slug}`,
-    isPartOf: { '@type': 'Blog', '@id': `${BASE_URL}/blog` },
+    url: `${BASE_URL}/guide/tag/${slug}`,
+    isPartOf: { '@type': 'Guide', '@id': `${BASE_URL}/guide` },
   };
 
   return (

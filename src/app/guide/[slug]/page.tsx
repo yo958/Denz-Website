@@ -131,7 +131,7 @@ export default function BlogPostPage() {
     return (
       <main className="max-w-5xl mx-auto px-4 pt-24 pb-12 text-center">
         <h1 className="text-2xl font-bold text-ink mb-3">Article not found</h1>
-        <Link href="/blog" className="text-brand hover:underline text-sm">← Back to Blog</Link>
+        <Link href="/guide" className="text-brand hover:underline text-sm">← Back to Guide</Link>
       </main>
     );
   }
@@ -144,12 +144,12 @@ export default function BlogPostPage() {
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-ink-muted mb-8 flex-wrap">
         <Link href="/" className="hover:text-brand transition-colors">Home</Link>
         <ChevronRight size={12} className="shrink-0" />
-        <Link href="/blog" className="hover:text-brand transition-colors">Blog</Link>
+        <Link href="/guide" className="hover:text-brand transition-colors">Guide</Link>
         {post.categories[0] && (
           <>
             <ChevronRight size={12} className="shrink-0" />
             <Link
-              href={`/blog/category/${post.categories[0]}`}
+              href={`/guide/category/${post.categories[0]}`}
               className="hover:text-brand transition-colors capitalize"
             >
               {post.categories[0].replace(/-/g, ' ')}
@@ -180,7 +180,7 @@ export default function BlogPostPage() {
                 {post.categories.map(cat => (
                   <Link
                     key={cat}
-                    href={`/blog/category/${cat}`}
+                    href={`/guide/category/${cat}`}
                     className="text-xs font-medium px-3 py-1 rounded-full bg-brand/10 text-brand hover:bg-brand/20 transition-colors"
                   >
                     {cat}
@@ -236,7 +236,7 @@ export default function BlogPostPage() {
                 {post.tags.map(tag => (
                   <Link
                     key={tag}
-                    href={`/blog/tag/${tag}`}
+                    href={`/guide/tag/${tag}`}
                     className="text-xs px-3 py-1 rounded-full bg-ink/5 text-ink-muted hover:bg-brand/10 hover:text-brand transition-colors"
                   >
                     #{tag}
@@ -248,8 +248,8 @@ export default function BlogPostPage() {
 
           {/* Back link */}
           <div className="mt-10">
-            <Link href="/blog" className="text-sm text-brand hover:underline flex items-center gap-1.5">
-              ← Back to Blog
+            <Link href="/guide" className="text-sm text-brand hover:underline flex items-center gap-1.5">
+              ← Back to Guide
             </Link>
           </div>
         </article>

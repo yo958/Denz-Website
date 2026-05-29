@@ -27,7 +27,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const cat = await getCategoryBySlug(slug);
   const name = cat?.name ?? slug.replace(/-/g, ' ');
-  const title = `${name} Articles | Denz Blog`;
+  const title = `${name} Articles | Denz Guide`;
   const description = cat?.description ?? `Browse all ${name} articles from Denz Coworking & Café, Kathu, Phuket.`;
 
   return {
@@ -36,9 +36,9 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      url: `${BASE_URL}/blog/category/${slug}`,
+      url: `${BASE_URL}/guide/category/${slug}`,
     },
-    alternates: { canonical: `${BASE_URL}/blog/category/${slug}` },
+    alternates: { canonical: `${BASE_URL}/guide/category/${slug}` },
   };
 }
 
@@ -58,18 +58,18 @@ export default async function CategoryLayout({
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE_URL}/blog` },
-      { '@type': 'ListItem', position: 3, name: name, item: `${BASE_URL}/blog/category/${slug}` },
+      { '@type': 'ListItem', position: 2, name: 'Guide', item: `${BASE_URL}/guide` },
+      { '@type': 'ListItem', position: 3, name: name, item: `${BASE_URL}/guide/category/${slug}` },
     ],
   };
 
   const collectionSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `${name} — Denz Blog`,
+    name: `${name} — Denz Guide`,
     description: cat?.description ?? `All articles in the ${name} category.`,
-    url: `${BASE_URL}/blog/category/${slug}`,
-    isPartOf: { '@type': 'Blog', '@id': `${BASE_URL}/blog` },
+    url: `${BASE_URL}/guide/category/${slug}`,
+    isPartOf: { '@type': 'Guide', '@id': `${BASE_URL}/guide` },
   };
 
   return (

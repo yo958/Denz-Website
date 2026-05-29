@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { BlogPost } from '@/types';
-import { Calendar, Clock, Tag } from 'lucide-react';
+import { Calendar, Clock, ChevronRight } from 'lucide-react';
 
 function readingTime(html: string): string {
   const words = html.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
@@ -16,36 +17,48 @@ function fmtDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-export default function BlogListingPage() {
+export default function TagArchivePage() {
+  const { slug } = useParams<{ slug: string }>();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const tagName = slug ? slug.replace(/-/g, ' ') : '';
 
   useEffect(() => {
+    if (!slug) return;
     async function load() {
       try {
-        // Single-field query (no composite index needed). Sort client-side.
-        const q = query(
-          collection(db, 'blog-posts'),
-          where('status', '==', 'published'),
-        );
+        const q = query(collection(db, 'blog-posts'), where('status', '==', 'published'));
         const snap = await getDocs(q);
         const all = snap.docs.map(d => ({ id: d.id, ...d.data() }) as BlogPost);
-        setPosts(
-          all.sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt)),
-        );
+        const filtered = all
+          .filter(p => p.tags.includes(slug))
+          .sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt));
+        setPosts(filtered);
       } catch {
         setPosts([]);
       }
       setLoading(false);
     }
     load();
-  }, []);
+  }, [slug]);
 
   return (
     <main className="max-w-5xl mx-auto px-4 pt-24 pb-12">
+      {/* Breadcrumb */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-ink-muted mb-8">
+        <Link href="/" className="hover:text-brand transition-colors">Home</Link>
+        <ChevronRight size={12} />
+        <Link href="/guide" className="hover:text-brand transition-colors">Guide</Link>
+        <ChevronRight size={12} />
+        <span className="text-ink">#{tagName}</span>
+      </nav>
+
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-ink mb-3">Blog</h1>
-        <p className="text-ink-muted text-lg">Tips, guides, and stories from Denz Coworking & Café, Kathu, Phuket.</p>
+        <div className="inline-flex items-center gap-2 mb-3">
+          <span className="text-xs font-medium px-3 py-1 rounded-full bg-ink/5 text-ink-muted">#{tagName}</span>
+        </div>
+        <h1 className="text-3xl font-bold text-ink">Articles tagged &ldquo;{tagName}&rdquo;</h1>
+        <p className="text-ink-muted mt-2">{posts.length} {posts.length === 1 ? 'article' : 'articles'}</p>
       </div>
 
       {loading && (
@@ -56,7 +69,6 @@ export default function BlogListingPage() {
               <div className="p-5 space-y-3">
                 <div className="h-5 bg-ink/5 rounded w-3/4" />
                 <div className="h-4 bg-ink/5 rounded w-full" />
-                <div className="h-4 bg-ink/5 rounded w-2/3" />
               </div>
             </div>
           ))}
@@ -65,7 +77,8 @@ export default function BlogListingPage() {
 
       {!loading && posts.length === 0 && (
         <div className="text-center py-20 text-ink-muted">
-          <p className="text-lg">No articles published yet. Check back soon!</p>
+          <p className="text-lg">No articles with this tag yet.</p>
+          <Link href="/guide" className="mt-3 inline-block text-sm text-brand hover:underline">Browse all articles</Link>
         </div>
       )}
 
@@ -73,7 +86,7 @@ export default function BlogListingPage() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map(post => (
             <article key={post.id} className="group rounded-2xl border border-ink/10 overflow-hidden hover:shadow-lg transition-shadow bg-white">
-              <Link href={`/blog/${post.slug}`}>
+              <Link href={`/guide/${post.slug}`}>
                 {post.featureImage
                   ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -90,20 +103,7 @@ export default function BlogListingPage() {
                   )}
               </Link>
               <div className="p-5">
-                {post.categories.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {post.categories.map(cat => (
-                      <Link
-                        key={cat}
-                        href={`/blog/category/${cat}`}
-                        className="text-xs font-medium px-2.5 py-1 rounded-full bg-brand/10 text-brand hover:bg-brand/20 transition-colors"
-                      >
-                        {cat}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-                <Link href={`/blog/${post.slug}`}>
+                <Link href={`/guide/${post.slug}`}>
                   <h2 className="text-lg font-bold text-ink group-hover:text-brand transition-colors leading-snug mb-2">
                     {post.title}
                   </h2>

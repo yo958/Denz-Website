@@ -22,6 +22,14 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   output: 'standalone',
 
+  async redirects() {
+    return [
+      // Redirect old /blog URLs to /guide permanently (301)
+      { source: '/blog', destination: '/guide', permanent: true },
+      { source: '/blog/:path*', destination: '/guide/:path*', permanent: true },
+    ];
+  },
+
   async headers() {
     return [
       {

@@ -32,7 +32,7 @@ export async function generateMetadata({
     return {
       title: 'Article | Denz Phuket',
       description: 'Read the latest articles from Denz Coworking & Café, Kathu, Phuket.',
-      alternates: { canonical: `${BASE_URL}/blog/${slug}` },
+      alternates: { canonical: `${BASE_URL}/guide/${slug}` },
     };
   }
 
@@ -47,7 +47,7 @@ export async function generateMetadata({
     openGraph: {
       title: post.metaTitle ?? post.title,
       description,
-      url: `${BASE_URL}/blog/${slug}`,
+      url: `${BASE_URL}/guide/${slug}`,
       type: 'article',
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
@@ -63,7 +63,7 @@ export async function generateMetadata({
       description,
       images: [post.featureImage ?? '/images/hero-coworking.jpg'],
     },
-    alternates: { canonical: `${BASE_URL}/blog/${slug}` },
+    alternates: { canonical: `${BASE_URL}/guide/${slug}` },
   };
 }
 
@@ -85,11 +85,11 @@ export default async function BlogPostLayout({
 
   const breadcrumbItems = [
     { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE_URL}/blog` },
+    { '@type': 'ListItem', position: 2, name: 'Guide', item: `${BASE_URL}/guide` },
     ...(firstCatSlug && firstCatName
-      ? [{ '@type': 'ListItem', position: 3, name: firstCatName, item: `${BASE_URL}/blog/category/${firstCatSlug}` }]
+      ? [{ '@type': 'ListItem', position: 3, name: firstCatName, item: `${BASE_URL}/guide/category/${firstCatSlug}` }]
       : []),
-    { '@type': 'ListItem', position: firstCatSlug ? 4 : 3, name: post?.title ?? 'Article', item: `${BASE_URL}/blog/${slug}` },
+    { '@type': 'ListItem', position: firstCatSlug ? 4 : 3, name: post?.title ?? 'Article', item: `${BASE_URL}/guide/${slug}` },
   ];
 
   const breadcrumbSchema = {
@@ -123,11 +123,11 @@ export default async function BlogPostLayout({
         dateModified: post.updatedAt,
         mainEntityOfPage: {
           '@type': 'WebPage',
-          '@id': `${BASE_URL}/blog/${slug}`,
+          '@id': `${BASE_URL}/guide/${slug}`,
         },
-        url: `${BASE_URL}/blog/${slug}`,
+        url: `${BASE_URL}/guide/${slug}`,
         keywords: post.focusKeyword ?? post.categories.join(', '),
-        articleSection: post.categories.join(', ') || 'Blog',
+        articleSection: post.categories.join(', ') || 'Guide',
       }
     : null;
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.4] - 2026-05-29
+### Changed
+- Renamed /blog → /guide across all URLs, page titles, headings, navbar, breadcrumbs, sitemap, and llms.txt
+- Added 301 permanent redirects: /blog → /guide and /blog/:path* → /guide/:path*
+
 ## [0.5.3] - 2026-05-29
 ### Changed
 - Blog post breadcrumb now includes the first category: Home › Blog › Travel › Post Title

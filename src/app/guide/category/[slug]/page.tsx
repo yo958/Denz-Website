@@ -49,7 +49,7 @@ export default function CategoryArchivePage() {
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-ink-muted mb-8">
         <Link href="/" className="hover:text-brand transition-colors">Home</Link>
         <ChevronRight size={12} />
-        <Link href="/blog" className="hover:text-brand transition-colors">Blog</Link>
+        <Link href="/guide" className="hover:text-brand transition-colors">Guide</Link>
         <ChevronRight size={12} />
         <span className="text-ink capitalize">{catName}</span>
       </nav>
@@ -79,7 +79,7 @@ export default function CategoryArchivePage() {
       {!loading && posts.length === 0 && (
         <div className="text-center py-20 text-ink-muted">
           <p className="text-lg">No articles in this category yet.</p>
-          <Link href="/blog" className="mt-3 inline-block text-sm text-brand hover:underline">Browse all articles</Link>
+          <Link href="/guide" className="mt-3 inline-block text-sm text-brand hover:underline">Browse all articles</Link>
         </div>
       )}
 
@@ -87,7 +87,7 @@ export default function CategoryArchivePage() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map(post => (
             <article key={post.id} className="group rounded-2xl border border-ink/10 overflow-hidden hover:shadow-lg transition-shadow bg-white">
-              <Link href={`/blog/${post.slug}`}>
+              <Link href={`/guide/${post.slug}`}>
                 {post.featureImage
                   ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -104,7 +104,7 @@ export default function CategoryArchivePage() {
                   )}
               </Link>
               <div className="p-5">
-                <Link href={`/blog/${post.slug}`}>
+                <Link href={`/guide/${post.slug}`}>
                   <h2 className="text-lg font-bold text-ink group-hover:text-brand transition-colors leading-snug mb-2">
                     {post.title}
                   </h2>

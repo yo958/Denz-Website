@@ -19,19 +19,19 @@ async function getBlogSitemapEntries(): Promise<MetadataRoute.Sitemap> {
 
     return [
       ...posts.map(p => ({
-        url: `${BASE_URL}/blog/${p.slug}`,
+        url: `${BASE_URL}/guide/${p.slug}`,
         lastModified: new Date(p.updatedAt),
         changeFrequency: 'weekly' as const,
         priority: 0.7,
       })),
       ...cats.map(c => ({
-        url: `${BASE_URL}/blog/category/${c.slug}`,
+        url: `${BASE_URL}/guide/category/${c.slug}`,
         lastModified: new Date(),
         changeFrequency: 'weekly' as const,
         priority: 0.6,
       })),
       ...tags.map(t => ({
-        url: `${BASE_URL}/blog/tag/${t.slug}`,
+        url: `${BASE_URL}/guide/tag/${t.slug}`,
         lastModified: new Date(),
         changeFrequency: 'weekly' as const,
         priority: 0.5,
@@ -65,7 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/blog`,
+      url: `${BASE_URL}/guide`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,

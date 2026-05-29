@@ -135,19 +135,21 @@ export default function MenuPage() {
                   className="bg-white rounded-2xl border border-ink-faint/20 p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow duration-200"
                 >
                   {item.image && (
-                    <div className="aspect-video rounded-xl overflow-hidden bg-surface-raised -mx-1">
+                    <Link href={`/menu/${item.id}`} className="block aspect-video rounded-xl overflow-hidden bg-surface-raised -mx-1">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                    </div>
+                    </Link>
                   )}
                   <div className="flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="font-semibold text-ink">{item.name}</p>
-                      {item.glyph && <span className="text-lg leading-none">{item.glyph}</span>}
-                    </div>
-                    <p className="text-xs text-ink-muted mt-1 leading-relaxed line-clamp-2">
-                      {item.description}
-                    </p>
+                    <Link href={`/menu/${item.id}`} className="group block">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="font-semibold text-ink group-hover:text-brand transition-colors">{item.name}</p>
+                        {item.glyph && <span className="text-lg leading-none">{item.glyph}</span>}
+                      </div>
+                      <p className="text-xs text-ink-muted mt-1 leading-relaxed line-clamp-2">
+                        {item.description}
+                      </p>
+                    </Link>
                   </div>
                   <div className="flex items-center justify-between mt-auto pt-2 border-t border-ink-faint/20">
                     <p className="font-bold text-ink">฿{item.price}</p>
