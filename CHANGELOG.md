@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.10] - 2026-05-29
+### Added
+- Guide post article body: inline images from blog editor now render with rounded corners and spacing
+
 ## [0.5.9] - 2026-05-29
 ### Changed
 - Guide post sidebar promo cards: removed gradient image header, now compact text-only cards with coloured border
