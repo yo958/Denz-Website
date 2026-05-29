@@ -409,42 +409,48 @@ export default function BlogPostPage() {
           <div className="sticky top-24 space-y-4">
 
             {/* Coworking promo */}
-            <Link href="/coworking" className="group block rounded-2xl p-5 bg-blue-50 border border-transparent hover:border-blue-200 hover:shadow-md transition-all duration-200">
-              <div className="inline-flex p-2 rounded-xl bg-blue-100 mb-3">
+            <Link href="/coworking" className="group flex items-start gap-3 rounded-2xl p-4 bg-blue-50 border border-transparent hover:border-blue-200 hover:shadow-md transition-all duration-200">
+              <div className="inline-flex p-2 rounded-xl bg-blue-100 shrink-0 mt-0.5">
                 <Wifi className="w-4 h-4 text-blue-600" />
               </div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-0.5">Coworking</p>
-              <h3 className="text-sm font-bold text-ink mb-1.5 leading-snug">Your office away from home</h3>
-              <p className="text-xs text-ink-muted leading-relaxed mb-3">Gigabit WiFi, standing desks, private offices and flexible packages. From ฿200/day.</p>
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink group-hover:gap-2 transition-all">
-                View packages <ArrowRight className="w-3 h-3" />
-              </span>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-0.5">Coworking</p>
+                <h3 className="text-sm font-bold text-ink mb-1 leading-snug">Your office away from home</h3>
+                <p className="text-xs text-ink-muted leading-relaxed mb-2">Gigabit WiFi, desks, private offices. From ฿200/day.</p>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink group-hover:gap-2 transition-all">
+                  View packages <ArrowRight className="w-3 h-3" />
+                </span>
+              </div>
             </Link>
 
             {/* Café promo */}
-            <Link href="/menu" className="group block rounded-2xl p-5 bg-orange-50 border border-transparent hover:border-orange-200 hover:shadow-md transition-all duration-200">
-              <div className="inline-flex p-2 rounded-xl bg-orange-100 mb-3">
+            <Link href="/menu" className="group flex items-start gap-3 rounded-2xl p-4 bg-orange-50 border border-transparent hover:border-orange-200 hover:shadow-md transition-all duration-200">
+              <div className="inline-flex p-2 rounded-xl bg-orange-100 shrink-0 mt-0.5">
                 <UtensilsCrossed className="w-4 h-4 text-orange-600" />
               </div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-0.5">Café</p>
-              <h3 className="text-sm font-bold text-ink mb-1.5 leading-snug">Thai &amp; western food, done right</h3>
-              <p className="text-xs text-ink-muted leading-relaxed mb-3">Freshly cooked Thai classics, western breakfasts, great coffee and fresh smoothies.</p>
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink group-hover:gap-2 transition-all">
-                See the menu <ArrowRight className="w-3 h-3" />
-              </span>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-0.5">Café</p>
+                <h3 className="text-sm font-bold text-ink mb-1 leading-snug">Thai &amp; western food, done right</h3>
+                <p className="text-xs text-ink-muted leading-relaxed mb-2">Thai classics, western breakfasts, coffee and smoothies.</p>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink group-hover:gap-2 transition-all">
+                  See the menu <ArrowRight className="w-3 h-3" />
+                </span>
+              </div>
             </Link>
 
             {/* Rooms promo */}
-            <Link href="/rooms" className="group block rounded-2xl p-5 bg-green-50 border border-transparent hover:border-green-200 hover:shadow-md transition-all duration-200">
-              <div className="inline-flex p-2 rounded-xl bg-green-100 mb-3">
+            <Link href="/rooms" className="group flex items-start gap-3 rounded-2xl p-4 bg-green-50 border border-transparent hover:border-green-200 hover:shadow-md transition-all duration-200">
+              <div className="inline-flex p-2 rounded-xl bg-green-100 shrink-0 mt-0.5">
                 <BedDouble className="w-4 h-4 text-green-600" />
               </div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-0.5">Stay</p>
-              <h3 className="text-sm font-bold text-ink mb-1.5 leading-snug">Sleep, work, repeat</h3>
-              <p className="text-xs text-ink-muted leading-relaxed mb-3">Clean, comfortable rooms right above the café. Wake up, grab a coffee and get to work.</p>
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink group-hover:gap-2 transition-all">
-                See rooms <ArrowRight className="w-3 h-3" />
-              </span>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-0.5">Stay</p>
+                <h3 className="text-sm font-bold text-ink mb-1 leading-snug">Sleep, work, repeat</h3>
+                <p className="text-xs text-ink-muted leading-relaxed mb-2">Comfortable rooms above the café. Wake up and get straight to work.</p>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink group-hover:gap-2 transition-all">
+                  See rooms <ArrowRight className="w-3 h-3" />
+                </span>
+              </div>
             </Link>
 
             {toc.length >= 2 && <TableOfContents toc={toc} activeId={activeId} />}

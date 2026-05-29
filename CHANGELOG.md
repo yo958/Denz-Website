@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.19] - 2026-05-29
+### Changed
+- Guide post sidebar ads: icon moved inline beside title/subtitle to reduce vertical height
+
 ## [0.5.18] - 2026-05-29
 ### Changed
 - Guide post sidebar ads: restyled to match homepage FeaturesSection cards (tinted bg, icon, eyebrow, bold headline, arrow CTA); compact p-5 size to take less vertical space
