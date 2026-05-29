@@ -73,6 +73,7 @@ function TableOfContents({ toc, activeId }: { toc: TocItem[]; activeId: string }
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<BlogPost | null>(null);
+  const [related, setRelated] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeId, setActiveId] = useState('');
   const contentRef = useRef<HTMLDivElement>(null);
@@ -81,6 +82,7 @@ export default function BlogPostPage() {
     if (!slug) return;
     async function load() {
       try {
+        // Fetch current post
         const q = query(
           collection(db, 'blog-posts'),
           where('slug', '==', slug),
@@ -89,7 +91,29 @@ export default function BlogPostPage() {
         );
         const snap = await getDocs(q);
         if (!snap.empty) {
-          setPost({ id: snap.docs[0].id, ...snap.docs[0].data() } as BlogPost);
+          const currentPost = { id: snap.docs[0].id, ...snap.docs[0].data() } as BlogPost;
+          setPost(currentPost);
+
+          // Fetch other published posts for the related section
+          const allSnap = await getDocs(
+            query(collection(db, 'blog-posts'), where('status', '==', 'published')),
+          );
+          const others = allSnap.docs
+            .map(d => ({ id: d.id, ...d.data() }) as BlogPost)
+            .filter(p => p.slug !== slug);
+
+          // Prioritise same-category posts, then fill with newest
+          const sameCategory = others.filter(p =>
+            currentPost.categories.some(c => p.categories.includes(c)),
+          );
+          const rest = others.filter(p =>
+            !currentPost.categories.some(c => p.categories.includes(c)),
+          );
+          const sorted = [
+            ...sameCategory.sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt)),
+            ...rest.sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt)),
+          ];
+          setRelated(sorted.slice(0, 3));
         }
       } catch {
         setPost(null);
@@ -246,8 +270,50 @@ export default function BlogPostPage() {
             </div>
           )}
 
+          {/* Related articles */}
+          {related.length > 0 && (
+            <div className="mt-12 pt-8 border-t border-ink/10">
+              <h2 className="text-lg font-bold text-ink mb-5">More Articles</h2>
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {related.map(rel => (
+                  <Link key={rel.id} href={`/guide/${rel.slug}`} className="group block rounded-2xl border border-ink/10 overflow-hidden hover:shadow-md transition-shadow bg-white">
+                    {rel.featureImage
+                      ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={rel.featureImage}
+                          alt={rel.title}
+                          className="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      )
+                      : (
+                        <div className="w-full h-36 bg-gradient-to-br from-brand/10 to-brand/5 flex items-center justify-center">
+                          <span className="text-3xl opacity-30">✍️</span>
+                        </div>
+                      )}
+                    <div className="p-4">
+                      {rel.categories[0] && (
+                        <span className="text-xs font-medium text-brand capitalize">
+                          {rel.categories[0].replace(/-/g, ' ')}
+                        </span>
+                      )}
+                      <p className="text-sm font-semibold text-ink group-hover:text-brand transition-colors mt-1 line-clamp-2 leading-snug">
+                        {rel.title}
+                      </p>
+                      <div className="flex items-center gap-2 mt-2 text-xs text-ink-muted">
+                        {rel.publishedAt && <span>{fmtDate(rel.publishedAt)}</span>}
+                        <span>·</span>
+                        <span>{readingTime(rel.content)}</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Back link */}
-          <div className="mt-10">
+          <div className="mt-8">
             <Link href="/guide" className="text-sm text-brand hover:underline flex items-center gap-1.5">
               ← Back to Guide
             </Link>

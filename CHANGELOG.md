@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.5] - 2026-05-29
+### Added
+- "More Articles" section at the bottom of each guide post — shows up to 3 cards with feature image, category, title, date, and reading time; prioritises posts sharing the same category, then fills with newest posts
+
 ## [0.5.4] - 2026-05-29
 ### Changed
 - Renamed /blog → /guide across all URLs, page titles, headings, navbar, breadcrumbs, sitemap, and llms.txt
