@@ -320,14 +320,48 @@ export default function BlogPostPage() {
           </div>
         </article>
 
-        {/* Desktop TOC sidebar */}
-        {toc.length >= 2 && (
-          <aside className="hidden lg:block">
-            <div className="sticky top-24">
-              <TableOfContents toc={toc} activeId={activeId} />
-            </div>
-          </aside>
-        )}
+        {/* Desktop sidebar */}
+        <aside className="hidden lg:block">
+          <div className="sticky top-24 space-y-4">
+            {toc.length >= 2 && <TableOfContents toc={toc} activeId={activeId} />}
+
+            {/* Coworking promo */}
+            <Link
+              href="/coworking"
+              className="group block rounded-2xl overflow-hidden border border-ink/10 bg-white hover:shadow-md transition-shadow"
+            >
+              <div className="h-28 bg-gradient-to-br from-violet-500 to-violet-700 relative flex items-end p-4">
+                <span className="text-3xl absolute top-3 right-4 opacity-80">💻</span>
+                <span className="text-xs font-semibold uppercase tracking-widest text-violet-200">Coworking</span>
+              </div>
+              <div className="p-4">
+                <p className="text-sm font-bold text-ink leading-snug mb-1">Hot Desks &amp; Private Offices</p>
+                <p className="text-xs text-ink-muted leading-relaxed mb-3">Fast Wi-Fi, great coffee, and a productive atmosphere in the heart of Phuket.</p>
+                <span className="inline-block text-xs font-semibold text-violet-600 group-hover:text-violet-800 transition-colors">
+                  See spaces →
+                </span>
+              </div>
+            </Link>
+
+            {/* Rooms promo */}
+            <Link
+              href="/rooms"
+              className="group block rounded-2xl overflow-hidden border border-ink/10 bg-white hover:shadow-md transition-shadow"
+            >
+              <div className="h-28 bg-gradient-to-br from-emerald-500 to-emerald-700 relative flex items-end p-4">
+                <span className="text-3xl absolute top-3 right-4 opacity-80">🛏️</span>
+                <span className="text-xs font-semibold uppercase tracking-widest text-emerald-200">Rooms</span>
+              </div>
+              <div className="p-4">
+                <p className="text-sm font-bold text-ink leading-snug mb-1">Stay at Denz Phuket</p>
+                <p className="text-xs text-ink-muted leading-relaxed mb-3">Comfortable rooms with a social vibe — perfect for digital nomads and travellers.</p>
+                <span className="inline-block text-xs font-semibold text-emerald-600 group-hover:text-emerald-800 transition-colors">
+                  View rooms →
+                </span>
+              </div>
+            </Link>
+          </div>
+        </aside>
       </div>
     </main>
   );

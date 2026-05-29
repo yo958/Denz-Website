@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.7] - 2026-05-29
+### Added
+- Sidebar promo cards on guide post pages — coworking (violet) and rooms (emerald) with links to `/coworking` and `/rooms`; sidebar always visible on desktop, TOC still shown above when applicable
+
 ## [0.5.6] - 2026-05-29
 ### Changed
 - More Articles section now shows up to 6 posts (was 3) — fills a clean 2-row grid on desktop
