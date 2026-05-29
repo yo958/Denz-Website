@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.26] - 2026-05-30
+### Changed
+- Guide post TOC: removed border and white background from contents container
+
 ## [0.5.25] - 2026-05-30
 ### Fixed
 - Guide post: Instagram script duplicate-guard now matches both embed.js and embeds.js variants
