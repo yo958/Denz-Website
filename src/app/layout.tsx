@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: '%s | Denz Phuket',
   },
   description:
-    'Denz is a modern coworking café in Kathu, Phuket — fast WiFi, great food, stunning mountain views and flexible desk packages.',
+    'Denz is a coworking café in Kathu, Phuket with gigabit WiFi, mountain views, Thai & western food, private offices, and flexible day desk packages from ฿200. Open Mon–Fri.',
   keywords: ['coworking phuket', 'cafe phuket', 'digital nomad phuket', 'kathu phuket workspace', 'coworking space phuket', 'desk rental phuket'],
   authors: [{ name: 'Denz Phuket', url: BASE_URL }],
   icons: {

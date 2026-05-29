@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://denzphuket.com';
 
 export const metadata: Metadata = {
-  title: 'Guide — Denz Phuket',
+  title: { absolute: 'Guides — Denz Phuket | Coworking Café Kathu' },
   description: 'Tips, guides, and stories from Denz Coworking & Café in Kathu, Phuket. Discover the best coworking tips, local guides, and digital nomad advice.',
   openGraph: {
     title: 'Guide | Denz Phuket',

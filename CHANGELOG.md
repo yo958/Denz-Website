@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.28] - 2026-05-30
+### Fixed (SEO)
+- Guide listing and guide post pages converted from 'use client' to async Server Components — article content, H1, titles, and internal links now server-rendered and crawlable by Googlebot
+- Guide listing: all post links included in sr-only server-rendered list for crawler discovery
+- Guide post: article body, breadcrumb, tags, related articles all SSR; TOC/IntersectionObserver/Instagram extracted to ArticleClient island
+- Guide layout title fixed: was duplicating suffix ("Denz Phuket | Denz Phuket"), now uses absolute title
+- robots.ts: added explicit disallow rules for GPTBot, CCBot, Diffbot, Bytespider
+- Homepage meta description extended to 160 chars
+### Added
+- TableOfContents.tsx, ArticleClient.tsx, GuideListingClient.tsx as dedicated component files
+
 ## [0.5.27] - 2026-05-30
 ### Changed
 - Guide post TOC: restore white background, keep border removed

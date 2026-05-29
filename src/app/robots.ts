@@ -10,6 +10,12 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/order', '/dashboard'],
       },
+      // Block scrapers that offer no traffic benefit
+      { userAgent: 'GPTBot', disallow: '/' },
+      { userAgent: 'CCBot', disallow: '/' },
+      { userAgent: 'Diffbot', disallow: '/' },
+      { userAgent: 'Bytespider', disallow: '/' },
+      // Allow AI assistants that drive referral traffic — ClaudeBot, PerplexityBot, Google-Extended
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,
   };
