@@ -82,7 +82,7 @@ function TableOfContents({ toc, activeId }: { toc: TocItem[]; activeId: string }
   if (toc.length === 0) return null;
 
   return (
-    <nav aria-label="Table of contents" className="p-4">
+    <nav aria-label="Table of contents" className="rounded-2xl bg-white p-4">
       <div className="flex items-center gap-2 mb-3">
         <List size={15} className="text-brand shrink-0" />
         <span className="text-sm font-semibold text-ink">Contents</span>

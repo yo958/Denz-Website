@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.27] - 2026-05-30
+### Changed
+- Guide post TOC: restore white background, keep border removed
+
 ## [0.5.26] - 2026-05-30
 ### Changed
 - Guide post TOC: removed border and white background from contents container
