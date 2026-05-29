@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.14] - 2026-05-29
+### Fixed
+- Guide post: convert wp-block-embed figure wrappers and bare YouTube URLs to responsive iframes at render time (fixes already-imported posts without re-importing)
+
 ## [0.5.13] - 2026-05-29
 ### Fixed
 - Guide post: iframe (YouTube embed) styled full-width with rounded corners

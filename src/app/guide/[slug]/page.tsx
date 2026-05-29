@@ -24,9 +24,22 @@ function fmtDate(iso: string): string {
 }
 
 /** Parse h2/h3 headings from HTML string and inject id attributes */
+function ytEmbed(videoId: string): string {
+  return `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin:1.5rem 0"><iframe src="https://www.youtube.com/embed/${videoId}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen loading="lazy"></iframe></div>`;
+}
+
 function processContent(html: string): { processed: string; toc: TocItem[] } {
   const toc: TocItem[] = [];
-  const processed = html.replace(/<(h[23])[^>]*>(.*?)<\/h[23]>/gi, (_, tag, inner) => {
+  let out = html;
+
+  // Convert wp-block-embed__wrapper figures with YouTube URLs → iframe
+  out = out.replace(/<figure[^>]*wp-block-embed[^>]*>[\s\S]*?<div[^>]*wp-block-embed__wrapper[^>]*>\s*(https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?[^\s<"]*v=|youtu\.be\/)([\w-]{11})[^\s<]*)\s*<\/div>[\s\S]*?<\/figure>/gi, (_, _url, videoId) => ytEmbed(videoId));
+
+  // Convert bare YouTube URLs in <p> tags to responsive iframes
+  out = out.replace(/<p[^>]*>\s*(https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?[^\s<"]*v=|youtu\.be\/)([\w-]{11})[^\s<]*)\s*<\/p>/gi, (_, _url, videoId) => ytEmbed(videoId));
+
+  // Inject heading IDs for TOC
+  out = out.replace(/<(h[23])[^>]*>(.*?)<\/h[23]>/gi, (_, tag, inner) => {
     const level = parseInt(tag[1]) as 2 | 3;
     const text = inner.replace(/<[^>]+>/g, '').trim();
     const id = text
@@ -38,7 +51,8 @@ function processContent(html: string): { processed: string; toc: TocItem[] } {
     toc.push({ id, text, level });
     return `<${tag} id="${id}">${inner}</${tag}>`;
   });
-  return { processed, toc };
+
+  return { processed: out, toc };
 }
 
 function TableOfContents({ toc, activeId }: { toc: TocItem[]; activeId: string }) {
