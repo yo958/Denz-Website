@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { collection, getDocs, query, where, limit } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { BlogPost } from '@/types';
-import { Calendar, Clock, ChevronRight, Tag, List } from 'lucide-react';
+import { Calendar, Clock, ChevronRight, Tag, List, Wifi, UtensilsCrossed, BedDouble, ArrowRight } from 'lucide-react';
 
 interface TocItem {
   id: string;
@@ -409,41 +409,41 @@ export default function BlogPostPage() {
           <div className="sticky top-24 space-y-4">
 
             {/* Coworking promo */}
-            <Link
-              href="/coworking"
-              className="group block rounded-2xl border border-violet-200 bg-white p-4 hover:shadow-md transition-shadow"
-            >
-              <p className="text-xs font-semibold uppercase tracking-widest text-violet-500 mb-1">💻 Coworking</p>
-              <p className="text-sm font-bold text-ink leading-snug mb-1">Hot Desks &amp; Private Offices</p>
-              <p className="text-xs text-ink-muted leading-relaxed mb-3">Fast Wi-Fi, great coffee, and a productive atmosphere in the heart of Phuket.</p>
-              <span className="inline-block text-xs font-semibold text-violet-600 group-hover:text-violet-800 transition-colors">
-                See spaces →
+            <Link href="/coworking" className="group block rounded-2xl p-5 bg-blue-50 border border-transparent hover:border-blue-200 hover:shadow-md transition-all duration-200">
+              <div className="inline-flex p-2 rounded-xl bg-blue-100 mb-3">
+                <Wifi className="w-4 h-4 text-blue-600" />
+              </div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-0.5">Coworking</p>
+              <h3 className="text-sm font-bold text-ink mb-1.5 leading-snug">Your office away from home</h3>
+              <p className="text-xs text-ink-muted leading-relaxed mb-3">Gigabit WiFi, standing desks, private offices and flexible packages. From ฿200/day.</p>
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink group-hover:gap-2 transition-all">
+                View packages <ArrowRight className="w-3 h-3" />
+              </span>
+            </Link>
+
+            {/* Café promo */}
+            <Link href="/menu" className="group block rounded-2xl p-5 bg-orange-50 border border-transparent hover:border-orange-200 hover:shadow-md transition-all duration-200">
+              <div className="inline-flex p-2 rounded-xl bg-orange-100 mb-3">
+                <UtensilsCrossed className="w-4 h-4 text-orange-600" />
+              </div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-0.5">Café</p>
+              <h3 className="text-sm font-bold text-ink mb-1.5 leading-snug">Thai &amp; western food, done right</h3>
+              <p className="text-xs text-ink-muted leading-relaxed mb-3">Freshly cooked Thai classics, western breakfasts, great coffee and fresh smoothies.</p>
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink group-hover:gap-2 transition-all">
+                See the menu <ArrowRight className="w-3 h-3" />
               </span>
             </Link>
 
             {/* Rooms promo */}
-            <Link
-              href="/rooms"
-              className="group block rounded-2xl border border-emerald-200 bg-white p-4 hover:shadow-md transition-shadow"
-            >
-              <p className="text-xs font-semibold uppercase tracking-widest text-emerald-500 mb-1">🛏️ Rooms</p>
-              <p className="text-sm font-bold text-ink leading-snug mb-1">Stay at Denz Phuket</p>
-              <p className="text-xs text-ink-muted leading-relaxed mb-3">Comfortable rooms with a social vibe — perfect for digital nomads and travellers.</p>
-              <span className="inline-block text-xs font-semibold text-emerald-600 group-hover:text-emerald-800 transition-colors">
-                View rooms →
-              </span>
-            </Link>
-
-            {/* Menu / café promo */}
-            <Link
-              href="/menu"
-              className="group block rounded-2xl border border-amber-200 bg-white p-4 hover:shadow-md transition-shadow"
-            >
-              <p className="text-xs font-semibold uppercase tracking-widest text-amber-500 mb-1">☕ Café &amp; Food</p>
-              <p className="text-sm font-bold text-ink leading-snug mb-1">Eat &amp; Drink at Denz</p>
-              <p className="text-xs text-ink-muted leading-relaxed mb-3">Fresh food, great coffee, and smoothies — fuel your day without leaving the vibe.</p>
-              <span className="inline-block text-xs font-semibold text-amber-600 group-hover:text-amber-800 transition-colors">
-                See the menu →
+            <Link href="/rooms" className="group block rounded-2xl p-5 bg-green-50 border border-transparent hover:border-green-200 hover:shadow-md transition-all duration-200">
+              <div className="inline-flex p-2 rounded-xl bg-green-100 mb-3">
+                <BedDouble className="w-4 h-4 text-green-600" />
+              </div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-0.5">Stay</p>
+              <h3 className="text-sm font-bold text-ink mb-1.5 leading-snug">Sleep, work, repeat</h3>
+              <p className="text-xs text-ink-muted leading-relaxed mb-3">Clean, comfortable rooms right above the café. Wake up, grab a coffee and get to work.</p>
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-ink group-hover:gap-2 transition-all">
+                See rooms <ArrowRight className="w-3 h-3" />
               </span>
             </Link>
 

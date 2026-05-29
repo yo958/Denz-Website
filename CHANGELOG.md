@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.18] - 2026-05-29
+### Changed
+- Guide post sidebar ads: restyled to match homepage FeaturesSection cards (tinted bg, icon, eyebrow, bold headline, arrow CTA); compact p-5 size to take less vertical space
+
 ## [0.5.17] - 2026-05-29
 ### Changed
 - Guide post sidebar: widened to 320px; ad cards moved above TOC; TOC now collapsible — H2s always visible with expand/collapse toggle, H3s hidden until opened; active section auto-expands
