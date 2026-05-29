@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.17] - 2026-05-29
+### Changed
+- Guide post sidebar: widened to 320px; ad cards moved above TOC; TOC now collapsible — H2s always visible with expand/collapse toggle, H3s hidden until opened; active section auto-expands
+
 ## [0.5.16] - 2026-05-29
 ### Changed
 - Guide listing page: full max-w-7xl width matching all other pages; 4-col grid on xl screens
