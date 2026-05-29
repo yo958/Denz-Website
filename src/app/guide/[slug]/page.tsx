@@ -201,7 +201,7 @@ export default function BlogPostPage() {
         return;
       }
       // Avoid duplicate script tags
-      if (document.querySelector('script[src*="instagram.com/embeds"]')) return;
+      if (document.querySelector('script[src*="instagram.com/embed"]')) return;
       const script = document.createElement('script');
       script.src = 'https://www.instagram.com/embeds.js';
       script.async = true;

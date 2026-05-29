@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.25] - 2026-05-30
+### Fixed
+- Guide post: Instagram script duplicate-guard now matches both embed.js and embeds.js variants
+
 ## [0.5.24] - 2026-05-29
 ### Fixed
 - Guide post: Instagram embed script deferred 100ms to ensure blockquote is in DOM; duplicate script tag guard added
