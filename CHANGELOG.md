@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.21] - 2026-05-29
+### Added
+- Guide listing: show 20 posts initially with "Load more · N remaining" button for the rest; resets to 20 when switching category filter
+
 ## [0.5.20] - 2026-05-29
 ### Fixed
 - Guide post tables now render with borders, padding, alternating row shading, and proper column alignment

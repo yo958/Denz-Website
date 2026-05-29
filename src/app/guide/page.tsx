@@ -24,6 +24,7 @@ export default function BlogListingPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(20);
 
   useEffect(() => {
     async function load() {
@@ -51,6 +52,14 @@ export default function BlogListingPage() {
     ? posts.filter(p => p.categories.includes(activeCategory))
     : posts;
 
+  const visible = filtered.slice(0, visibleCount);
+  const hasMore = filtered.length > visibleCount;
+
+  function handleCategoryChange(cat: string | null) {
+    setActiveCategory(cat);
+    setVisibleCount(20);
+  }
+
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
 
@@ -69,7 +78,7 @@ export default function BlogListingPage() {
       {!loading && posts.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 mb-8">
           <button
-            onClick={() => setActiveCategory(null)}
+            onClick={() => handleCategoryChange(null)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
               activeCategory === null
                 ? 'bg-brand text-white'
@@ -81,7 +90,7 @@ export default function BlogListingPage() {
           {categories.map(cat => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+              onClick={() => handleCategoryChange(activeCategory === cat ? null : cat)}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors capitalize ${
                 activeCategory === cat
                   ? 'bg-brand text-white'
@@ -117,14 +126,15 @@ export default function BlogListingPage() {
         <div className="text-center py-20 text-ink-muted">
           <p className="text-lg">{activeCategory ? 'No articles in this category yet.' : 'No articles published yet. Check back soon!'}</p>
           {activeCategory && (
-            <button onClick={() => setActiveCategory(null)} className="mt-3 text-brand hover:underline text-sm">View all articles</button>
+            <button onClick={() => handleCategoryChange(null)} className="mt-3 text-brand hover:underline text-sm">View all articles</button>
           )}
         </div>
       )}
 
       {!loading && filtered.length > 0 && (
+        <>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filtered.map(post => (
+          {visible.map(post => (
             <article key={post.id} className="group rounded-2xl border border-ink/10 overflow-hidden hover:shadow-lg transition-shadow bg-white">
               <Link href={`/guide/${post.slug}`}>
                 {post.featureImage
@@ -148,7 +158,7 @@ export default function BlogListingPage() {
                     {post.categories.map(cat => (
                       <button
                         key={cat}
-                        onClick={() => setActiveCategory(cat)}
+                        onClick={() => handleCategoryChange(cat)}
                         className="text-xs font-medium px-2.5 py-1 rounded-full bg-brand/10 text-brand hover:bg-brand/20 transition-colors capitalize"
                       >
                         {slugToLabel(cat)}
@@ -178,6 +188,18 @@ export default function BlogListingPage() {
             </article>
           ))}
         </div>
+
+        {hasMore && (
+          <div className="mt-12 flex justify-center">
+            <button
+              onClick={() => setVisibleCount(c => c + 20)}
+              className="px-8 py-3 rounded-full border border-ink/20 text-sm font-medium text-ink-muted hover:bg-ink/5 hover:border-ink/30 transition-colors"
+            >
+              Load more · {filtered.length - visibleCount} remaining
+            </button>
+          </div>
+        )}
+        </>
       )}
     </main>
   );
