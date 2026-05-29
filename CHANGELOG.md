@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.1] - 2026-05-29
+### Fixed
+- Blog listing, category, and tag pages now use a single-field `where('status', '==', 'published')` query (no composite index required) and sort client-side — fixes "No articles published yet" caused by Firestore rejecting the composite query + unfiltered fallback
+
 ## [0.5.0] - 2026-05-29
 ### Added
 - **Blog section** — full blog on the website with SEO-optimised pages:

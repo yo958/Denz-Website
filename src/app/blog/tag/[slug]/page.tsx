@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { BlogPost } from '@/types';
 import { Calendar, Clock, ChevronRight } from 'lucide-react';
@@ -27,10 +27,11 @@ export default function TagArchivePage() {
     if (!slug) return;
     async function load() {
       try {
-        const snap = await getDocs(collection(db, 'blog-posts'));
+        const q = query(collection(db, 'blog-posts'), where('status', '==', 'published'));
+        const snap = await getDocs(q);
         const all = snap.docs.map(d => ({ id: d.id, ...d.data() }) as BlogPost);
         const filtered = all
-          .filter(p => p.status === 'published' && p.tags.includes(slug))
+          .filter(p => p.tags.includes(slug))
           .sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt));
         setPosts(filtered);
       } catch {

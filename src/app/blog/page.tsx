@@ -23,26 +23,18 @@ export default function BlogListingPage() {
   useEffect(() => {
     async function load() {
       try {
+        // Single-field query (no composite index needed). Sort client-side.
         const q = query(
           collection(db, 'blog-posts'),
           where('status', '==', 'published'),
-          orderBy('publishedAt', 'desc'),
         );
         const snap = await getDocs(q);
-        setPosts(snap.docs.map(d => ({ id: d.id, ...d.data() }) as BlogPost));
+        const all = snap.docs.map(d => ({ id: d.id, ...d.data() }) as BlogPost);
+        setPosts(
+          all.sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt)),
+        );
       } catch {
-        // Firestore composite index may not exist yet — fall back to client-side sort
-        try {
-          const snap = await getDocs(collection(db, 'blog-posts'));
-          const all = snap.docs.map(d => ({ id: d.id, ...d.data() }) as BlogPost);
-          setPosts(
-            all
-              .filter(p => p.status === 'published')
-              .sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt)),
-          );
-        } catch {
-          setPosts([]);
-        }
+        setPosts([]);
       }
       setLoading(false);
     }
