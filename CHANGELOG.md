@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.23] - 2026-05-29
+### Fixed
+- Guide post: Instagram embeds now render — added onload callback to call Embeds.process() after script loads
+- Guide post: blockquote styles no longer override Instagram embed blockquote styling
+
 ## [0.5.22] - 2026-05-29
 ### Changed
 - Guide post TOC: all H2 sections open by default instead of collapsed

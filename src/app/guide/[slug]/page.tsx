@@ -201,7 +201,7 @@ export default function BlogPostPage() {
     const script = document.createElement('script');
     script.src = 'https://www.instagram.com/embeds.js';
     script.async = true;
-    script.defer = true;
+    script.onload = () => w.instgrm?.Embeds.process();
     document.body.appendChild(script);
   }, [post]);
 
@@ -328,7 +328,7 @@ export default function BlogPostPage() {
               '[&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-1.5',
               '[&_li]:text-ink-muted [&_li]:leading-relaxed',
               '[&_a]:text-brand [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:no-underline',
-              '[&_blockquote]:border-l-4 [&_blockquote]:border-brand/30 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-ink-muted',
+              '[&_blockquote:not(.instagram-media)]:border-l-4 [&_blockquote:not(.instagram-media)]:border-brand/30 [&_blockquote:not(.instagram-media)]:pl-4 [&_blockquote:not(.instagram-media)]:italic [&_blockquote:not(.instagram-media)]:text-ink-muted',
               '[&_code]:bg-ink/5 [&_code]:rounded [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-sm',
               '[&_img]:rounded-xl [&_img]:max-w-full [&_img]:my-6',
               '[&_iframe]:w-full [&_iframe]:rounded-xl',
