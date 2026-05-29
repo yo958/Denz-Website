@@ -117,7 +117,7 @@ export default function BlogPostPage() {
 
   if (loading) {
     return (
-      <main className="max-w-5xl mx-auto px-4 py-12 animate-pulse">
+      <main className="max-w-5xl mx-auto px-4 pt-24 pb-12 animate-pulse">
         <div className="h-8 bg-ink/5 rounded w-2/3 mb-4" />
         <div className="h-64 bg-ink/5 rounded-2xl mb-8" />
         <div className="space-y-3">
@@ -129,7 +129,7 @@ export default function BlogPostPage() {
 
   if (!post) {
     return (
-      <main className="max-w-5xl mx-auto px-4 py-20 text-center">
+      <main className="max-w-5xl mx-auto px-4 pt-24 pb-12 text-center">
         <h1 className="text-2xl font-bold text-ink mb-3">Article not found</h1>
         <Link href="/blog" className="text-brand hover:underline text-sm">← Back to Blog</Link>
       </main>
@@ -139,7 +139,7 @@ export default function BlogPostPage() {
   const { processed, toc } = processContent(post.content);
 
   return (
-    <main className="max-w-5xl mx-auto px-4 py-12">
+    <main className="max-w-5xl mx-auto px-4 pt-24 pb-12">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-ink-muted mb-8">
         <Link href="/" className="hover:text-brand transition-colors">Home</Link>

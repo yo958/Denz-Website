@@ -42,7 +42,7 @@ export default function BlogListingPage() {
   }, []);
 
   return (
-    <main className="max-w-5xl mx-auto px-4 py-12">
+    <main className="max-w-5xl mx-auto px-4 pt-24 pb-12">
       <div className="mb-10">
         <h1 className="text-4xl font-bold text-ink mb-3">Blog</h1>
         <p className="text-ink-muted text-lg">Tips, guides, and stories from Denz Coworking & Café, Kathu, Phuket.</p>

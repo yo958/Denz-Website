@@ -43,7 +43,7 @@ export default function TagArchivePage() {
   }, [slug]);
 
   return (
-    <main className="max-w-5xl mx-auto px-4 py-12">
+    <main className="max-w-5xl mx-auto px-4 pt-24 pb-12">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-ink-muted mb-8">
         <Link href="/" className="hover:text-brand transition-colors">Home</Link>

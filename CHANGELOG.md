@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.2] - 2026-05-29
+### Fixed
+- Blog, category, and tag pages now use `pt-24` to clear the fixed navbar (was clipping the heading)
+### Added
+- Blog nav link added to Navbar (desktop + mobile menu)
+
 ## [0.5.1] - 2026-05-29
 ### Fixed
 - Blog listing, category, and tag pages now use a single-field `where('status', '==', 'published')` query (no composite index required) and sort client-side — fixes "No articles published yet" caused by Firestore rejecting the composite query + unfiltered fallback
