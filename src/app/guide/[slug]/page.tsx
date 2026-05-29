@@ -360,6 +360,24 @@ export default function BlogPostPage() {
                 </span>
               </div>
             </Link>
+
+            {/* Menu / café promo */}
+            <Link
+              href="/menu"
+              className="group block rounded-2xl overflow-hidden border border-ink/10 bg-white hover:shadow-md transition-shadow"
+            >
+              <div className="h-28 bg-gradient-to-br from-amber-400 to-orange-500 relative flex items-end p-4">
+                <span className="text-3xl absolute top-3 right-4 opacity-80">☕</span>
+                <span className="text-xs font-semibold uppercase tracking-widest text-amber-100">Café &amp; Food</span>
+              </div>
+              <div className="p-4">
+                <p className="text-sm font-bold text-ink leading-snug mb-1">Eat &amp; Drink at Denz</p>
+                <p className="text-xs text-ink-muted leading-relaxed mb-3">Fresh food, great coffee, and smoothies — fuel your day without leaving the vibe.</p>
+                <span className="inline-block text-xs font-semibold text-amber-600 group-hover:text-amber-800 transition-colors">
+                  See the menu →
+                </span>
+              </div>
+            </Link>
           </div>
         </aside>
       </div>

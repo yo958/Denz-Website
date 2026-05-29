@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.8] - 2026-05-29
+### Added
+- Café & food promo card (amber) in guide post sidebar linking to `/menu`
+
 ## [0.5.7] - 2026-05-29
 ### Added
 - Sidebar promo cards on guide post pages — coworking (violet) and rooms (emerald) with links to `/coworking` and `/rooms`; sidebar always visible on desktop, TOC still shown above when applicable
