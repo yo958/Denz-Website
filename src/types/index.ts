@@ -125,3 +125,31 @@ export interface WebOrder {
   createdAt: Date;
   updatedAt?: Date;
 }
+
+/* ── Blog ─────────────────────────────────────────────────────── */
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt?: string;
+  featureImage?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  focusKeyword?: string;
+  categories: string[];
+  tags: string[];
+  status: 'draft' | 'published';
+  publishedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  author?: string;
+}
+
+export interface BlogTaxonomy {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  createdAt: string;
+}

@@ -13,6 +13,7 @@
 - Coworking: https://denzphuket.com/coworking
 - Rooms: https://denzphuket.com/rooms
 - Café Menu: https://denzphuket.com/menu
+- Blog: https://denzphuket.com/blog
 - Contact: https://denzphuket.com/contact
 
 ## Coworking
@@ -20,6 +21,9 @@ Flexible desk coworking in Phuket. Hourly from ฿50, daily, weekly, and monthly
 
 ## Rooms
 Accommodation rooms on-site. Standard, Deluxe, and Studio Suite options. Direct access to the coworking café. Gigabit WiFi in every room. Mountain views.
+
+## Blog
+Tips, guides, and stories about coworking, digital nomad life, and Phuket living from the Denz team. Published at https://denzphuket.com/blog. Articles are tagged by category and topic for easy discovery.
 
 ## Amenities
 1 Gbps fibre WiFi · Free coffee and tea · Printing · Lockers · Standing desks · Community · Mountain views · Air conditioning · On-site café and kitchen

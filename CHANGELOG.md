@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.5.0] - 2026-05-29
+### Added
+- **Blog section** — full blog on the website with SEO-optimised pages:
+  - `/blog` — listing page with published articles, feature images, category pills, reading time
+  - `/blog/[slug]` — article detail with `Article` JSON-LD schema, `BreadcrumbList`, sticky Table of Contents (auto-generated from H2/H3 headings), reading time, OG tags, and per-article canonical URLs; server-side `generateMetadata` uses Firebase Admin for accurate head tags
+  - `/blog/category/[slug]` — category archive with `CollectionPage` schema + `BreadcrumbList`
+  - `/blog/tag/[slug]` — tag archive with `CollectionPage` schema + `BreadcrumbList`
+- `firebase-admin` added as dependency; `src/lib/firebase-admin.ts` singleton for server-side Firestore reads
+- `BlogPost` and `BlogTaxonomy` types added to `src/types/index.ts`
+- **Sitemap** updated: `/blog` listing at priority 0.8; all published post slugs, category slugs, and tag slugs fetched live from Firestore via Admin SDK
+- **`llms.txt`** updated with blog section and page URL
+
+## [0.4.24] - 2026-05-27
+### Added
+- **Menu item detail pages** (`/menu/[id]`): individual page for each café menu item, matching the coworking/rooms detail page pattern
+  - `src/app/menu/[id]/layout.tsx` — `generateMetadata` sets per-item canonical URL, title, description, OG tags; static `ITEM_META` map covers all 16 fallback items (f1–f8 food, d1–d8 drinks); `BreadcrumbList` schema (Home → Menu → Item); `Product` schema with `Offer` (price in THB, `InStock`, seller linked to `LocalBusiness`)
+  - `src/app/menu/[id]/page.tsx` — client component; fetches live data from Firestore `products` slice; shows item name, category badge, description, price, Add to cart button, sticky cart bar; handles not-found state
+- **Menu listing page links**: item name/description now links to the detail page (`/menu/${item.id}`); hover colour added
+- **Sitemap**: all 16 fallback menu item URLs added at priority 0.5
+
 ## [0.4.23] - 2026-05-25
 ### Added
 - **Product-type schema on all main pages:**
