@@ -54,7 +54,7 @@ export default async function TagLayout({
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
-      { '@type': 'ListItem', position: 2, name: 'Guide', item: `${BASE_URL}/guide` },
+      { '@type': 'ListItem', position: 2, name: 'Guides', item: `${BASE_URL}/guide` },
       { '@type': 'ListItem', position: 3, name: `#${name}`, item: `${BASE_URL}/guide/tag/${slug}` },
     ],
   };

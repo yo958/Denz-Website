@@ -155,7 +155,7 @@ export default function BlogPostPage() {
     return (
       <main className="max-w-5xl mx-auto px-4 pt-24 pb-12 text-center">
         <h1 className="text-2xl font-bold text-ink mb-3">Article not found</h1>
-        <Link href="/guide" className="text-brand hover:underline text-sm">← Back to Guide</Link>
+        <Link href="/guide" className="text-brand hover:underline text-sm">← Back to Guides</Link>
       </main>
     );
   }
@@ -168,7 +168,7 @@ export default function BlogPostPage() {
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-ink-muted mb-8 flex-wrap">
         <Link href="/" className="hover:text-brand transition-colors">Home</Link>
         <ChevronRight size={12} className="shrink-0" />
-        <Link href="/guide" className="hover:text-brand transition-colors">Guide</Link>
+        <Link href="/guide" className="hover:text-brand transition-colors">Guides</Link>
         {post.categories[0] && (
           <>
             <ChevronRight size={12} className="shrink-0" />
@@ -316,7 +316,7 @@ export default function BlogPostPage() {
           {/* Back link */}
           <div className="mt-8">
             <Link href="/guide" className="text-sm text-brand hover:underline flex items-center gap-1.5">
-              ← Back to Guide
+              ← Back to Guides
             </Link>
           </div>
         </article>

@@ -85,7 +85,7 @@ export default async function BlogPostLayout({
 
   const breadcrumbItems = [
     { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
-    { '@type': 'ListItem', position: 2, name: 'Guide', item: `${BASE_URL}/guide` },
+    { '@type': 'ListItem', position: 2, name: 'Guides', item: `${BASE_URL}/guide` },
     ...(firstCatSlug && firstCatName
       ? [{ '@type': 'ListItem', position: 3, name: firstCatName, item: `${BASE_URL}/guide/category/${firstCatSlug}` }]
       : []),

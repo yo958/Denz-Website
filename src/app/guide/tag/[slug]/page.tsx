@@ -48,7 +48,7 @@ export default function TagArchivePage() {
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-ink-muted mb-8">
         <Link href="/" className="hover:text-brand transition-colors">Home</Link>
         <ChevronRight size={12} />
-        <Link href="/guide" className="hover:text-brand transition-colors">Guide</Link>
+        <Link href="/guide" className="hover:text-brand transition-colors">Guides</Link>
         <ChevronRight size={12} />
         <span className="text-ink">#{tagName}</span>
       </nav>

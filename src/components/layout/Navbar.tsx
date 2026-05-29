@@ -13,7 +13,7 @@ const BASE_NAV_LINKS = [
   { label: 'Menu', href: '/menu' },
   { label: 'Coworking', href: '/coworking' },
   { label: 'Rooms', href: '/rooms' },
-  { label: 'Guide', href: '/guide' },
+  { label: 'Guides', href: '/guide' },
   { label: 'Contact', href: '/contact' },
 ];
 
