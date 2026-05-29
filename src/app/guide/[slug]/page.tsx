@@ -137,6 +137,21 @@ export default function BlogPostPage() {
     load();
   }, [slug]);
 
+  // Load Instagram embed script when post content contains Instagram embeds
+  useEffect(() => {
+    if (!post?.content?.includes('instagram-media')) return;
+    const w = window as Window & { instgrm?: { Embeds: { process: () => void } } };
+    if (w.instgrm) {
+      w.instgrm.Embeds.process();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://www.instagram.com/embeds.js';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+  }, [post]);
+
   // Track active heading for TOC highlight
   useEffect(() => {
     if (!contentRef.current) return;

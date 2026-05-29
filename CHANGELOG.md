@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.15] - 2026-05-29
+### Fixed
+- Guide post: dynamically load Instagram embeds.js when post contains instagram-media blockquotes, so embedded Instagram posts render correctly
+
 ## [0.5.14] - 2026-05-29
 ### Fixed
 - Guide post: convert wp-block-embed figure wrappers and bare YouTube URLs to responsive iframes at render time (fixes already-imported posts without re-importing)
