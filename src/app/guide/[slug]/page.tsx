@@ -328,55 +328,40 @@ export default function BlogPostPage() {
             {/* Coworking promo */}
             <Link
               href="/coworking"
-              className="group block rounded-2xl overflow-hidden border border-ink/10 bg-white hover:shadow-md transition-shadow"
+              className="group block rounded-2xl border border-violet-200 bg-white p-4 hover:shadow-md transition-shadow"
             >
-              <div className="h-28 bg-gradient-to-br from-violet-500 to-violet-700 relative flex items-end p-4">
-                <span className="text-3xl absolute top-3 right-4 opacity-80">💻</span>
-                <span className="text-xs font-semibold uppercase tracking-widest text-violet-200">Coworking</span>
-              </div>
-              <div className="p-4">
-                <p className="text-sm font-bold text-ink leading-snug mb-1">Hot Desks &amp; Private Offices</p>
-                <p className="text-xs text-ink-muted leading-relaxed mb-3">Fast Wi-Fi, great coffee, and a productive atmosphere in the heart of Phuket.</p>
-                <span className="inline-block text-xs font-semibold text-violet-600 group-hover:text-violet-800 transition-colors">
-                  See spaces →
-                </span>
-              </div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-violet-500 mb-1">💻 Coworking</p>
+              <p className="text-sm font-bold text-ink leading-snug mb-1">Hot Desks &amp; Private Offices</p>
+              <p className="text-xs text-ink-muted leading-relaxed mb-3">Fast Wi-Fi, great coffee, and a productive atmosphere in the heart of Phuket.</p>
+              <span className="inline-block text-xs font-semibold text-violet-600 group-hover:text-violet-800 transition-colors">
+                See spaces →
+              </span>
             </Link>
 
             {/* Rooms promo */}
             <Link
               href="/rooms"
-              className="group block rounded-2xl overflow-hidden border border-ink/10 bg-white hover:shadow-md transition-shadow"
+              className="group block rounded-2xl border border-emerald-200 bg-white p-4 hover:shadow-md transition-shadow"
             >
-              <div className="h-28 bg-gradient-to-br from-emerald-500 to-emerald-700 relative flex items-end p-4">
-                <span className="text-3xl absolute top-3 right-4 opacity-80">🛏️</span>
-                <span className="text-xs font-semibold uppercase tracking-widest text-emerald-200">Rooms</span>
-              </div>
-              <div className="p-4">
-                <p className="text-sm font-bold text-ink leading-snug mb-1">Stay at Denz Phuket</p>
-                <p className="text-xs text-ink-muted leading-relaxed mb-3">Comfortable rooms with a social vibe — perfect for digital nomads and travellers.</p>
-                <span className="inline-block text-xs font-semibold text-emerald-600 group-hover:text-emerald-800 transition-colors">
-                  View rooms →
-                </span>
-              </div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-emerald-500 mb-1">🛏️ Rooms</p>
+              <p className="text-sm font-bold text-ink leading-snug mb-1">Stay at Denz Phuket</p>
+              <p className="text-xs text-ink-muted leading-relaxed mb-3">Comfortable rooms with a social vibe — perfect for digital nomads and travellers.</p>
+              <span className="inline-block text-xs font-semibold text-emerald-600 group-hover:text-emerald-800 transition-colors">
+                View rooms →
+              </span>
             </Link>
 
             {/* Menu / café promo */}
             <Link
               href="/menu"
-              className="group block rounded-2xl overflow-hidden border border-ink/10 bg-white hover:shadow-md transition-shadow"
+              className="group block rounded-2xl border border-amber-200 bg-white p-4 hover:shadow-md transition-shadow"
             >
-              <div className="h-28 bg-gradient-to-br from-amber-400 to-orange-500 relative flex items-end p-4">
-                <span className="text-3xl absolute top-3 right-4 opacity-80">☕</span>
-                <span className="text-xs font-semibold uppercase tracking-widest text-amber-100">Café &amp; Food</span>
-              </div>
-              <div className="p-4">
-                <p className="text-sm font-bold text-ink leading-snug mb-1">Eat &amp; Drink at Denz</p>
-                <p className="text-xs text-ink-muted leading-relaxed mb-3">Fresh food, great coffee, and smoothies — fuel your day without leaving the vibe.</p>
-                <span className="inline-block text-xs font-semibold text-amber-600 group-hover:text-amber-800 transition-colors">
-                  See the menu →
-                </span>
-              </div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-amber-500 mb-1">☕ Café &amp; Food</p>
+              <p className="text-sm font-bold text-ink leading-snug mb-1">Eat &amp; Drink at Denz</p>
+              <p className="text-xs text-ink-muted leading-relaxed mb-3">Fresh food, great coffee, and smoothies — fuel your day without leaving the vibe.</p>
+              <span className="inline-block text-xs font-semibold text-amber-600 group-hover:text-amber-800 transition-colors">
+                See the menu →
+              </span>
             </Link>
           </div>
         </aside>

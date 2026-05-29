@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.9] - 2026-05-29
+### Changed
+- Guide post sidebar promo cards: removed gradient image header, now compact text-only cards with coloured border
+
 ## [0.5.8] - 2026-05-29
 ### Added
 - Café & food promo card (amber) in guide post sidebar linking to `/menu`
