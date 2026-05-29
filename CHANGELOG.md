@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.16] - 2026-05-29
+### Changed
+- Guide listing page: full max-w-7xl width matching all other pages; 4-col grid on xl screens
+- Guide listing page: category filter buttons ordered by frequency; live article count
+- Guide post page: widened to max-w-7xl to match site standard
+- Clicking a category chip on a card now filters the listing in place
+
 ## [0.5.15] - 2026-05-29
 ### Fixed
 - Guide post: dynamically load Instagram embeds.js when post contains instagram-media blockquotes, so embedded Instagram posts render correctly

@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { BlogPost } from '@/types';
-import { Calendar, Clock, Tag } from 'lucide-react';
+import { Calendar, Clock } from 'lucide-react';
 
 function readingTime(html: string): string {
   const words = html.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
@@ -16,23 +16,22 @@ function fmtDate(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+function slugToLabel(slug: string): string {
+  return slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
 export default function BlogListingPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        // Single-field query (no composite index needed). Sort client-side.
-        const q = query(
-          collection(db, 'blog-posts'),
-          where('status', '==', 'published'),
-        );
+        const q = query(collection(db, 'blog-posts'), where('status', '==', 'published'));
         const snap = await getDocs(q);
         const all = snap.docs.map(d => ({ id: d.id, ...d.data() }) as BlogPost);
-        setPosts(
-          all.sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt)),
-        );
+        setPosts(all.sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt)));
       } catch {
         setPosts([]);
       }
@@ -41,9 +40,22 @@ export default function BlogListingPage() {
     load();
   }, []);
 
+  // Collect all unique categories from published posts, ordered by frequency
+  const categories = useMemo(() => {
+    const counts = new Map<string, number>();
+    posts.forEach(p => p.categories.forEach(c => counts.set(c, (counts.get(c) ?? 0) + 1)));
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([slug]) => slug);
+  }, [posts]);
+
+  const filtered = activeCategory
+    ? posts.filter(p => p.categories.includes(activeCategory))
+    : posts;
+
   return (
-    <main className="max-w-5xl mx-auto px-4 pt-24 pb-12">
-      <div className="mb-10">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+
+      {/* Header */}
+      <div className="mb-8">
         <p className="text-xs font-semibold uppercase tracking-widest text-brand mb-3">Denz Phuket Guide</p>
         <h1 className="text-4xl sm:text-5xl font-bold text-ink mb-4 leading-tight">
           Your local guide to<br className="hidden sm:block" /> life in Phuket
@@ -53,9 +65,42 @@ export default function BlogListingPage() {
         </p>
       </div>
 
+      {/* Category filters + post count */}
+      {!loading && posts.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 mb-8">
+          <button
+            onClick={() => setActiveCategory(null)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              activeCategory === null
+                ? 'bg-brand text-white'
+                : 'bg-ink/5 text-ink-muted hover:bg-ink/10'
+            }`}
+          >
+            All
+          </button>
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors capitalize ${
+                activeCategory === cat
+                  ? 'bg-brand text-white'
+                  : 'bg-ink/5 text-ink-muted hover:bg-ink/10'
+              }`}
+            >
+              {slugToLabel(cat)}
+            </button>
+          ))}
+          <span className="ml-auto text-sm text-ink-muted">
+            {filtered.length} {filtered.length === 1 ? 'article' : 'articles'}
+          </span>
+        </div>
+      )}
+
+      {/* Loading skeletons */}
       {loading && (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map(i => (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {[1, 2, 3, 4].map(i => (
             <div key={i} className="rounded-2xl border border-ink/10 overflow-hidden animate-pulse">
               <div className="h-48 bg-ink/5" />
               <div className="p-5 space-y-3">
@@ -68,15 +113,18 @@ export default function BlogListingPage() {
         </div>
       )}
 
-      {!loading && posts.length === 0 && (
+      {!loading && filtered.length === 0 && (
         <div className="text-center py-20 text-ink-muted">
-          <p className="text-lg">No articles published yet. Check back soon!</p>
+          <p className="text-lg">{activeCategory ? 'No articles in this category yet.' : 'No articles published yet. Check back soon!'}</p>
+          {activeCategory && (
+            <button onClick={() => setActiveCategory(null)} className="mt-3 text-brand hover:underline text-sm">View all articles</button>
+          )}
         </div>
       )}
 
-      {!loading && posts.length > 0 && (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map(post => (
+      {!loading && filtered.length > 0 && (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filtered.map(post => (
             <article key={post.id} className="group rounded-2xl border border-ink/10 overflow-hidden hover:shadow-lg transition-shadow bg-white">
               <Link href={`/guide/${post.slug}`}>
                 {post.featureImage
@@ -98,18 +146,18 @@ export default function BlogListingPage() {
                 {post.categories.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {post.categories.map(cat => (
-                      <Link
+                      <button
                         key={cat}
-                        href={`/guide/category/${cat}`}
-                        className="text-xs font-medium px-2.5 py-1 rounded-full bg-brand/10 text-brand hover:bg-brand/20 transition-colors"
+                        onClick={() => setActiveCategory(cat)}
+                        className="text-xs font-medium px-2.5 py-1 rounded-full bg-brand/10 text-brand hover:bg-brand/20 transition-colors capitalize"
                       >
-                        {cat}
-                      </Link>
+                        {slugToLabel(cat)}
+                      </button>
                     ))}
                   </div>
                 )}
                 <Link href={`/guide/${post.slug}`}>
-                  <h2 className="text-lg font-bold text-ink group-hover:text-brand transition-colors leading-snug mb-2">
+                  <h2 className="text-base font-bold text-ink group-hover:text-brand transition-colors leading-snug mb-2">
                     {post.title}
                   </h2>
                 </Link>
