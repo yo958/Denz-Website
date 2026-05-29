@@ -44,8 +44,13 @@ export default function BlogListingPage() {
   return (
     <main className="max-w-5xl mx-auto px-4 pt-24 pb-12">
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-ink mb-3">Guide</h1>
-        <p className="text-ink-muted text-lg">Tips, guides, and stories from Denz Coworking & Café, Kathu, Phuket.</p>
+        <p className="text-xs font-semibold uppercase tracking-widest text-brand mb-3">Denz Phuket Guide</p>
+        <h1 className="text-4xl sm:text-5xl font-bold text-ink mb-4 leading-tight">
+          Your local guide to<br className="hidden sm:block" /> life in Phuket
+        </h1>
+        <p className="text-ink-muted text-lg max-w-2xl leading-relaxed">
+          From the best spots to eat and work, to events, adventures, and hidden gems — written by the team at Denz in Kathu.
+        </p>
       </div>
 
       {loading && (

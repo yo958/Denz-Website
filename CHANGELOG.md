@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.11] - 2026-05-29
+### Changed
+- Guide listing page: replaced generic AI-written hero with concise on-brand header — eyebrow label, bold headline, one-line subtext
+
 ## [0.5.10] - 2026-05-29
 ### Added
 - Guide post article body: inline images from blog editor now render with rounded corners and spacing
