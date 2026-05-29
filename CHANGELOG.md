@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.24] - 2026-05-29
+### Fixed
+- Guide post: Instagram embed script deferred 100ms to ensure blockquote is in DOM; duplicate script tag guard added
+
 ## [0.5.23] - 2026-05-29
 ### Fixed
 - Guide post: Instagram embeds now render — added onload callback to call Embeds.process() after script loads

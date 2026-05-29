@@ -194,15 +194,21 @@ export default function BlogPostPage() {
   useEffect(() => {
     if (!post?.content?.includes('instagram-media')) return;
     const w = window as Window & { instgrm?: { Embeds: { process: () => void } } };
-    if (w.instgrm) {
-      w.instgrm.Embeds.process();
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://www.instagram.com/embeds.js';
-    script.async = true;
-    script.onload = () => w.instgrm?.Embeds.process();
-    document.body.appendChild(script);
+    // Defer to ensure dangerouslySetInnerHTML has painted the blockquote
+    const timer = setTimeout(() => {
+      if (w.instgrm) {
+        w.instgrm.Embeds.process();
+        return;
+      }
+      // Avoid duplicate script tags
+      if (document.querySelector('script[src*="instagram.com/embeds"]')) return;
+      const script = document.createElement('script');
+      script.src = 'https://www.instagram.com/embeds.js';
+      script.async = true;
+      script.onload = () => w.instgrm?.Embeds.process();
+      document.body.appendChild(script);
+    }, 100);
+    return () => clearTimeout(timer);
   }, [post]);
 
   // Track active heading for TOC highlight
