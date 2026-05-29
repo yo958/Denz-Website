@@ -77,14 +77,25 @@ export default async function BlogPostLayout({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
 
+  // Use first category for breadcrumb if present
+  const firstCatSlug = post?.categories?.[0];
+  const firstCatName = firstCatSlug
+    ? firstCatSlug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+    : null;
+
+  const breadcrumbItems = [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE_URL}/blog` },
+    ...(firstCatSlug && firstCatName
+      ? [{ '@type': 'ListItem', position: 3, name: firstCatName, item: `${BASE_URL}/blog/category/${firstCatSlug}` }]
+      : []),
+    { '@type': 'ListItem', position: firstCatSlug ? 4 : 3, name: post?.title ?? 'Article', item: `${BASE_URL}/blog/${slug}` },
+  ];
+
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE_URL}/blog` },
-      { '@type': 'ListItem', position: 3, name: post?.title ?? 'Article', item: `${BASE_URL}/blog/${slug}` },
-    ],
+    itemListElement: breadcrumbItems,
   };
 
   const articleSchema = post

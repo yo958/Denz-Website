@@ -141,11 +141,22 @@ export default function BlogPostPage() {
   return (
     <main className="max-w-5xl mx-auto px-4 pt-24 pb-12">
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-ink-muted mb-8">
+      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-ink-muted mb-8 flex-wrap">
         <Link href="/" className="hover:text-brand transition-colors">Home</Link>
-        <ChevronRight size={12} />
+        <ChevronRight size={12} className="shrink-0" />
         <Link href="/blog" className="hover:text-brand transition-colors">Blog</Link>
-        <ChevronRight size={12} />
+        {post.categories[0] && (
+          <>
+            <ChevronRight size={12} className="shrink-0" />
+            <Link
+              href={`/blog/category/${post.categories[0]}`}
+              className="hover:text-brand transition-colors capitalize"
+            >
+              {post.categories[0].replace(/-/g, ' ')}
+            </Link>
+          </>
+        )}
+        <ChevronRight size={12} className="shrink-0" />
         <span className="text-ink truncate max-w-xs">{post.title}</span>
       </nav>
 

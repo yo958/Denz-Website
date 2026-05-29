@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.3] - 2026-05-29
+### Changed
+- Blog post breadcrumb now includes the first category: Home › Blog › Travel › Post Title
+- BreadcrumbList JSON-LD schema updated to match (4 positions when category present, 3 when not)
+- Category crumb is a clickable link to the category archive page
+
 ## [0.5.2] - 2026-05-29
 ### Fixed
 - Blog, category, and tag pages now use `pt-24` to clear the fixed navbar (was clipping the heading)
