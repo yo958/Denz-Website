@@ -332,6 +332,10 @@ export default function BlogPostPage() {
               '[&_code]:bg-ink/5 [&_code]:rounded [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-sm',
               '[&_img]:rounded-xl [&_img]:max-w-full [&_img]:my-6',
               '[&_iframe]:w-full [&_iframe]:rounded-xl',
+              '[&_table]:w-full [&_table]:border-collapse [&_table]:my-6 [&_table]:text-sm',
+              '[&_th]:bg-ink/5 [&_th]:px-4 [&_th]:py-2.5 [&_th]:text-left [&_th]:font-semibold [&_th]:text-ink [&_th]:border [&_th]:border-ink/10',
+              '[&_td]:px-4 [&_td]:py-2.5 [&_td]:text-ink-muted [&_td]:border [&_td]:border-ink/10',
+              '[&_tr:nth-child(even)_td]:bg-ink/[0.02]',
             ].join(' ')}
             dangerouslySetInnerHTML={{ __html: processed }}
           />

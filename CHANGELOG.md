@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.20] - 2026-05-29
+### Fixed
+- Guide post tables now render with borders, padding, alternating row shading, and proper column alignment
+
 ## [0.5.19] - 2026-05-29
 ### Changed
 - Guide post sidebar ads: icon moved inline beside title/subtitle to reduce vertical height
