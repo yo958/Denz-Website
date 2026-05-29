@@ -249,6 +249,7 @@ export default function BlogPostPage() {
               '[&_blockquote]:border-l-4 [&_blockquote]:border-brand/30 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-ink-muted',
               '[&_code]:bg-ink/5 [&_code]:rounded [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-sm',
               '[&_img]:rounded-xl [&_img]:max-w-full [&_img]:my-6',
+              '[&_iframe]:w-full [&_iframe]:rounded-xl',
             ].join(' ')}
             dangerouslySetInnerHTML={{ __html: processed }}
           />

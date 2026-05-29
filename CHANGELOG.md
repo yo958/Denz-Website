@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.13] - 2026-05-29
+### Fixed
+- Guide post: iframe (YouTube embed) styled full-width with rounded corners
+
 ## [0.5.12] - 2026-05-29
 ### Changed
 - Renamed "Guide" to "Guides" in navbar, all breadcrumbs, and back-links; /guide permalink unchanged
