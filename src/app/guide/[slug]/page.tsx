@@ -113,7 +113,7 @@ export default function BlogPostPage() {
             ...sameCategory.sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt)),
             ...rest.sort((a, b) => (b.publishedAt ?? b.createdAt).localeCompare(a.publishedAt ?? a.createdAt)),
           ];
-          setRelated(sorted.slice(0, 3));
+          setRelated(sorted.slice(0, 6));
         }
       } catch {
         setPost(null);

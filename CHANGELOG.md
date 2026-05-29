@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.6] - 2026-05-29
+### Changed
+- More Articles section now shows up to 6 posts (was 3) — fills a clean 2-row grid on desktop
+
 ## [0.5.5] - 2026-05-29
 ### Added
 - "More Articles" section at the bottom of each guide post — shows up to 3 cards with feature image, category, title, date, and reading time; prioritises posts sharing the same category, then fills with newest posts
