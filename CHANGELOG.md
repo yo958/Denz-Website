@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.29] - 2026-05-30
+### Fixed
+- robots.ts: unblock GPTBot — allowing it means Denz appears when people ask ChatGPT about coworking in Phuket; only block pure data scrapers (CCBot, Diffbot, Bytespider)
+
 ## [0.5.28] - 2026-05-30
 ### Fixed (SEO)
 - Guide listing and guide post pages converted from 'use client' to async Server Components — article content, H1, titles, and internal links now server-rendered and crawlable by Googlebot

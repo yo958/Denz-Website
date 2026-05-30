@@ -10,12 +10,13 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/order', '/dashboard'],
       },
-      // Block scrapers that offer no traffic benefit
-      { userAgent: 'GPTBot', disallow: '/' },
-      { userAgent: 'CCBot', disallow: '/' },
-      { userAgent: 'Diffbot', disallow: '/' },
-      { userAgent: 'Bytespider', disallow: '/' },
-      // Allow AI assistants that drive referral traffic — ClaudeBot, PerplexityBot, Google-Extended
+      // Block data scrapers that offer no discoverability benefit
+      { userAgent: 'CCBot', disallow: '/' },       // Common Crawl — data brokers
+      { userAgent: 'Diffbot', disallow: '/' },     // Commercial data scraper
+      { userAgent: 'Bytespider', disallow: '/' },  // TikTok/ByteDance — no referral traffic
+      // GPTBot (ChatGPT), ClaudeBot, PerplexityBot, Google-Extended intentionally allowed —
+      // being in AI training data means your business gets recommended when people ask
+      // "best coworking in Phuket" to any AI assistant.
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,
   };
