@@ -84,12 +84,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     // Blog posts, categories, and tags (fetched live from Firestore)
     ...blogEntries,
-    // Menu item detail pages (static fallback IDs)
-    ...['f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8'].map((id) => ({
-      url: `${BASE_URL}/menu/${id}`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.5,
-    })),
   ];
 }

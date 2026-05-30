@@ -67,10 +67,10 @@ const jsonLd = {
       url: BASE_URL,
       logo: `${BASE_URL}/denz-logo.png`,
       image: `${BASE_URL}/images/hero-coworking.jpg`,
-      telephone: '',
+      telephone: '+66639177720',
       address: {
         '@type': 'PostalAddress',
-        streetAddress: 'Kathu',
+        streetAddress: 'Soi 4, Soi Khuanyang',
         addressLocality: 'Pa Tong',
         addressRegion: 'Phuket',
         postalCode: '83120',
@@ -87,6 +87,12 @@ const jsonLd = {
           dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
           opens: '10:00',
           closes: '23:30',
+        },
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Saturday', 'Sunday'],
+          opens: '00:00',
+          closes: '00:00',
         },
       ],
       sameAs: [
@@ -117,7 +123,7 @@ const jsonLd = {
         '@type': 'SearchAction',
         target: {
           '@type': 'EntryPoint',
-          urlTemplate: `${BASE_URL}/menu?q={search_term_string}`,
+          urlTemplate: `${BASE_URL}/guide?q={search_term_string}`,
         },
         'query-input': 'required name=search_term_string',
       },

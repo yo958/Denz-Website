@@ -29,6 +29,65 @@ export const metadata: Metadata = {
   },
 };
 
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+    { '@type': 'ListItem', position: 2, name: 'Contact', item: `${BASE_URL}/contact` },
+  ],
+};
+
+const contactSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': `${BASE_URL}/#business`,
+  name: 'Denz',
+  url: BASE_URL,
+  telephone: '+66639177720',
+  email: 'hello@denzphuket.com',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Soi 4, Soi Khuanyang',
+    addressLocality: 'Pa Tong',
+    addressRegion: 'Phuket',
+    postalCode: '83120',
+    addressCountry: 'TH',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 7.9044,
+    longitude: 98.3181,
+  },
+  hasMap: 'https://maps.app.goo.gl/DvhWG46V5XLVdurTA',
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '10:00',
+      closes: '23:30',
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Saturday', 'Sunday'],
+      opens: '00:00',
+      closes: '00:00',
+    },
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    availableLanguage: ['English', 'Thai'],
+    sameAs: 'https://instagram.com/denzphuket',
+  },
+};
+
 export default function ContactLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }} />
+      {children}
+    </>
+  );
 }

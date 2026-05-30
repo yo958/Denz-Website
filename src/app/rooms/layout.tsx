@@ -41,12 +41,13 @@ const roomsSchema = {
   image: `${BASE_URL}/images/room-standard.png`,
   address: {
     '@type': 'PostalAddress',
-    streetAddress: 'Kathu',
+    streetAddress: 'Soi 4, Soi Khuanyang',
     addressLocality: 'Pa Tong',
     addressRegion: 'Phuket',
     postalCode: '83120',
     addressCountry: 'TH',
   },
+  telephone: '+66639177720',
   geo: {
     '@type': 'GeoCoordinates',
     latitude: 7.9044,
@@ -146,13 +147,20 @@ const roomsSchema = {
   ],
 };
 
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+    { '@type': 'ListItem', position: 2, name: 'Rooms', item: `${BASE_URL}/rooms` },
+  ],
+};
+
 export default function RoomsLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(roomsSchema) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(roomsSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {children}
     </>
   );

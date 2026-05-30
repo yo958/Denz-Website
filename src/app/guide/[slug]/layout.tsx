@@ -105,11 +105,9 @@ export default async function BlogPostLayout({
         headline: post.title,
         description: post.metaDescription ?? post.excerpt ?? '',
         image: post.featureImage ?? `${BASE_URL}/images/hero-coworking.jpg`,
-        author: {
-          '@type': 'Organization',
-          name: post.author ?? 'Denz Phuket',
-          url: BASE_URL,
-        },
+        author: post.author
+          ? { '@type': 'Person', name: post.author }
+          : { '@type': 'Organization', name: 'Denz Phuket', url: BASE_URL },
         publisher: {
           '@type': 'Organization',
           name: 'Denz Phuket',

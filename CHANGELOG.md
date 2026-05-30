@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.5.31] - 2026-05-30
+### Fixed (SEO)
+- Root layout: fixed telephone (was empty string → +66639177720), streetAddress (was 'Kathu' → 'Soi 4, Soi Khuanyang'), added Saturday/Sunday closed hours to OpeningHoursSpecification, SearchAction target changed to /guide
+- coworking/layout: added BreadcrumbList schema
+- rooms/layout: added BreadcrumbList schema, fixed streetAddress and added telephone
+- menu/layout: added BreadcrumbList schema
+- contact/layout: added BreadcrumbList + LocalBusiness + ContactPoint schema (was completely empty)
+- guide/[slug]/layout: Article author now uses @type Person when author name is set, Organization as fallback
+- sitemap: removed 16 fake menu IDs (f1-f8, d1-d8) that were causing 404s in the sitemap
+
 ## [0.5.30] - 2026-05-30
 ### Changed
 - robots.ts: allow all bots — every AI crawler (GPTBot, CCBot, Diffbot, Bytespider, ClaudeBot, PerplexityBot etc.) can index the site for maximum business discoverability across all AI platforms
