@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.30] - 2026-05-30
+### Changed
+- robots.ts: allow all bots — every AI crawler (GPTBot, CCBot, Diffbot, Bytespider, ClaudeBot, PerplexityBot etc.) can index the site for maximum business discoverability across all AI platforms
+
 ## [0.5.29] - 2026-05-30
 ### Fixed
 - robots.ts: unblock GPTBot — allowing it means Denz appears when people ask ChatGPT about coworking in Phuket; only block pure data scrapers (CCBot, Diffbot, Bytespider)
