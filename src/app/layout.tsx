@@ -4,6 +4,18 @@ import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Providers } from '@/components/layout/Providers';
+import { getAdminDb } from '@/lib/firebase-admin';
+
+async function getSiteNoindex(): Promise<boolean> {
+  try {
+    const db = getAdminDb();
+    if (!db) return false;
+    const snap = await db.doc('venue-settings/website').get();
+    return snap.exists ? (snap.data()?.noindex ?? false) : false;
+  } catch {
+    return false;
+  }
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://denzphuket.com';
 
@@ -13,8 +25,14 @@ const jakarta = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
+export async function generateMetadata(): Promise<Metadata> {
+  const noindex = await getSiteNoindex();
+  return siteMetadata(noindex);
+}
+
+function siteMetadata(noindex: boolean): Metadata { return {
   metadataBase: new URL(BASE_URL),
+  ...(noindex && { robots: { index: false, follow: false } }),
   title: {
     default: 'Denz Coworking Cafe Phuket | Work, Eat & Explore',
     template: '%s | Denz Phuket',
@@ -53,7 +71,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: BASE_URL,
   },
-};
+}; }
 
 // JSON-LD structured data — LocalBusiness + Organization
 const jsonLd = {

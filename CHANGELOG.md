@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.32] - 2026-05-30
+### Added
+- Root layout generateMetadata reads venue-settings/website.noindex from Firestore — when enabled, sets robots: noindex,nofollow across all pages
+- robots.ts reads same setting — when noindex is true, disallows all crawlers in robots.txt
+
 ## [0.5.31] - 2026-05-30
 ### Fixed (SEO)
 - Root layout: fixed telephone (was empty string → +66639177720), streetAddress (was 'Kathu' → 'Soi 4, Soi Khuanyang'), added Saturday/Sunday closed hours to OpeningHoursSpecification, SearchAction target changed to /guide
