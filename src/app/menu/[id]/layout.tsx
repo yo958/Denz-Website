@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { getAdminDb } from '@/lib/firebase-admin';
+import type { Product } from '@/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://denzphuket.com';
 
@@ -9,7 +11,7 @@ interface ItemMeta {
   category: 'food' | 'drinks' | 'dessert';
 }
 
-// Matches FALLBACK_MENU in src/app/menu/page.tsx — used for server-side metadata generation
+// Fallback for static IDs — used when Admin SDK unavailable
 const ITEM_META: Record<string, ItemMeta> = {
   f1: { name: 'Thai Green Curry', description: 'Authentic Thai green curry with jasmine rice, chicken or tofu, fresh herbs.', price: 120, category: 'food' },
   f2: { name: 'Pad Thai', description: 'Classic stir-fried rice noodles, egg, bean sprouts, crushed peanuts, lime.', price: 100, category: 'food' },
@@ -35,34 +37,60 @@ const CATEGORY_LABEL: Record<string, string> = {
   dessert: 'Dessert',
 };
 
+async function getProduct(id: string): Promise<Product | null> {
+  try {
+    const db = getAdminDb();
+    const doc = await db.doc('stores/default/slices/products').get();
+    if (!doc.exists) return null;
+    const raw = doc.data() as { data?: string };
+    if (!raw.data) return null;
+    const parsed = JSON.parse(raw.data) as Product[];
+    return parsed.find(p => p.id === id && !p.archived) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const item = ITEM_META[id];
-  const title = item ? item.name : 'Menu Item';
-  const catLabel = item ? CATEGORY_LABEL[item.category] : 'Café';
-  const description = item
-    ? `${item.name} at Denz Café, Kathu, Phuket — ${item.description} ฿${item.price}.`
-    : 'Fresh café food and drinks at Denz Coworking Café, Kathu, Phuket. Order online.';
+
+  const live = await getProduct(id);
+  const fallback = ITEM_META[id];
+
+  const name = live?.name ?? fallback?.name ?? 'Menu Item';
+  const catLabel = live ? (CATEGORY_LABEL[live.category] ?? 'Café') : (fallback ? CATEGORY_LABEL[fallback.category] : 'Café');
+  const shortDesc = live?.description ?? fallback?.description ?? '';
+  const price = live?.price ?? fallback?.price;
+
+  const metaTitle = live?.metaTitle?.trim() || `${name} — ${catLabel} | Denz Phuket`;
+  const metaDescription = live?.metaDescription?.trim() ||
+    (shortDesc
+      ? `${name} at Denz Café, Kathu, Phuket — ${shortDesc}${price != null ? ` ฿${price}.` : ''}`
+      : 'Fresh café food and drinks at Denz Coworking Café, Kathu, Phuket. Order online.');
+
+  const ogImage = live?.image
+    ? { url: live.image, width: 800, height: 600, alt: `${name} — Denz Café, Kathu, Phuket` }
+    : { url: '/images/food-green-curry.jpg', width: 1200, height: 630, alt: `${name} — Denz Café, Kathu, Phuket` };
 
   return {
-    title: `${title} — ${catLabel} | Denz Phuket`,
-    description,
+    title: metaTitle,
+    description: metaDescription,
+    ...(live?.focusKeyword ? { keywords: live.focusKeyword } : {}),
     openGraph: {
-      title: `${title} | Denz Phuket`,
-      description,
+      title: `${name} | Denz Phuket`,
+      description: metaDescription,
       url: `${BASE_URL}/menu/${id}`,
-      images: [
-        {
-          url: '/images/food-green-curry.jpg',
-          width: 1200,
-          height: 630,
-          alt: `${title} — Denz Café, Kathu, Phuket`,
-        },
-      ],
+      images: [ogImage],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${name} | Denz Phuket`,
+      description: metaDescription,
+      images: [ogImage.url],
     },
     alternates: {
       canonical: `${BASE_URL}/menu/${id}`,
@@ -78,8 +106,14 @@ export default async function MenuItemLayout({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const item = ITEM_META[id];
-  const itemName = item?.name ?? 'Menu Item';
+
+  const live = await getProduct(id);
+  const fallback = ITEM_META[id];
+
+  const name = live?.name ?? fallback?.name ?? 'Menu Item';
+  const shortDesc = live?.description ?? fallback?.description ?? 'Fresh café food and drinks at Denz Coworking Café, Kathu, Phuket.';
+  const price = live?.price ?? fallback?.price ?? 0;
+  const category = live?.category ?? fallback?.category;
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -87,25 +121,34 @@ export default async function MenuItemLayout({
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
       { '@type': 'ListItem', position: 2, name: 'Menu', item: `${BASE_URL}/menu` },
-      { '@type': 'ListItem', position: 3, name: itemName, item: `${BASE_URL}/menu/${id}` },
+      { '@type': 'ListItem', position: 3, name: name, item: `${BASE_URL}/menu/${id}` },
     ],
   };
 
-  const productSchema = {
+  const productSchema: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    name: itemName,
-    description: item?.description ?? 'Fresh café food and drinks at Denz Coworking Café, Kathu, Phuket.',
+    name,
+    description: shortDesc,
     url: `${BASE_URL}/menu/${id}`,
     brand: { '@type': 'Brand', name: 'Denz' },
+    ...(category ? { category: CATEGORY_LABEL[category] ?? category } : {}),
     offers: {
       '@type': 'Offer',
-      price: String(item?.price ?? 0),
+      price: String(price),
       priceCurrency: 'THB',
       availability: 'https://schema.org/InStock',
       seller: { '@id': `${BASE_URL}/#business` },
     },
   };
+
+  if (live?.image) {
+    productSchema.image = {
+      '@type': 'ImageObject',
+      url: live.image,
+      name,
+    };
+  }
 
   return (
     <>

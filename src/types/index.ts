@@ -17,12 +17,18 @@ export interface Product {
   price: number;
   category: ProductCategory;
   description: string;
+  /** TipTap HTML shown on the website menu item detail page. */
+  longDescription?: string;
+  /** Custom page title for search engines (falls back to name). */
+  metaTitle?: string;
+  /** Custom meta description for search engines. */
+  metaDescription?: string;
+  /** Focus keyword to guide SEO writing. */
+  focusKeyword?: string;
   stock: number | null;
   image?: string | null;
   glyph?: string | null;
   archived?: boolean;
-  /** Extended description shown on the room's individual page. */
-  longDescription?: string;
   /** Gallery images (data URLs) shown on the room's detail page. */
   gallery?: string[];
   /** Seasonal pricing — only used when category === 'rooms'. */

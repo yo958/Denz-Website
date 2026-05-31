@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.34] - 2026-05-31
+### Added
+- Menu item detail pages (`/menu/[id]`): layout upgraded to read live product data from Firestore via Admin SDK — real items now get accurate `<title>`, meta description, and Product schema (name, price, category, image)
+- Product schema on menu item pages: includes `category`, `image` (when set), Twitter card, and `keywords` from focus keyword
+- Website Product type: `longDescription`, `metaTitle`, `metaDescription`, `focusKeyword` fields (mirrored from POS)
+
 ## [0.5.33] - 2026-05-31
 ### Fixed
 - Guide listing and guide post pages: added export const dynamic = 'force-dynamic' — Next.js was statically rendering them at build time when Firebase credentials aren't present, baking in empty posts; now renders at request time
