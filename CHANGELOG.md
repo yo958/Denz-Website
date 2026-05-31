@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.33] - 2026-05-31
+### Fixed
+- Guide listing and guide post pages: added export const dynamic = 'force-dynamic' — Next.js was statically rendering them at build time when Firebase credentials aren't present, baking in empty posts; now renders at request time
+- robots.ts: same fix — dynamic rendering so noindex flag is read at request time not build time
+
 ## [0.5.32] - 2026-05-30
 ### Added
 - Root layout generateMetadata reads venue-settings/website.noindex from Firestore — when enabled, sets robots: noindex,nofollow across all pages

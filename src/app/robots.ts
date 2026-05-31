@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next';
 import { getAdminDb } from '@/lib/firebase-admin';
 
+export const dynamic = 'force-dynamic';
+
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://denzphuket.com';
 
 async function getSiteNoindex(): Promise<boolean> {

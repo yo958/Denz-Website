@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAdminDb } from '@/lib/firebase-admin';
+
+// Force dynamic rendering — post content is fetched from Firestore at request time.
+export const dynamic = 'force-dynamic';
 import type { BlogPost } from '@/types';
 import { Calendar, Clock, ChevronRight, Tag, Wifi, UtensilsCrossed, BedDouble, ArrowRight } from 'lucide-react';
 import { ArticleClient } from './ArticleClient';

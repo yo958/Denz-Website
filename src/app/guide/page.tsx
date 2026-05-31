@@ -2,6 +2,10 @@ import { getAdminDb } from '@/lib/firebase-admin';
 import type { BlogPost } from '@/types';
 import { GuideListingClient } from './GuideListingClient';
 
+// Force dynamic rendering — posts are fetched from Firestore at request time,
+// not baked in at build time when the service account is not available.
+export const dynamic = 'force-dynamic';
+
 async function getPosts(): Promise<BlogPost[]> {
   try {
     const adminDb = getAdminDb();
