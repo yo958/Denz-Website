@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.35] - 2026-05-31
+### Fixed
+- Menu item detail page: fetch product image from `product-images/{id}` Firestore collection so images uploaded in the POS now appear on the website
+
 ## [0.5.34] - 2026-05-31
 ### Added
 - Menu item detail pages (`/menu/[id]`): layout upgraded to read live product data from Firestore via Admin SDK — real items now get accurate `<title>`, meta description, and Product schema (name, price, category, image)

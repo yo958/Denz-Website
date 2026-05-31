@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { ChevronLeft, Loader2, ShoppingBag, Check, Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/Badge';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
 import { useCart } from '@/store/cart';
 import type { Product } from '@/types';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 const FALLBACK_MENU: Product[] = [
   { id: 'f1', name: 'Thai Green Curry', price: 120, category: 'food', description: 'Authentic Thai green curry with jasmine rice, chicken or tofu, fresh herbs', stock: null },
@@ -37,10 +39,18 @@ const CATEGORY_LABEL: Record<string, string> = {
 export default function MenuItemPage() {
   const { id } = useParams<{ id: string }>();
   const [justAdded, setJustAdded] = useState(false);
+  const [productImage, setProductImage] = useState<string | null>(null);
 
   const { data: allProducts, loading } = useFirestoreSlice<Product[]>('products', FALLBACK_MENU);
   const { addItem, count } = useCart();
   const cartTotal = useCart((s) => s.total());
+
+  useEffect(() => {
+    if (!id) return;
+    getDoc(doc(db, 'product-images', id)).then(snap => {
+      if (snap.exists()) setProductImage(snap.data().image ?? null);
+    }).catch(() => {});
+  }, [id]);
 
   const menuItems = allProducts.filter(
     (p) => (p.category === 'food' || p.category === 'drinks' || p.category === 'dessert') && !p.archived,
@@ -130,10 +140,10 @@ export default function MenuItemPage() {
           {/* Right: order card */}
           <div className="lg:col-span-1">
             <div className="sticky top-28 bg-white rounded-2xl border border-ink-faint/20 shadow-sm p-6">
-              {item.image && (
+              {(productImage ?? item.image) && (
                 <div className="aspect-video rounded-xl overflow-hidden bg-surface-raised mb-5 -mx-1">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                  <img src={(productImage ?? item.image)!} alt={item.name} className="w-full h-full object-cover" />
                 </div>
               )}
 

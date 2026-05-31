@@ -1,6 +1,6 @@
 {
   "name": "denz-website",
-  "version": "0.5.34",
+  "version": "0.5.35",
   "private": true,
   "scripts": {
     "dev": "next dev",
