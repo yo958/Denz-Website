@@ -200,14 +200,14 @@ export default function RoomDetailPage() {
       {/* Photo grid — contained with page padding */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
 
-        {/* Back link above the grid */}
-        <Link
-          href="/rooms"
-          className="inline-flex items-center gap-1.5 text-ink text-sm font-medium hover:text-brand transition-colors mb-4"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          All rooms
-        </Link>
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-1.5 text-sm mb-4" aria-label="Breadcrumb">
+          <Link href="/" className="text-ink-muted hover:text-brand transition-colors">Home</Link>
+          <ChevronLeft className="w-3.5 h-3.5 text-ink-faint rotate-180" />
+          <Link href="/rooms" className="text-ink-muted hover:text-brand transition-colors">Rooms</Link>
+          <ChevronLeft className="w-3.5 h-3.5 text-ink-faint rotate-180" />
+          <span className="text-ink font-medium truncate">{room.name}</span>
+        </nav>
 
         {/* Grid container — rounded corners clip all images */}
         <div className="relative rounded-xl overflow-hidden">

@@ -378,13 +378,13 @@ export default function CoworkDetailPage() {
       {/* Header strip */}
       <div className="pt-24 pb-0 bg-white border-b border-ink-faint/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
-          <Link
-            href="/coworking"
-            className="inline-flex items-center gap-1.5 text-ink text-sm font-medium hover:text-brand transition-colors mb-8"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            All spaces
-          </Link>
+          <nav className="flex items-center gap-1.5 text-sm mb-8" aria-label="Breadcrumb">
+            <Link href="/" className="text-ink-muted hover:text-brand transition-colors">Home</Link>
+            <ChevronLeft className="w-3.5 h-3.5 text-ink-faint rotate-180" />
+            <Link href="/coworking" className="text-ink-muted hover:text-brand transition-colors">Coworking</Link>
+            <ChevronLeft className="w-3.5 h-3.5 text-ink-faint rotate-180" />
+            <span className="text-ink font-medium truncate">{space.name}</span>
+          </nav>
         </div>
       </div>
 

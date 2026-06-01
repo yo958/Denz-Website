@@ -86,19 +86,33 @@ export default function MenuItemPage() {
     );
   }
 
+  const heroImage = productImage ?? item.image ?? null;
+
   return (
     <>
-      {/* Header strip */}
-      <div className="pt-24 pb-0 bg-white border-b border-ink-faint/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
-          <Link
-            href="/menu"
-            className="inline-flex items-center gap-1.5 text-ink text-sm font-medium hover:text-brand transition-colors mb-8"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Menu
-          </Link>
-        </div>
+      {/* Hero image — full-width, same pattern as rooms page */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-2">
+        <nav className="flex items-center gap-1.5 text-sm mb-4" aria-label="Breadcrumb">
+          <Link href="/" className="text-ink-muted hover:text-brand transition-colors">Home</Link>
+          <ChevronLeft className="w-3.5 h-3.5 text-ink-faint rotate-180" />
+          <Link href="/menu" className="text-ink-muted hover:text-brand transition-colors">Menu</Link>
+          <ChevronLeft className="w-3.5 h-3.5 text-ink-faint rotate-180" />
+          <span className="text-ink font-medium truncate">{item.name}</span>
+        </nav>
+
+        {heroImage ? (
+          <div className="rounded-xl overflow-hidden aspect-[16/7] bg-surface-raised">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={heroImage} alt={item.name} className="w-full h-full object-cover" />
+          </div>
+        ) : (
+          /* No image — show a subtle placeholder strip so the back link doesn't feel orphaned */
+          item.glyph && (
+            <div className="rounded-xl aspect-[16/7] bg-surface-muted flex items-center justify-center">
+              <span className="text-8xl">{item.glyph}</span>
+            </div>
+          )
+        )}
       </div>
 
       {/* Content */}
@@ -137,16 +151,9 @@ export default function MenuItemPage() {
             )}
           </div>
 
-          {/* Right: order card */}
+          {/* Right: order card — no image here anymore, it's the hero above */}
           <div className="lg:col-span-1">
             <div className="sticky top-28 bg-white rounded-2xl border border-ink-faint/20 shadow-sm p-6">
-              {(productImage ?? item.image) && (
-                <div className="aspect-video rounded-xl overflow-hidden bg-surface-raised mb-5 -mx-1">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={(productImage ?? item.image)!} alt={item.name} className="w-full h-full object-cover" />
-                </div>
-              )}
-
               <p className="text-xs font-medium text-ink-muted uppercase tracking-wide mb-1.5">Price</p>
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-3xl font-bold text-ink">฿{item.price}</span>

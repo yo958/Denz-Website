@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.38] - 2026-06-01
+### Added
+- Visible breadcrumb navigation (Home › Section › Item) on coworking, rooms, and menu detail pages — replaces the simple back link
+
 ## [0.5.37] - 2026-06-01
 ### Fixed
 - Coworking detail page: removed hardcoded "What's included" bullet list — content is now covered by the longDescription; amenity pills remain as the visual summary
