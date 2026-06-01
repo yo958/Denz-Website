@@ -35,6 +35,14 @@ function Stars({ count }: { count: number }) {
   );
 }
 
+/** Route Google CDN images through the server-side proxy (avoids browser referrer blocks) */
+function googlePhotoUrl(url: string, size = 'w800'): string {
+  if (!url.includes('googleusercontent.com')) return url;
+  // Append size param if not already present
+  const sized = /=[swh]\d/.test(url) ? url : `${url}=${size}`;
+  return `/api/proxy-image?url=${encodeURIComponent(sized)}`;
+}
+
 function GoogleBadge() {
   return (
     <span className="ml-auto text-[10px] font-semibold tracking-wide text-muted-foreground border border-ink-faint/20 rounded px-1.5 py-0.5 shrink-0">
@@ -106,9 +114,10 @@ export function ReviewsSection({
                 {review.photos[0] && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={review.photos[0]}
+                    src={googlePhotoUrl(review.photos[0])}
                     alt=""
                     className="w-full aspect-video object-cover"
+                    onError={e => { (e.currentTarget as HTMLImageElement).parentElement!.style.display = 'none'; }}
                   />
                 )}
                 <div className="p-6 flex flex-col flex-1">
@@ -131,7 +140,7 @@ export function ReviewsSection({
                   <div className="mt-auto flex items-center gap-2">
                     {review.authorPhoto ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={review.authorPhoto} alt={review.authorName} className="w-7 h-7 rounded-full object-cover shrink-0" />
+                      <img src={googlePhotoUrl(review.authorPhoto, 's120')} alt={review.authorName} className="w-7 h-7 rounded-full object-cover shrink-0" />
                     ) : (
                       <div className="w-7 h-7 rounded-full bg-brand/20 text-brand text-xs font-bold flex items-center justify-center shrink-0">
                         {review.authorName.charAt(0).toUpperCase()}

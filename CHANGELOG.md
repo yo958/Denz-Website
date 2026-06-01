@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.43] - 2026-06-01
+### Fixed
+- ReviewsSection: Google review photos now load via server-side proxy (`/api/proxy-image`) — bypasses browser referrer block on Google's `grass-cs` CDN path
+- Author avatars also proxied for consistency; size params (`=w800`, `=s120`) appended correctly
+- Added `onError` handler to gracefully hide photo header if image ever fails
+
 ## [0.5.42] - 2026-06-01
 ### Added
 - ReviewsSection: dynamic Google Reviews from Firestore (replaces hardcoded placeholders) with photo cards, star ratings, author avatar, Google badge, "read more" expand, and per-page tag filtering
