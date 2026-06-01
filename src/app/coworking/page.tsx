@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { ReviewsSection } from '@/components/sections/ReviewsSection';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Check, ArrowRight, Wifi, Coffee, Printer, Lock, Users, Zap, Loader2, X, Minus, Plus, Crown } from 'lucide-react';
@@ -678,6 +679,8 @@ export default function CoworkingPage() {
           </>
         )}
       </div>
+
+      <ReviewsSection tag="coworking" limit={4} title="What our members say" subtitle="Real reviews from Google." />
 
       {/* House rules */}
       <div className="bg-surface-muted py-16">

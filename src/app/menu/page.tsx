@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { ReviewsSection } from '@/components/sections/ReviewsSection';
 import { ShoppingBag, Plus, Minus, Check, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
@@ -178,6 +179,8 @@ export default function MenuPage() {
             })}
           </div>
         )}
+
+        <ReviewsSection tag="food" limit={4} title="What our customers say" subtitle="Real reviews from Google." />
 
         {/* Sticky cart bar */}
         {count() > 0 && (

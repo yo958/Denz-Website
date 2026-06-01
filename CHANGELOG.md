@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.42] - 2026-06-01
+### Added
+- ReviewsSection: dynamic Google Reviews from Firestore (replaces hardcoded placeholders) with photo cards, star ratings, author avatar, Google badge, "read more" expand, and per-page tag filtering
+- Menu, coworking, and rooms pages: food/coworking/rooms-tagged review strips at bottom of each page
+- Menu item detail page: food-tagged review strip at bottom
+
 ## [0.5.41] - 2026-06-01
 ### Added
 - Homepage: Chill Space / Social Lounge section (bean bags, TV, Nintendo 64, Patong Bay views)

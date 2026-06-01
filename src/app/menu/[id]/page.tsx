@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import { ReviewsSection } from '@/components/sections/ReviewsSection';
 import { ChevronLeft, Loader2, ShoppingBag, Check, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
@@ -189,6 +190,8 @@ export default function MenuItemPage() {
 
         </div>
       </div>
+
+      <ReviewsSection tag="food" limit={4} title="What our customers say" subtitle="Real reviews from Google." />
 
       {/* Sticky cart bar */}
       {count() > 0 && (

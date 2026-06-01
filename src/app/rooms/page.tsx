@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { ReviewsSection } from '@/components/sections/ReviewsSection';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X, Minus, Plus, CalendarDays, Ban, Images } from 'lucide-react';
@@ -288,6 +289,8 @@ export default function RoomsPage() {
           <strong className="text-ink">Note:</strong> Prices shown are base rates. Contact us directly for weekly or monthly rates — we offer significant discounts for longer stays. All rooms include access to the café, fast WiFi and coworking space.
         </div>
       </div>
+
+      <ReviewsSection tag="rooms" limit={4} title="What our guests say" subtitle="Real reviews from Google." />
 
       {/* Night picker modal */}
       {picker && (
