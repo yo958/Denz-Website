@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ReviewsSection } from '@/components/sections/ReviewsSection';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -8,6 +8,8 @@ import { Wifi, Coffee, Wind, BedDouble, ArrowRight, Loader2, X, Minus, Plus, Cal
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
+import { db } from '@/lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 import type { Product, Stay, RoomSeason } from '@/types';
 import { toSlug } from '@/lib/slug';
 
@@ -113,9 +115,22 @@ export default function RoomsPage() {
     FALLBACK_ROOMS,
   );
   const { data: stays } = useFirestoreSlice<Stay[]>('stays', []);
+  const [roomImages, setRoomImages] = useState<Record<string, string>>({});
 
   const rooms = allProducts.filter((p) => p.category === 'rooms' && !p.archived);
   const displayRooms = rooms.length > 0 ? rooms : FALLBACK_ROOMS;
+
+  // Fetch room images from product-images collection (stored separately to stay under 1MB Firestore limit)
+  useEffect(() => {
+    if (displayRooms.length === 0) return;
+    displayRooms.forEach(room => {
+      getDoc(doc(db, 'product-images', room.id)).then(snap => {
+        if (snap.exists() && snap.data().image) {
+          setRoomImages(prev => ({ ...prev, [room.id]: snap.data().image as string }));
+        }
+      }).catch(() => {});
+    });
+  }, [displayRooms.map(r => r.id).join(',')]);
 
   function getActiveStay(roomId: string): Stay | undefined {
     return stays.find(s => {
@@ -212,10 +227,10 @@ export default function RoomsPage() {
                 >
                   {/* Image */}
                   <Link href={`/rooms/${toSlug(room.name)}`} className="block aspect-[4/3] bg-surface-raised overflow-hidden relative">
-                    {room.image ? (
+                    {roomImages[room.id] ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={room.image}
+                        src={roomImages[room.id]}
                         alt={room.name}
                         className={`w-full h-full object-cover transition-transform duration-500 ${isBlocked ? 'grayscale' : 'group-hover:scale-105'}`}
                       />

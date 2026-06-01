@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.46] - 2026-06-01
+### Fixed
+- Rooms page: images now fetched from `product-images/{id}` Firestore collection (was trying to read from products slice which strips images to stay under 1MB)
+
 ## [0.5.45] - 2026-06-01
 ### Fixed
 - ReviewsSection: fallback logic — if a page has fewer than `minItems` (default 4) tag-matched reviews, fills remaining slots with other top-rated approved reviews so no page ever shows fewer than 4 cards
