@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getAdminDb } from '@/lib/firebase-admin';
 import type { Product } from '@/types';
+import { toSlug } from '@/lib/slug';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://denzphuket.com';
 
@@ -45,7 +46,7 @@ async function getProduct(id: string): Promise<Product | null> {
     const raw = doc.data() as { data?: string };
     if (!raw.data) return null;
     const parsed = JSON.parse(raw.data) as Product[];
-    return parsed.find(p => p.id === id && !p.archived) ?? null;
+    return parsed.find(p => toSlug(p.name) === id && !p.archived) ?? null;
   } catch {
     return null;
   }
@@ -59,7 +60,7 @@ export async function generateMetadata({
   const { id } = await params;
 
   const live = await getProduct(id);
-  const fallback = ITEM_META[id];
+  const fallback = ITEM_META[id] ?? Object.values(ITEM_META).find(m => toSlug(m.name) === id);
 
   const name = live?.name ?? fallback?.name ?? 'Menu Item';
   const catLabel = live ? (CATEGORY_LABEL[live.category] ?? 'Café') : (fallback ? CATEGORY_LABEL[fallback.category] : 'Café');
@@ -108,7 +109,7 @@ export default async function MenuItemLayout({
   const { id } = await params;
 
   const live = await getProduct(id);
-  const fallback = ITEM_META[id];
+  const fallback = ITEM_META[id] ?? Object.values(ITEM_META).find(m => toSlug(m.name) === id);
 
   const name = live?.name ?? fallback?.name ?? 'Menu Item';
   const shortDesc = live?.description ?? fallback?.description ?? 'Fresh café food and drinks at Denz Coworking Café, Kathu, Phuket.';

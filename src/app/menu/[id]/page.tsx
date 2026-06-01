@@ -10,6 +10,7 @@ import { useCart } from '@/store/cart';
 import type { Product } from '@/types';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { toSlug } from '@/lib/slug';
 
 const FALLBACK_MENU: Product[] = [
   { id: 'f1', name: 'Thai Green Curry', price: 120, category: 'food', description: 'Authentic Thai green curry with jasmine rice, chicken or tofu, fresh herbs', stock: null },
@@ -45,17 +46,17 @@ export default function MenuItemPage() {
   const { addItem, count } = useCart();
   const cartTotal = useCart((s) => s.total());
 
-  useEffect(() => {
-    if (!id) return;
-    getDoc(doc(db, 'product-images', id)).then(snap => {
-      if (snap.exists()) setProductImage(snap.data().image ?? null);
-    }).catch(() => {});
-  }, [id]);
-
   const menuItems = allProducts.filter(
     (p) => (p.category === 'food' || p.category === 'drinks' || p.category === 'dessert') && !p.archived,
   );
-  const item = menuItems.find((p) => p.id === id);
+  const item = menuItems.find((p) => toSlug(p.name) === id);
+
+  useEffect(() => {
+    if (!item) return;
+    getDoc(doc(db, 'product-images', item.id)).then(snap => {
+      if (snap.exists()) setProductImage(snap.data().image ?? null);
+    }).catch(() => {});
+  }, [item]);
 
   const handleAdd = () => {
     if (!item) return;

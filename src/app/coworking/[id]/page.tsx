@@ -12,6 +12,7 @@ import { TimePicker } from '@/components/ui/TimePicker';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
 import { useVenueSettings } from '@/hooks/useVenueSettings';
 import type { CoworkSpace, CoworkRatePeriod, CoworkSpaceRate, DayOfWeek, EquipmentTier } from '@/types';
+import { toSlug } from '@/lib/slug';
 
 interface DeskTab {
   id: string;
@@ -220,7 +221,7 @@ export default function CoworkDetailPage() {
   const { data: spaces, loading, fromFirestore } = useFirestoreSlice<CoworkSpace[]>('spaces', FALLBACK_SPACES);
   const { data: tabs } = useFirestoreSlice<DeskTab[]>('tabs', []);
   const displaySpaces = spaces.length > 0 ? spaces : FALLBACK_SPACES;
-  const space = displaySpaces.find((s) => s.id === id && !s.archived);
+  const space = displaySpaces.find((s) => toSlug(s.name) === id && !s.archived);
 
   // "Hot Desk" and "No Desk" packages are walk-in only — all their rates are bookable directly
   const isWalkInPackage = space

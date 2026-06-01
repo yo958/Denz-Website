@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.40] - 2026-06-01
+### Changed
+- SEO: menu, coworking, and rooms detail pages now use name-derived slugs (e.g. `/menu/pad-thai`, `/coworking/hot-desk`, `/rooms/room-1-king-deluxe`) instead of raw Firestore IDs
+- Added `src/lib/slug.ts` with `toSlug()` utility (unicode normalisation, strips inch marks and special chars)
+- Added 301 redirects in `next.config.ts` for all known old ID-based URLs
+
 ## [0.5.39] - 2026-06-01
 ### Fixed
 - Rooms detail page: breadcrumb was hidden under the fixed navbar (pt-6 → pt-24)

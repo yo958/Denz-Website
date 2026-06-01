@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
 import type { Product, Stay, RoomSeason } from '@/types';
+import { toSlug } from '@/lib/slug';
 
 const FALLBACK_ROOMS: Product[] = [
   { id: 'standard', name: 'Standard Room', price: 800, category: 'rooms', description: 'A clean, comfortable room with everything you need for a short stay. Perfect for solo travellers or couples passing through.', stock: null },
@@ -210,7 +211,7 @@ export default function RoomsPage() {
                   className={`bg-white rounded-2xl border overflow-hidden shadow-sm transition-shadow group ${isBlocked ? 'border-ink-faint/10 opacity-60' : 'border-ink-faint/20 hover:shadow-md'}`}
                 >
                   {/* Image */}
-                  <Link href={`/rooms/${room.id}`} className="block aspect-[4/3] bg-surface-raised overflow-hidden relative">
+                  <Link href={`/rooms/${toSlug(room.name)}`} className="block aspect-[4/3] bg-surface-raised overflow-hidden relative">
                     {room.image ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -253,7 +254,7 @@ export default function RoomsPage() {
                     <h3 className="text-xl font-bold text-ink mb-2">{room.name}</h3>
                     <p className="text-sm text-ink-muted leading-relaxed mb-2">{room.description}</p>
                     <Link
-                      href={`/rooms/${room.id}`}
+                      href={`/rooms/${toSlug(room.name)}`}
                       className="text-xs text-brand font-medium hover:underline mb-5 inline-block"
                     >
                       More info →

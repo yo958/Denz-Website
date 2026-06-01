@@ -3,23 +3,41 @@ import type { Metadata } from 'next';
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://denzphuket.com';
 
 const ROOM_META: Record<string, { title: string; description: string; image: string }> = {
-  standard: {
+  'standard-room': {
     title: 'Standard Room',
     description:
       'A clean, comfortable Standard Room at Denz, Kathu, Phuket. Gigabit WiFi, air conditioning, and direct access to the café. From ฿800/night.',
     image: '/images/room-standard.png',
   },
-  deluxe: {
+  'deluxe-room': {
     title: 'Deluxe Room',
     description:
       'A spacious Deluxe Room with a private balcony and mountain views at Denz, Kathu, Phuket. Gigabit WiFi, air conditioning, café access. From ฿1,200/night.',
     image: '/images/room-honeymoon.png',
   },
-  suite: {
+  'studio-suite': {
     title: 'Studio Suite',
     description:
       'A full Studio Suite with dedicated workspace, kitchenette, and mountain-view terrace at Denz, Kathu, Phuket. Ideal for longer stays. From ฿1,800/night.',
     image: '/images/room-standard.png',
+  },
+  'room-1-king-deluxe': {
+    title: 'Room 1 — King Deluxe',
+    description:
+      'A spacious King Deluxe room at Denz, Patong, Phuket. Gigabit WiFi, air conditioning, and direct access to the coworking café.',
+    image: '/images/room-standard.png',
+  },
+  'room-2-queen-standard': {
+    title: 'Room 2 — Queen Standard',
+    description:
+      'A comfortable Queen Standard room at Denz, Patong, Phuket. Gigabit WiFi, air conditioning, and coworking café access.',
+    image: '/images/room-standard.png',
+  },
+  'room-3-queen-deluxe': {
+    title: 'Room 3 — Queen Deluxe',
+    description:
+      'A Queen Deluxe room at Denz, Patong, Phuket. Spacious, air-conditioned, with Gigabit WiFi and coworking café access.',
+    image: '/images/room-honeymoon.png',
   },
 };
 

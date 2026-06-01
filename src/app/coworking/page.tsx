@@ -10,6 +10,7 @@ import { TimePicker } from '@/components/ui/TimePicker';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
 import { useVenueSettings } from '@/hooks/useVenueSettings';
 import type { CoworkSpace, CoworkSpaceRate, CoworkRatePeriod, DayOfWeek, Equipment, EquipmentTier } from '@/types';
+import { toSlug } from '@/lib/slug';
 
 const PERIOD_LABELS: Partial<Record<CoworkRatePeriod, string>> = {
   hourly: 'Per hour',
@@ -520,7 +521,7 @@ export default function CoworkingPage() {
                     }`}
                   >
                     <Link
-                      href={`/coworking/${space.id}`}
+                      href={`/coworking/${toSlug(space.name)}`}
                       className={`absolute top-10 right-10 text-xs font-medium hover:underline ${
                         isPrivateOffice ? 'text-white/70' : isHighlighted ? 'text-white/60' : 'text-brand'
                       }`}

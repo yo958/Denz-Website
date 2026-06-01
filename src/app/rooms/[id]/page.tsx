@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
 import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
+import { toSlug } from '@/lib/slug';
 import type { Product, Stay, RoomSeason } from '@/types';
 
 const FALLBACK_ROOMS: Product[] = [
@@ -116,7 +117,7 @@ export default function RoomDetailPage() {
 
   const rooms = allProducts.filter((p) => p.category === 'rooms' && !p.archived);
   const displayRooms = rooms.length > 0 ? rooms : FALLBACK_ROOMS;
-  const room = displayRooms.find((r) => r.id === id);
+  const room = displayRooms.find((r) => toSlug(r.name) === id);
 
   const todayStr = toDateValue(new Date());
   const [picker, setPicker] = useState<RoomPicker | null>(null);

@@ -7,6 +7,7 @@ import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
 import { useCart } from '@/store/cart';
 import Link from 'next/link';
 import type { Product } from '@/types';
+import { toSlug } from '@/lib/slug';
 
 // Static fallback shown while Firestore loads or if offline
 const FALLBACK_MENU: Product[] = [
@@ -135,13 +136,13 @@ export default function MenuPage() {
                   className="bg-white rounded-2xl border border-ink-faint/20 p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow duration-200"
                 >
                   {item.image && (
-                    <Link href={`/menu/${item.id}`} className="block aspect-video rounded-xl overflow-hidden bg-surface-raised -mx-1">
+                    <Link href={`/menu/${toSlug(item.name)}`} className="block aspect-video rounded-xl overflow-hidden bg-surface-raised -mx-1">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                     </Link>
                   )}
                   <div className="flex-1">
-                    <Link href={`/menu/${item.id}`} className="group block">
+                    <Link href={`/menu/${toSlug(item.name)}`} className="group block">
                       <div className="flex items-start justify-between gap-2">
                         <p className="font-semibold text-ink group-hover:text-brand transition-colors">{item.name}</p>
                         {item.glyph && <span className="text-lg leading-none">{item.glyph}</span>}
