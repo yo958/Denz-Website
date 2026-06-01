@@ -119,13 +119,20 @@ function PhotoCarousel({ photos }: { photos: string[] }) {
 interface ReviewsSectionProps {
   tag?: ReviewTag;
   limit?: number;
+  minItems?: number;
   title?: string;
   subtitle?: string;
 }
 
+const byRatingThenDate = (a: GoogleReview, b: GoogleReview) => {
+  if (b.rating !== a.rating) return b.rating - a.rating;
+  return (b.publishedAt ?? '').localeCompare(a.publishedAt ?? '');
+};
+
 export function ReviewsSection({
   tag,
   limit = 8,
+  minItems = 4,
   title = 'Loved by nomads',
   subtitle = "Don't take our word for it.",
 }: ReviewsSectionProps) {
@@ -137,18 +144,28 @@ export function ReviewsSection({
       .then(snap => {
         if (!snap.exists()) return;
         const data = snap.data() as ReviewsDoc;
-        const all = (data.reviews ?? [])
-          .filter(r => r.approved && r.visible)
-          .filter(r => tag ? r.tags?.includes(tag) : true)
-          .sort((a, b) => {
-            if (b.rating !== a.rating) return b.rating - a.rating;
-            return (b.publishedAt ?? '').localeCompare(a.publishedAt ?? '');
-          })
-          .slice(0, limit);
-        setReviews(all);
+        const approved = (data.reviews ?? []).filter(r => r.approved && r.visible);
+
+        // Primary: reviews matching the requested tag
+        const primary = tag
+          ? approved.filter(r => r.tags?.includes(tag)).sort(byRatingThenDate)
+          : approved.sort(byRatingThenDate);
+
+        let result = primary.slice(0, limit);
+
+        // Fallback: if we have fewer than minItems, top up with other approved reviews
+        if (tag && result.length < minItems) {
+          const usedIds = new Set(result.map(r => r.reviewId));
+          const fallback = approved
+            .filter(r => !usedIds.has(r.reviewId))
+            .sort(byRatingThenDate);
+          result = [...result, ...fallback].slice(0, Math.max(minItems, result.length));
+        }
+
+        setReviews(result);
       })
       .catch(() => {});
-  }, [tag, limit]);
+  }, [tag, limit, minItems]);
 
   if (reviews.length === 0) return null;
 

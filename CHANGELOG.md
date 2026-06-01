@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.45] - 2026-06-01
+### Fixed
+- ReviewsSection: fallback logic — if a page has fewer than `minItems` (default 4) tag-matched reviews, fills remaining slots with other top-rated approved reviews so no page ever shows fewer than 4 cards
+
 ## [0.5.44] - 2026-06-01
 ### Added
 - ReviewsSection: multi-photo carousel on review cards — prev/next arrows (appear on hover), dot indicators, and photo count badge (e.g. 1/3); single-photo cards show static image as before
