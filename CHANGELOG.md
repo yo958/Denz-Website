@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.37] - 2026-06-01
+### Fixed
+- Coworking detail page: removed hardcoded "What's included" bullet list — content is now covered by the longDescription; amenity pills remain as the visual summary
+
+## [0.5.36] - 2026-06-01
+### Changed
+- Menu item detail page: image now displays as a full-width hero (16/7 aspect, rounded, same layout as rooms pages) instead of a small thumbnail inside the order card; items without an image fall back to a glyph emoji placeholder
+
 ## [0.5.35] - 2026-05-31
 ### Fixed
 - Menu item detail page: fetch product image from `product-images/{id}` Firestore collection so images uploaded in the POS now appear on the website

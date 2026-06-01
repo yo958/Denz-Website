@@ -200,10 +200,6 @@ const AMENITIES = [
   { icon: Zap, label: 'Standing desks' },
 ];
 
-const SPACE_FEATURES: Record<string, string[]> = {
-  desk: ['1 Gbps WiFi', 'Power & USB charging', 'Free coffee & tea', 'Kitchen access', 'Printing included'],
-  'private-office': ['Everything in Dedicated', 'Fully private space', 'Up to 4 people', 'Custom furniture', 'Meeting room credits'],
-};
 
 function getRateForPeriod(space: CoworkSpace, period: CoworkRatePeriod): CoworkSpaceRate | undefined {
   if (period === 'hourly') {
@@ -305,7 +301,6 @@ export default function CoworkDetailPage() {
   }
 
   const selectedRate = getRateForPeriod(space, period);
-  const features = SPACE_FEATURES[space.type] ?? SPACE_FEATURES['desk'];
   const isPrivateOffice = space.type === 'private-office';
 
   // Walk-in rates shown as informational only (non-hourly rates from space.rates, for regular desks)
@@ -413,21 +408,6 @@ export default function CoworkDetailPage() {
                   <span className="text-sm font-medium text-ink-muted">{label}</span>
                 </div>
               ))}
-            </div>
-
-            {/* Features list */}
-            <div className="mb-10">
-              <h2 className="text-lg font-bold text-ink mb-4">What&apos;s included</h2>
-              <ul className="space-y-2.5">
-                {features.map((feat) => (
-                  <li key={feat} className="flex items-center gap-2.5 text-sm text-ink-muted">
-                    <span className="w-5 h-5 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
-                      <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-                    </span>
-                    {feat}
-                  </li>
-                ))}
-              </ul>
             </div>
 
             {/* Long description */}
