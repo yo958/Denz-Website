@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.39] - 2026-06-01
+### Fixed
+- Rooms detail page: breadcrumb was hidden under the fixed navbar (pt-6 → pt-24)
+
 ## [0.5.38] - 2026-06-01
 ### Added
 - Visible breadcrumb navigation (Home › Section › Item) on coworking, rooms, and menu detail pages — replaces the simple back link

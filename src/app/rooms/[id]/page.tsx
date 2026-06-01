@@ -198,7 +198,7 @@ export default function RoomDetailPage() {
   return (
     <>
       {/* Photo grid — contained with page padding */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-2">
 
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-sm mb-4" aria-label="Breadcrumb">
