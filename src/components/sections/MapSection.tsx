@@ -7,7 +7,7 @@ export function MapSection() {
   const settings = useVenueSettings();
   const hoursLines = settings.venue.openingHours
     ? formatOpeningHours(settings.venue.openingHours)
-    : ['Mon – Sun: 10:00 – 23:30'];
+    : ['Mon – Fri: 10:00 – 23:30', 'Sat – Sun: Closed', 'Kitchen: 11:00 – 22:00'];
 
   return (
     <section className="py-24 bg-surface-muted">
@@ -30,6 +30,9 @@ export function MapSection() {
                   <p className="text-ink-muted text-sm mt-1">
                     2/124 Soi Khuanyang, Pa Tong<br />
                     Kathu District, Phuket 83120, Thailand
+                  </p>
+                  <p className="text-ink-muted text-sm mt-2">
+                    On Patong Hill between Kathu and Patong — turn left opposite the rescue centre at the base of the hill, just before the temple. Look for us near the Patong City Sign.
                   </p>
                 </div>
               </li>

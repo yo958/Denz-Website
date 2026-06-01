@@ -14,16 +14,16 @@ import { toSlug } from '@/lib/slug';
 import type { Product, Stay, RoomSeason } from '@/types';
 
 const FALLBACK_ROOMS: Product[] = [
-  { id: 'standard', name: 'Standard Room', price: 800, category: 'rooms', description: 'A clean, comfortable room with everything you need for a short stay. Perfect for solo travellers or couples passing through.', stock: null },
-  { id: 'deluxe', name: 'Deluxe Room', price: 1200, category: 'rooms', description: 'More space, better views. A spacious room with a private balcony overlooking the mountains.', stock: null },
-  { id: 'suite', name: 'Studio Suite', price: 1800, category: 'rooms', description: 'A full studio suite with a dedicated workspace, kitchenette and mountain-view terrace. Ideal for longer stays.', stock: null },
+  { id: 'coworker-room-1', name: 'Coworker Room 1', price: 2000, category: 'rooms', description: 'Work-focused room with height-adjustable standing desk, ergonomic chair, 50" Smart TV with Netflix, in-room safe, fridge, kettle, and Patong Bay views. Hot desk at Denz Café included.', stock: null },
+  { id: 'workstay-room-2', name: 'WorkStay Room 2', price: 2000, category: 'rooms', description: 'Private WorkStay room with full work setup, business-grade 1000/1000 Mbps WiFi, Patong Bay views, and direct access to Denz CoWorking Café upstairs.', stock: null },
+  { id: 'superior-room', name: 'Superior Room', price: 2500, category: 'rooms', description: 'Our largest room with premium finishings, sweeping Patong Bay sunset views, standing desk, 50" Smart TV, and full coworking café access included.', stock: null },
 ];
 
 const ROOM_FEATURES = [
-  { icon: Wifi, label: 'Gigabit WiFi' },
-  { icon: Coffee, label: 'Café access' },
+  { icon: Wifi, label: '1000/1000 Mbps WiFi + backup line' },
+  { icon: Coffee, label: 'Hot desk at Denz Café included' },
   { icon: Wind, label: 'Air conditioning' },
-  { icon: BedDouble, label: 'Premium bedding' },
+  { icon: BedDouble, label: 'Standing desk, ergonomic chair, 50" Smart TV' },
 ];
 
 const MAX_NIGHTS = 90;

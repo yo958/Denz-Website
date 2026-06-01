@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.41] - 2026-06-01
+### Added
+- Homepage: Chill Space / Social Lounge section (bean bags, TV, Nintendo 64, Patong Bay views)
+- Homepage: French Bulldogs section with all 5 names (Denz, Frank, Coco, Isabell, Little Luna)
+- Homepage: FAQ section with 11 Q&As covering hours, desks, monitors, food, dogs, printing, parking, WiFi
+### Changed
+- Homepage: Replaced 4 placeholder reviews with real customer quotes
+- Homepage: Fixed opening hours fallback from "Mon–Sun" to "Mon–Fri, Sat–Sun: Closed, Kitchen: 11:00–22:00"
+- Homepage: Added directions narrative to map section address
+- Rooms: Updated FALLBACK_ROOMS pricing (฿2,000–2,500/night), WorkStay branding, and full amenities copy
+- Rooms: Updated feature badges to reflect actual room inclusions (standing desk, 50" Smart TV, hot desk included)
+
 ## [0.5.40] - 2026-06-01
 ### Changed
 - SEO: menu, coworking, and rooms detail pages now use name-derived slugs (e.g. `/menu/pad-thai`, `/coworking/hot-desk`, `/rooms/room-1-king-deluxe`) instead of raw Firestore IDs

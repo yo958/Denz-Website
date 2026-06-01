@@ -5,27 +5,27 @@ import { motion } from 'framer-motion';
 
 const REVIEWS = [
   {
-    name: 'Alex M.',
-    flag: '🇬🇧',
-    text: 'Best coworking spot in Phuket. The WiFi is genuinely fast, the food is great and the views are stunning. I come here every day.',
+    name: 'Verified Guest',
+    flag: '🌍',
+    text: 'I had the sloppy Denz, my friend had the Fatboy Burger with onion rings. Both were amazing — I even ordered a second plate of onion rings. Food and view were something that everyone needs to experience. A must visit for any trip to Phuket.',
     rating: 5,
   },
   {
-    name: 'Sarah K.',
-    flag: '🇩🇪',
-    text: 'Found this gem through a friend. The atmosphere is perfect for focused work — not too loud, great coffee, and the staff are super friendly.',
+    name: 'Verified Guest',
+    flag: '🌍',
+    text: "I visited Denz — it's exactly what I was looking for. It's spacious, has lots of greenery, and has a beautiful mountain view. The food is delicious. It's a great place to work remotely. I highly recommend it.",
     rating: 5,
   },
   {
-    name: 'Jordan T.',
-    flag: '🇦🇺',
-    text: "Finally a coworking café that actually delivers on the internet speeds. Monthly package is great value and the Thai food is legitimately delicious.",
+    name: 'Verified Guest',
+    flag: '🌍',
+    text: 'Beautiful place, best burger in Phuket! Family atmosphere, great welcome. I will definitely come back.',
     rating: 5,
   },
   {
-    name: 'Mia L.',
-    flag: '🇫🇷',
-    text: "The terrace with mountain views makes every work day feel like a holiday. I've tried every café in Phuket and Denz is by far the best.",
+    name: 'Verified Guest',
+    flag: '🌍',
+    text: 'Denz is more than just a café — it\'s an experience you\'ll never forget. The WiFi is actually 1000 Mbps, the coffee is great, and the Patong Bay views from the balcony are incredible.',
     rating: 5,
   },
 ];
