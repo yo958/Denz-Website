@@ -1,6 +1,6 @@
 'use client';
 
-import { PawPrint } from 'lucide-react';
+import { PawPrint } from 'lucide-react'; // used for dog name badges
 
 const DOGS = ['Denz', 'Frank', 'Coco', 'Isabell (Bell)', 'Little Luna'];
 
@@ -9,18 +9,13 @@ export function DogsSection() {
     <section className="py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Image placeholder / photo strip */}
-          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-surface-raised shadow-lg">
+          <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/dogs.jpg"
-              alt="The five Denz French Bulldogs"
+              alt="Three of the Denz French Bulldogs sitting inside the café"
               className="w-full h-full object-cover"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
-            <div className="absolute inset-0 flex items-center justify-center bg-surface-muted">
-              <PawPrint className="w-16 h-16 text-brand/30" />
-            </div>
           </div>
 
           {/* Text */}

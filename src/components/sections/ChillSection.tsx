@@ -42,13 +42,12 @@ export function ChillSection() {
           </div>
 
           {/* Image */}
-          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-white/5 shadow-lg">
+          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/chill-area.jpg"
-              alt="Denz chill lounge with Patong Bay views"
-              className="w-full h-full object-cover opacity-80"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              src="/images/chill-area.webp"
+              alt="Denz chill lounge — sofas and jungle views"
+              className="w-full h-full object-cover"
             />
             {/* Overlay badge */}
             <div className="absolute bottom-4 left-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3">
