@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.44] - 2026-06-01
+### Added
+- ReviewsSection: multi-photo carousel on review cards — prev/next arrows (appear on hover), dot indicators, and photo count badge (e.g. 1/3); single-photo cards show static image as before
+
 ## [0.5.43] - 2026-06-01
 ### Fixed
 - ReviewsSection: Google review photos now load via server-side proxy (`/api/proxy-image`) — bypasses browser referrer block on Google's `grass-cs` CDN path

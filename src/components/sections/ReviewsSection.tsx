@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Star } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -38,7 +38,6 @@ function Stars({ count }: { count: number }) {
 /** Route Google CDN images through the server-side proxy (avoids browser referrer blocks) */
 function googlePhotoUrl(url: string, size = 'w800'): string {
   if (!url.includes('googleusercontent.com')) return url;
-  // Append size param if not already present
   const sized = /=[swh]\d/.test(url) ? url : `${url}=${size}`;
   return `/api/proxy-image?url=${encodeURIComponent(sized)}`;
 }
@@ -48,6 +47,72 @@ function GoogleBadge() {
     <span className="ml-auto text-[10px] font-semibold tracking-wide text-muted-foreground border border-ink-faint/20 rounded px-1.5 py-0.5 shrink-0">
       Google
     </span>
+  );
+}
+
+/** Photo carousel for review cards — shows all photos with prev/next arrows + dot indicators */
+function PhotoCarousel({ photos }: { photos: string[] }) {
+  const [idx, setIdx] = useState(0);
+
+  if (photos.length === 0) return null;
+  if (photos.length === 1) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={googlePhotoUrl(photos[0])}
+        alt=""
+        className="w-full aspect-video object-cover"
+        onError={e => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }}
+      />
+    );
+  }
+
+  const prev = (e: React.MouseEvent) => { e.stopPropagation(); setIdx(i => (i - 1 + photos.length) % photos.length); };
+  const next = (e: React.MouseEvent) => { e.stopPropagation(); setIdx(i => (i + 1) % photos.length); };
+
+  return (
+    <div className="relative w-full aspect-video overflow-hidden group">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={googlePhotoUrl(photos[idx])}
+        alt=""
+        className="w-full h-full object-cover transition-opacity duration-300"
+        onError={e => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }}
+      />
+
+      {/* Prev / Next arrows — visible on hover */}
+      <button
+        onClick={prev}
+        aria-label="Previous photo"
+        className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/40 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-black/60"
+      >
+        <ChevronLeft size={14} />
+      </button>
+      <button
+        onClick={next}
+        aria-label="Next photo"
+        className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-black/40 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-black/60"
+      >
+        <ChevronRight size={14} />
+      </button>
+
+      {/* Dot indicators */}
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+        {photos.map((_, i) => (
+          <button
+            key={i}
+            onClick={e => { e.stopPropagation(); setIdx(i); }}
+            aria-label={`Photo ${i + 1}`}
+            className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${i === idx ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/80'}`}
+          />
+        ))}
+      </div>
+
+      {/* Photo count badge */}
+      <div className="absolute top-2 right-2 bg-black/40 text-white text-[10px] font-medium px-1.5 py-0.5 rounded-full">
+        {idx + 1}/{photos.length}
+      </div>
+    </div>
   );
 }
 
@@ -111,15 +176,8 @@ export function ReviewsSection({
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className="bg-white border border-ink-faint/30 rounded-2xl shadow-sm overflow-hidden flex flex-col"
               >
-                {review.photos[0] && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={googlePhotoUrl(review.photos[0])}
-                    alt=""
-                    className="w-full aspect-video object-cover"
-                    onError={e => { (e.currentTarget as HTMLImageElement).parentElement!.style.display = 'none'; }}
-                  />
-                )}
+                <PhotoCarousel photos={review.photos} />
+
                 <div className="p-6 flex flex-col flex-1">
                   <Stars count={review.rating} />
                   <p className={`text-sm text-ink-muted leading-relaxed mt-3 mb-4 ${!isExpanded && longText ? 'line-clamp-4' : ''}`}>
