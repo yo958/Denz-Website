@@ -320,7 +320,11 @@ export default function CoworkingPage() {
   const { data: rawEquipment } = useFirestoreSlice<Equipment[]>('equipment', FALLBACK_EQUIPMENT);
   const { data: bookingTabs } = useFirestoreSlice<BookingTab[]>('tabs', []);
   const venueSettings = useVenueSettings();
-  const pageContent = usePageContent<{ hero?: { badge?: string; title?: string; subtitle?: string } }>('coworking');
+  const pageContent = usePageContent<{
+    hero?: { badge?: string; title?: string; subtitle?: string };
+    amenities?: string[];
+    rules?: { badge?: string; title?: string; subtitle?: string; items?: { title: string; body: string }[] };
+  }>('coworking');
   // Use fallback Mac Minis when Firestore slice is empty (POS equipment not yet configured)
   const allEquipment = rawEquipment.length > 0 ? rawEquipment : FALLBACK_EQUIPMENT;
   const activeEquipment = allEquipment.filter((e) => !e.archived);
@@ -450,7 +454,7 @@ export default function CoworkingPage() {
             {pageContent.hero?.subtitle || 'From day passes to dedicated private offices. Fast internet, great food, and a community of people getting things done.'}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2 mt-10">
-            {AMENITIES.map(({ icon: Icon, label }) => (
+            {(pageContent.amenities?.length ? pageContent.amenities.map((label, i) => ({ icon: AMENITIES[i % AMENITIES.length].icon, label })) : AMENITIES).map(({ icon: Icon, label }) => (
               <span key={label} className="inline-flex items-center gap-1.5 bg-surface-muted border border-ink-faint/30 rounded-full px-3.5 py-1.5 text-xs font-medium text-ink-muted">
                 <Icon className="w-3.5 h-3.5 text-brand" />
                 {label}
@@ -687,11 +691,11 @@ export default function CoworkingPage() {
       {/* House rules */}
       <div className="bg-surface-muted py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-brand mb-3">These rules were not made to be broken</p>
-          <h2 className="text-2xl font-bold text-ink mb-2">Denz CoWorking Rules</h2>
-          <p className="text-sm text-ink-muted mb-8">At Denz CoWorking Cafe, we value a relaxed yet productive environment. Please follow these guidelines to ensure everyone enjoys their time here.</p>
+          <p className="text-xs font-bold uppercase tracking-[0.3em] text-brand mb-3">{pageContent.rules?.badge || 'These rules were not made to be broken'}</p>
+          <h2 className="text-2xl font-bold text-ink mb-2">{pageContent.rules?.title || 'Denz CoWorking Rules'}</h2>
+          <p className="text-sm text-ink-muted mb-8">{pageContent.rules?.subtitle || 'At Denz CoWorking Cafe, we value a relaxed yet productive environment. Please follow these guidelines to ensure everyone enjoys their time here.'}</p>
           <div className="bg-white rounded-2xl border border-ink-faint/20 divide-y divide-ink-faint/20">
-            {[
+            {(pageContent.rules?.items?.length ? pageContent.rules.items : [
               { title: 'Karma', body: 'We believe in good karma — respect others, and they\'ll respect you in return. Kindness and consideration are key to building a great coworking community.' },
               { title: 'No Outside Food or Drink', body: 'As a cafe, we provide a variety of delicious food and beverages. Please refrain from bringing outside food or drink onto the premises.' },
               { title: 'Share Equipment Considerately', body: 'If you\'re using shared equipment and someone else needs it, please offer to share if you\'re not actively using it. Collaboration and cooperation make for a better environment.' },
@@ -702,7 +706,7 @@ export default function CoworkingPage() {
               { title: 'Keep It Clean', body: 'Help us maintain a tidy space by cleaning up after yourself. Dispose of trash responsibly and leave your workspace as you found it — or better!' },
               { title: 'Respect Personal Space', body: 'Everyone has their own way of working. Be mindful of others\' personal space and avoid unnecessary interruptions.' },
               { title: 'Follow Staff Guidance', body: 'Our team is here to help you have the best experience. Please respect any instructions or requests from the staff.' },
-            ].map((rule, i) => (
+            ]).map((rule, i) => (
               <div key={i} className="px-6 py-4 flex items-start gap-3">
                 <span className="w-5 h-5 rounded-full bg-surface-raised text-xs font-semibold flex items-center justify-center text-ink-muted shrink-0 mt-0.5">
                   {i + 1}

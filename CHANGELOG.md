@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.51] - 2026-06-02
+### Added
+- Coworking page: amenity pills and house rules section now read from Firestore page-content with hardcoded fallbacks
+
 ## [0.5.50] - 2026-06-02
 ### Added
 - All page layouts (Home, Menu, Coworking, Rooms, Guide, Contact) now use `generateMetadata` reading `seo.*` from Firestore `page-content/{slug}` via Admin SDK — meta title, description, and focus keyword all controllable from POS
