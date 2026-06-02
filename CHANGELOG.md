@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.47] - 2026-06-02
+### Fixed
+- Guide page: add `FIREBASE_SERVICE_ACCOUNT_JSON` secret to `apphosting.yaml` so server-side Firestore fetch works on Firebase App Hosting — posts were returning empty because the env var was missing at runtime
+
 ## [0.5.46] - 2026-06-01
 ### Fixed
 - Rooms page: images now fetched from `product-images/{id}` Firestore collection (was trying to read from products slice which strips images to stay under 1MB)
