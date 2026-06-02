@@ -5,6 +5,7 @@ import { ReviewsSection } from '@/components/sections/ReviewsSection';
 import { ShoppingBag, Plus, Minus, Check, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
+import { usePageContent } from '@/hooks/usePageContent';
 import { useCart } from '@/store/cart';
 import Link from 'next/link';
 import type { Product } from '@/types';
@@ -47,6 +48,7 @@ export default function MenuPage() {
   );
 
   const { addItem, items, count } = useCart();
+  const pageContent = usePageContent<{ hero?: { badge?: string; title?: string; subtitle?: string } }>('menu');
 
   // Only show café food, drinks & desserts (not desks/rooms), filter archived
   const menuItems = allProducts.filter(
@@ -86,10 +88,10 @@ export default function MenuPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
-              <Badge variant="brand" className="mb-4">Café Menu</Badge>
-              <h1 className="text-4xl sm:text-5xl font-bold text-ink mb-4">What&apos;s cooking?</h1>
+              <Badge variant="brand" className="mb-4">{pageContent.hero?.badge || 'Café Menu'}</Badge>
+              <h1 className="text-4xl sm:text-5xl font-bold text-ink mb-4">{pageContent.hero?.title || "What's cooking?"}</h1>
               <p className="text-ink-muted max-w-md">
-                Thai & western food, freshly prepared. Add items to your basket and place your order below.
+                {pageContent.hero?.subtitle || 'Thai & western food, freshly prepared. Add items to your basket and place your order below.'}
               </p>
             </div>
             {fromFirestore && (

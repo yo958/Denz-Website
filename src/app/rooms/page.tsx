@@ -12,6 +12,7 @@ import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import type { Product, Stay, RoomSeason } from '@/types';
 import { toSlug } from '@/lib/slug';
+import { usePageContent } from '@/hooks/usePageContent';
 
 const FALLBACK_ROOMS: Product[] = [
   { id: 'coworker-room-1', name: 'Coworker Room 1', price: 0, category: 'rooms', description: 'Work-focused room with height-adjustable standing desk, ergonomic chair, 50" Smart TV with Netflix, in-room safe, fridge, kettle, and Patong Bay views. Hot desk at Denz Café included.', stock: null },
@@ -115,6 +116,7 @@ export default function RoomsPage() {
     FALLBACK_ROOMS,
   );
   const { data: stays } = useFirestoreSlice<Stay[]>('stays', []);
+  const pageContent = usePageContent<{ hero?: { badge?: string; title?: string; subtitle?: string }; features?: string[] }>('rooms');
   const [roomImages, setRoomImages] = useState<Record<string, string>>({});
 
   const rooms = allProducts.filter((p) => p.category === 'rooms' && !p.archived);
@@ -179,12 +181,12 @@ export default function RoomsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div className="max-w-2xl">
-              <Badge variant="brand" className="mb-4">WorkStay Rooms</Badge>
+              <Badge variant="brand" className="mb-4">{pageContent.hero?.badge || 'WorkStay Rooms'}</Badge>
               <h1 className="text-4xl sm:text-5xl font-bold text-ink mb-4">
-                CoLiving &amp; Work-Focused Rooms
+                {pageContent.hero?.title || 'CoLiving & Work-Focused Rooms'}
               </h1>
               <p className="text-ink-muted text-lg leading-relaxed">
-                Three private WorkStay rooms situated directly beneath the coworking café — the most convenient live-work setup in Phuket. Wake up, walk upstairs, and get to work. Island life, sorted.
+                {pageContent.hero?.subtitle || 'Three private WorkStay rooms situated directly beneath the coworking café — the most convenient live-work setup in Phuket. Wake up, walk upstairs, and get to work. Island life, sorted.'}
               </p>
             </div>
             {fromFirestore && (
@@ -196,7 +198,7 @@ export default function RoomsPage() {
           </div>
 
           <div className="flex flex-wrap gap-4 mt-10">
-            {ROOM_FEATURES.map(({ icon: Icon, label }) => (
+            {(pageContent.features?.length ? pageContent.features.map((label, i) => ({ icon: ROOM_FEATURES[i % ROOM_FEATURES.length].icon, label })) : ROOM_FEATURES).map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-2 bg-surface-muted border border-ink-faint/20 rounded-full px-4 py-2">
                 <Icon className="w-4 h-4 text-brand" />
                 <span className="text-sm font-medium text-ink-muted">{label}</span>

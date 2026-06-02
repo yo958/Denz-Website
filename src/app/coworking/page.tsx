@@ -10,6 +10,7 @@ import { Calendar, formatBookingDate } from '@/components/ui/Calendar';
 import { TimePicker } from '@/components/ui/TimePicker';
 import { useFirestoreSlice } from '@/hooks/useFirestoreSlice';
 import { useVenueSettings } from '@/hooks/useVenueSettings';
+import { usePageContent } from '@/hooks/usePageContent';
 import type { CoworkSpace, CoworkSpaceRate, CoworkRatePeriod, DayOfWeek, Equipment, EquipmentTier } from '@/types';
 import { toSlug } from '@/lib/slug';
 
@@ -319,6 +320,7 @@ export default function CoworkingPage() {
   const { data: rawEquipment } = useFirestoreSlice<Equipment[]>('equipment', FALLBACK_EQUIPMENT);
   const { data: bookingTabs } = useFirestoreSlice<BookingTab[]>('tabs', []);
   const venueSettings = useVenueSettings();
+  const pageContent = usePageContent<{ hero?: { badge?: string; title?: string; subtitle?: string } }>('coworking');
   // Use fallback Mac Minis when Firestore slice is empty (POS equipment not yet configured)
   const allEquipment = rawEquipment.length > 0 ? rawEquipment : FALLBACK_EQUIPMENT;
   const activeEquipment = allEquipment.filter((e) => !e.archived);
@@ -433,7 +435,7 @@ export default function CoworkingPage() {
       <div className="pb-16 bg-white border-b border-ink-faint/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Badge variant="brand">Coworking</Badge>
+            <Badge variant="brand">{pageContent.hero?.badge || 'Coworking'}</Badge>
             {fromFirestore && (
               <span className="inline-flex items-center gap-1.5 text-xs text-green-600 bg-green-50 border border-green-200 px-3 py-1.5 rounded-full font-medium">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
@@ -442,10 +444,10 @@ export default function CoworkingPage() {
             )}
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-ink mb-4 tracking-tight">
-            Flexible workspace<br />in Phuket
+            {pageContent.hero?.title || <>Flexible workspace<br />in Phuket</>}
           </h1>
           <p className="text-ink-muted text-lg max-w-xl mx-auto">
-            From day passes to dedicated private offices. Fast internet, great food, and a community of people getting things done.
+            {pageContent.hero?.subtitle || 'From day passes to dedicated private offices. Fast internet, great food, and a community of people getting things done.'}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2 mt-10">
             {AMENITIES.map(({ icon: Icon, label }) => (

@@ -50,7 +50,10 @@ const FAQS = [
   },
 ];
 
-export function FaqSection() {
+interface FaqItem { q: string; a: string }
+
+export function FaqSection({ content }: { content?: { items?: FaqItem[] } }) {
+  const items = content?.items?.length ? content.items : FAQS;
   const [open, setOpen] = useState<number | null>(null);
 
   return (
@@ -65,7 +68,7 @@ export function FaqSection() {
         </div>
 
         <div className="space-y-2">
-          {FAQS.map((faq, i) => (
+          {items.map((faq, i) => (
             <div
               key={i}
               className="bg-white border border-ink-faint/30 rounded-2xl overflow-hidden shadow-sm"

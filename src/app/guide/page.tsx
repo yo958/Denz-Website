@@ -1,6 +1,7 @@
 import { getAdminDb } from '@/lib/firebase-admin';
 import type { BlogPost } from '@/types';
 import { GuideListingClient } from './GuideListingClient';
+import { GuideHero } from './GuideHero';
 
 // Force dynamic rendering — posts are fetched from Firestore at request time,
 // not baked in at build time when the service account is not available.
@@ -24,16 +25,7 @@ export default async function GuidePage() {
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
 
-      {/* Header — server-rendered for SEO */}
-      <div className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-brand mb-3">Denz Phuket Guide</p>
-        <h1 className="text-4xl sm:text-5xl font-bold text-ink mb-4 leading-tight">
-          Your local guide to<br className="hidden sm:block" /> life in Phuket
-        </h1>
-        <p className="text-ink-muted text-lg max-w-2xl leading-relaxed">
-          From the best spots to eat and work, to events, adventures, and hidden gems — written by the team at Denz in Kathu.
-        </p>
-      </div>
+      <GuideHero />
 
       {/* First 20 posts server-rendered for SEO — links crawlable without JS */}
       {posts.length > 0 && (

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.49] - 2026-06-02
+### Added
+- All page hero sections (Home, Menu, Coworking, Rooms, Guide, Contact) now read live content from `page-content` Firestore collection via `usePageContent` hook, falling back to hardcoded defaults
+- `usePageContent` hook for client-side Firestore reads from `page-content/{slug}`
+- `GuideHero` client component so guide page hero is editable without losing SSR for post listings
+
 ## [0.5.48] - 2026-06-02
 ### Changed
 - Navbar: reorder links to Coworking → Rooms → Menu → Guides → Contact

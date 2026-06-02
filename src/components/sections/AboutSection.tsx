@@ -10,7 +10,16 @@ const STATS = [
   { value: '5★', label: 'Avg. review' },
 ];
 
-export function AboutSection() {
+interface AboutContent {
+  title?: string;
+  body1?: string;
+  body2?: string;
+}
+
+export function AboutSection({ content = {} }: { content?: AboutContent }) {
+  const title = content.title || 'A workspace that feels like home';
+  const body1 = content.body1 || 'Nestled between the mountains of Kathu and the beaches of Patong, Denz is where remote workers, freelancers and digital nomads call their second home in Phuket.';
+  const body2 = content.body2 || 'We built Denz because we wanted a place that had everything — fast internet, proper food, comfortable desks and a community that gets it. No pretension, just a great place to get things done.';
   const settings = useVenueSettings();
   const todayHours = getTodayHours(settings);
 
@@ -52,18 +61,10 @@ export function AboutSection() {
               About Denz
             </span>
             <h2 className="text-4xl font-bold text-ink leading-tight mb-5">
-              A workspace that feels like home
+              {title}
             </h2>
-            <p className="text-ink-muted leading-relaxed mb-4">
-              Nestled between the mountains of Kathu and the beaches of Patong,
-              Denz is where remote workers, freelancers and digital nomads call their
-              second home in Phuket.
-            </p>
-            <p className="text-ink-muted leading-relaxed mb-10">
-              We built Denz because we wanted a place that had everything — fast internet,
-              proper food, comfortable desks and a community that gets it. No pretension,
-              just a great place to get things done.
-            </p>
+            <p className="text-ink-muted leading-relaxed mb-4">{body1}</p>
+            <p className="text-ink-muted leading-relaxed mb-10">{body2}</p>
 
             {/* Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">

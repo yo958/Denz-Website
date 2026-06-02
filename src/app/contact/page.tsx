@@ -3,9 +3,11 @@
 import { MapPin, Clock, Globe, Share2 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { useVenueSettings, formatOpeningHours } from '@/hooks/useVenueSettings';
+import { usePageContent } from '@/hooks/usePageContent';
 
 export default function ContactPage() {
   const settings = useVenueSettings();
+  const pageContent = usePageContent<{ hero?: { title?: string; subtitle?: string } }>('contact');
   const hoursLines = settings.venue.openingHours
     ? formatOpeningHours(settings.venue.openingHours)
     : ['Mon – Sun: 10:00 – 23:30'];
@@ -15,9 +17,9 @@ export default function ContactPage() {
       <div className="pt-24 pb-16 bg-white border-b border-ink-faint/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Badge variant="brand" className="mb-4">Contact</Badge>
-          <h1 className="text-4xl sm:text-5xl font-bold text-ink mb-4">Get in touch</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold text-ink mb-4">{pageContent.hero?.title || 'Get in touch'}</h1>
           <p className="text-ink-muted max-w-md">
-            Have a question? Slide into our DMs on Instagram or swing by in person — we&apos;re open every day.
+            {pageContent.hero?.subtitle || "Have a question? Slide into our DMs on Instagram or swing by in person — we're open every day."}
           </p>
         </div>
       </div>
