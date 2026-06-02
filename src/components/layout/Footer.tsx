@@ -58,6 +58,8 @@ export function Footer() {
                 { label: 'Rooms', href: '/rooms' },
                 { label: 'Order Online', href: '/order' },
                 { label: 'Contact', href: '/contact' },
+                { label: 'Privacy Policy', href: '/privacy' },
+                { label: 'Terms of Service', href: '/terms' },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
@@ -95,9 +97,10 @@ export function Footer() {
           <p className="text-xs text-white/30">
             © {new Date().getFullYear()} Denz Coworking Cafe. All rights reserved.
           </p>
-          <p className="text-xs text-white/30">
-            Kathu | Pa Tong, Phuket, Thailand
-          </p>
+          <div className="flex items-center gap-4">
+            <Link href="/privacy" className="text-xs text-white/30 hover:text-white/60 transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="text-xs text-white/30 hover:text-white/60 transition-colors">Terms of Service</Link>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.52] - 2026-06-02
+### Added
+- Privacy Policy page at `/privacy` with PDPA-aware sections
+- Terms of Service page at `/terms` covering bookings, cancellations, and acceptable use
+- Footer links to Privacy Policy and Terms in Explore nav + copyright bar
+
 ## [0.5.51] - 2026-06-02
 ### Added
 - Coworking page: amenity pills and house rules section now read from Firestore page-content with hardcoded fallbacks
