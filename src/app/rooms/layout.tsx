@@ -1,33 +1,31 @@
 import type { Metadata } from 'next';
+import { getPageSeo } from '@/lib/page-seo';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://denzphuket.com';
 
-export const metadata: Metadata = {
-  title: 'Rooms & Accommodation in Phuket',
-  description:
-    'Comfortable rooms in Kathu, Phuket. Standard, Deluxe, and Studio Suite — all with gigabit WiFi, air conditioning, mountain views, and direct access to the café.',
-  keywords: [
-    'rooms phuket', 'accommodation phuket', 'hotel kathu phuket',
-    'guesthouse phuket', 'stay phuket', 'room kathu', 'coworking accommodation phuket',
-  ],
-  openGraph: {
-    title: 'Rooms & Accommodation in Phuket | Denz',
-    description:
-      'Comfortable rooms in Kathu, Phuket. Standard, Deluxe, and Studio Suite — gigabit WiFi, mountain views, café on site.',
-    url: `${BASE_URL}/rooms`,
-    images: [
-      {
-        url: '/images/room-standard.png',
-        width: 1200,
-        height: 630,
-        alt: 'Denz Rooms — Kathu, Phuket',
-      },
-    ],
-  },
-  alternates: {
-    canonical: `${BASE_URL}/rooms`,
-  },
-};
+const DEFAULT_TITLE = 'Rooms & Accommodation in Phuket';
+const DEFAULT_DESC  = 'Comfortable rooms in Kathu, Phuket. Standard, Deluxe, and Studio Suite — all with gigabit WiFi, air conditioning, mountain views, and direct access to the café.';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getPageSeo('rooms');
+  const title = seo.metaTitle  || DEFAULT_TITLE;
+  const desc  = seo.metaDescription || DEFAULT_DESC;
+  const keywords = seo.focusKeyword
+    ? [seo.focusKeyword, 'rooms phuket', 'accommodation phuket', 'hotel kathu phuket', 'guesthouse phuket', 'stay phuket', 'room kathu', 'coworking accommodation phuket']
+    : ['rooms phuket', 'accommodation phuket', 'hotel kathu phuket', 'guesthouse phuket', 'stay phuket', 'room kathu', 'coworking accommodation phuket'];
+  return {
+    title,
+    description: desc,
+    keywords,
+    openGraph: {
+      title: `${title} | Denz`,
+      description: desc,
+      url: `${BASE_URL}/rooms`,
+      images: [{ url: '/images/room-standard.png', width: 1200, height: 630, alt: 'Denz Rooms — Kathu, Phuket' }],
+    },
+    alternates: { canonical: `${BASE_URL}/rooms` },
+  };
+}
 
 // LodgingBusiness schema with individual HotelRoom types and pricing
 const roomsSchema = {

@@ -1,33 +1,31 @@
 import type { Metadata } from 'next';
+import { getPageSeo } from '@/lib/page-seo';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://denzphuket.com';
 
-export const metadata: Metadata = {
-  title: 'Café Menu — Food & Drinks',
-  description:
-    'Thai and international café food in Kathu, Phuket. Green curry, Pad Thai, Açaí bowls, flat whites, cold brew, and fresh juices — order online for pickup.',
-  keywords: [
-    'cafe phuket menu', 'food phuket kathu', 'thai food phuket',
-    'coffee phuket', 'cafe menu phuket', 'order food phuket', 'coworking cafe food phuket',
-  ],
-  openGraph: {
-    title: 'Café Menu — Food & Drinks | Denz Phuket',
-    description:
-      'Thai and international café food in Kathu, Phuket. Green curry, Pad Thai, flat whites, cold brew, and more — order online.',
-    url: `${BASE_URL}/menu`,
-    images: [
-      {
-        url: '/images/food-green-curry.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Denz Café Menu — Kathu, Phuket',
-      },
-    ],
-  },
-  alternates: {
-    canonical: `${BASE_URL}/menu`,
-  },
-};
+const DEFAULT_TITLE = 'Café Menu — Food & Drinks';
+const DEFAULT_DESC  = 'Thai and international café food in Kathu, Phuket. Green curry, Pad Thai, Açaí bowls, flat whites, cold brew, and fresh juices — order online for pickup.';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getPageSeo('menu');
+  const title = seo.metaTitle  || DEFAULT_TITLE;
+  const desc  = seo.metaDescription || DEFAULT_DESC;
+  const keywords = seo.focusKeyword
+    ? [seo.focusKeyword, 'cafe phuket menu', 'food phuket kathu', 'thai food phuket', 'coffee phuket', 'cafe menu phuket', 'order food phuket', 'coworking cafe food phuket']
+    : ['cafe phuket menu', 'food phuket kathu', 'thai food phuket', 'coffee phuket', 'cafe menu phuket', 'order food phuket', 'coworking cafe food phuket'];
+  return {
+    title,
+    description: desc,
+    keywords,
+    openGraph: {
+      title: `${title} | Denz Phuket`,
+      description: desc,
+      url: `${BASE_URL}/menu`,
+      images: [{ url: '/images/food-green-curry.jpg', width: 1200, height: 630, alt: 'Denz Café Menu — Kathu, Phuket' }],
+    },
+    alternates: { canonical: `${BASE_URL}/menu` },
+  };
+}
 
 // Menu schema with MenuSection and MenuItem entries (based on standard fallback items)
 const menuSchema = {

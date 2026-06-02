@@ -5,6 +5,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Providers } from '@/components/layout/Providers';
 import { getAdminDb } from '@/lib/firebase-admin';
+import { getPageSeo } from '@/lib/page-seo';
 
 async function getSiteNoindex(): Promise<boolean> {
   try {
@@ -26,52 +27,45 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const noindex = await getSiteNoindex();
-  return siteMetadata(noindex);
+  const [noindex, homeSeo] = await Promise.all([getSiteNoindex(), getPageSeo('home')]);
+  const defaultTitle = homeSeo.metaTitle  || 'Denz Coworking Cafe Phuket | Work, Eat & Explore';
+  const defaultDesc  = homeSeo.metaDescription || 'Denz is a coworking café in Kathu, Phuket with gigabit WiFi, mountain views, Thai & western food, private offices, and flexible day desk packages from ฿200. Open Mon–Fri.';
+  const keywords = homeSeo.focusKeyword
+    ? [homeSeo.focusKeyword, 'coworking phuket', 'cafe phuket', 'digital nomad phuket', 'kathu phuket workspace', 'coworking space phuket', 'desk rental phuket']
+    : ['coworking phuket', 'cafe phuket', 'digital nomad phuket', 'kathu phuket workspace', 'coworking space phuket', 'desk rental phuket'];
+  return {
+    metadataBase: new URL(BASE_URL),
+    ...(noindex && { robots: { index: false, follow: false } }),
+    title: {
+      default: defaultTitle,
+      template: '%s | Denz Phuket',
+    },
+    description: defaultDesc,
+    keywords,
+    authors: [{ name: 'Denz Phuket', url: BASE_URL }],
+    icons: {
+      icon: '/denz-icon.png',
+      apple: '/denz-icon.png',
+    },
+    openGraph: {
+      siteName: 'Denz Phuket',
+      locale: 'en_US',
+      type: 'website',
+      url: BASE_URL,
+      title: defaultTitle,
+      description: defaultDesc,
+      images: [{ url: '/images/hero-coworking.jpg', width: 1200, height: 630, alt: 'Denz Coworking Café — Kathu, Phuket' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: defaultTitle,
+      description: defaultDesc,
+      images: ['/images/hero-coworking.jpg'],
+      site: '@denzphuket',
+    },
+    alternates: { canonical: BASE_URL },
+  };
 }
-
-function siteMetadata(noindex: boolean): Metadata { return {
-  metadataBase: new URL(BASE_URL),
-  ...(noindex && { robots: { index: false, follow: false } }),
-  title: {
-    default: 'Denz Coworking Cafe Phuket | Work, Eat & Explore',
-    template: '%s | Denz Phuket',
-  },
-  description:
-    'Denz is a coworking café in Kathu, Phuket with gigabit WiFi, mountain views, Thai & western food, private offices, and flexible day desk packages from ฿200. Open Mon–Fri.',
-  keywords: ['coworking phuket', 'cafe phuket', 'digital nomad phuket', 'kathu phuket workspace', 'coworking space phuket', 'desk rental phuket'],
-  authors: [{ name: 'Denz Phuket', url: BASE_URL }],
-  icons: {
-    icon: '/denz-icon.png',
-    apple: '/denz-icon.png',
-  },
-  openGraph: {
-    siteName: 'Denz Phuket',
-    locale: 'en_US',
-    type: 'website',
-    url: BASE_URL,
-    title: 'Denz Coworking Cafe Phuket | Work, Eat & Explore',
-    description: 'Denz is a modern coworking café in Kathu, Phuket — fast WiFi, great food, stunning mountain views and flexible desk packages.',
-    images: [
-      {
-        url: '/images/hero-coworking.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Denz Coworking Café — Kathu, Phuket',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Denz Coworking Cafe Phuket | Work, Eat & Explore',
-    description: 'Denz is a modern coworking café in Kathu, Phuket — fast WiFi, great food, stunning mountain views and flexible desk packages.',
-    images: ['/images/hero-coworking.jpg'],
-    site: '@denzphuket',
-  },
-  alternates: {
-    canonical: BASE_URL,
-  },
-}; }
 
 // JSON-LD structured data — LocalBusiness + Organization
 const jsonLd = {

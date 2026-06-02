@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.5.50] - 2026-06-02
+### Added
+- All page layouts (Home, Menu, Coworking, Rooms, Guide, Contact) now use `generateMetadata` reading `seo.*` from Firestore `page-content/{slug}` via Admin SDK — meta title, description, and focus keyword all controllable from POS
+- `src/lib/page-seo.ts` shared helper for server-side SEO reads
+
 ## [0.5.49] - 2026-06-02
 ### Added
 - All page hero sections (Home, Menu, Coworking, Rooms, Guide, Contact) now read live content from `page-content` Firestore collection via `usePageContent` hook, falling back to hardcoded defaults
