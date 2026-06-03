@@ -91,8 +91,6 @@ export function Footer() {
                 { label: 'Rooms', href: '/rooms' },
                 { label: 'Order Online', href: '/order' },
                 { label: 'Contact', href: '/contact' },
-                { label: 'Privacy Policy', href: '/privacy' },
-                { label: 'Terms of Service', href: '/terms' },
               ].map((link) => (
                 <li key={link.href}>
                   <Link

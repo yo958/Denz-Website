@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.60] - 2026-06-03
+### Fixed
+- Footer: removed duplicate Privacy Policy and Terms of Service from Explore links (already in bottom bar)
+
 ## [0.5.59] - 2026-06-03
 ### Changed
 - Footer: replaced generic Lucide icons with official brand SVGs for all social platforms (Instagram, Facebook, TikTok, YouTube, X, LinkedIn, WhatsApp, TripAdvisor, Threads)
