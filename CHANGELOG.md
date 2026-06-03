@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.56] - 2026-06-03
+### Added
+- Complete migration redirect map in next.config.ts (301 permanent):
+  - 40 old WordPress blog posts at root level (e.g. /coworking-phuket) → /guide/:slug
+  - Old /guides/ plural → /guide
+  - Old WP pages: /coworking-prices → /coworking, /denz-cafe → /menu, /privacy-policy-2 → /privacy, /sitemap → /, /social-links → /contact
+  - All /product/* WooCommerce URLs → /menu
+  - 15 old WordPress coworking desk page slugs → new SEO-friendly coworking slugs
+  - /room/* (WordPress room URLs) → /rooms/* equivalents
+  - Existing ID-based redirects preserved
+
 ## [0.5.55] - 2026-06-03
 ### Fixed
 - `/guide` listing page: added explicit `robots: { index: true, follow: true }` override — was incorrectly inheriting noindex
