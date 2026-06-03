@@ -140,6 +140,38 @@ export default function CoworkingLayout({ children }: { children: React.ReactNod
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(coworkingSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      {/* Static server-rendered content for Google — keyword-rich without JS */}
+      <div className="sr-only">
+        <h1>Coworking Desk Space in Kathu, Phuket — Denz</h1>
+        <p>
+          Denz is a coworking café in Kathu, Phuket offering hot desks, dedicated desks, and private
+          offices on Patong Hill. Day passes from ฿200. Weekly, monthly, and annual packages available.
+          Open Monday to Friday, 10:00 AM – 11:30 PM.
+        </p>
+        <h2>Hot Desk Coworking in Phuket</h2>
+        <p>Walk-in coworking from ฿200/day. No reservation needed. Café seating, window desks, and balcony
+          spots available. Includes gigabit WiFi and complimentary coffee and tea.</p>
+        <h2>Dedicated Desk Rental in Patong</h2>
+        <p>Reserve the same desk every day. Weekly from ฿1,600, monthly from ฿4,800. Your belongings stay,
+          your spot is guaranteed.</p>
+        <h2>Private Office Rental in Phuket</h2>
+        <p>Fully enclosed private office with standing desk, external monitor, and air conditioning.
+          From ฿200/hour or ฿1,400/day. Ideal for calls, confidential work, and team meetings.</p>
+        <h2>External Monitor Desks — Upgrade Your Workspace</h2>
+        <p>Choose a workstation with a 24&ldquo;, 27&ldquo;, 34&ldquo; ultrawide, or 49&ldquo; ultrawide monitor.
+          Sit-stand (height-adjustable) desks also available. All include gigabit WiFi and free drinks.</p>
+        <h2>Coworking Amenities at Denz</h2>
+        <ul>
+          <li>1000/1000 Mbps dual-line business WiFi</li>
+          <li>Free coffee, tea and drinking water</li>
+          <li>Printing and scanning (฿10/page)</li>
+          <li>Lockers</li>
+          <li>Air conditioning</li>
+          <li>External monitors — 10 available (24&ldquo; to 49&ldquo;)</li>
+          <li>Mac Mini rentals</li>
+          <li>Panoramic Patong Bay views</li>
+        </ul>
+      </div>
       {children}
     </>
   );

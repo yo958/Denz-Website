@@ -43,17 +43,30 @@ async function getBlogSitemapEntries(): Promise<MetadataRoute.Sitemap> {
   }
 }
 
-async function getCoworkingSitemapEntries(): Promise<MetadataRoute.Sitemap> {
+async function getSliceData<T>(sliceName: string): Promise<T | null> {
   try {
     const db = getAdminDb();
-    const snap = await db.collection('coworking-spaces').where('archived', '!=', true).get();
-    const spaces = snap.docs.map(d => ({ id: d.id, ...d.data() }) as CoworkSpace);
-    return spaces.map(s => ({
-      url: `${BASE_URL}/coworking/${toSlug(s.name)}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
-    }));
+    const snap = await db.doc(`stores/default/slices/${sliceName}`).get();
+    if (!snap.exists) return null;
+    const raw = snap.data() as { serialized?: string };
+    return raw.serialized ? JSON.parse(raw.serialized) as T : null;
+  } catch {
+    return null;
+  }
+}
+
+async function getCoworkingSitemapEntries(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const spaces = await getSliceData<CoworkSpace[]>('spaces');
+    if (!spaces) return [];
+    return spaces
+      .filter(s => !s.archived)
+      .map(s => ({
+        url: `${BASE_URL}/coworking/${toSlug(s.name)}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+      }));
   } catch {
     return [];
   }
@@ -61,15 +74,16 @@ async function getCoworkingSitemapEntries(): Promise<MetadataRoute.Sitemap> {
 
 async function getRoomsSitemapEntries(): Promise<MetadataRoute.Sitemap> {
   try {
-    const db = getAdminDb();
-    const snap = await db.collection('products').where('category', '==', 'rooms').where('archived', '!=', true).get();
-    const rooms = snap.docs.map(d => ({ id: d.id, ...d.data() }) as Product);
-    return rooms.map(r => ({
-      url: `${BASE_URL}/rooms/${toSlug(r.name)}`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.8,
-    }));
+    const products = await getSliceData<Product[]>('products');
+    if (!products) return [];
+    return products
+      .filter(p => p.category === 'rooms' && !p.archived)
+      .map(r => ({
+        url: `${BASE_URL}/rooms/${toSlug(r.name)}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.8,
+      }));
   } catch {
     return [];
   }

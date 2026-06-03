@@ -41,6 +41,9 @@ export function AboutSection({ content = {} }: { content?: AboutContent }) {
                 src="/images/about-coworking.jpg"
                 alt="Denz Coworking Cafe open area at sunset"
                 className="w-full h-full object-cover"
+                width={800}
+                height={600}
+                loading="lazy"
               />
             </div>
             {/* Floating card */}

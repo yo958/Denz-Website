@@ -79,6 +79,24 @@ export default function ContactLayout({ children }: { children: React.ReactNode 
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }} />
+      {/* Static server-rendered content for Google */}
+      <div className="sr-only">
+        <h1>Find Denz Coworking Café in Kathu, Phuket</h1>
+        <p>
+          Denz is located in Kathu, Phuket, Thailand — on Patong Hill between Patong Beach and Kathu town.
+          Address: Soi 4, Soi Khuanyang, Pa Tong, Phuket 83120.
+        </p>
+        <h2>Opening Hours</h2>
+        <p>Monday to Friday: 10:00 AM – 11:30 PM. Kitchen: 11:00 AM – 10:00 PM. Closed Saturdays and Sundays.</p>
+        <h2>How to Get to Denz from Patong</h2>
+        <p>
+          Head towards Kathu from Patong, descend the hill past Wyndham Sea Pearl Resort. At the bottom,
+          look for Patong Rescue Centre on your left. Turn right into Soi Khuanyang. Drive straight ahead
+          past several side streets and speed bumps — Denz is on your left up Soi 4.
+        </p>
+        <h2>Contact Denz Phuket</h2>
+        <p>Phone: +66 63 917 7720. Instagram: @denzphuket. Facebook: /denzphuket. Free parking available.</p>
+      </div>
       {children}
     </>
   );

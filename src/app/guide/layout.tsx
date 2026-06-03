@@ -17,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { absolute: title },
     description: desc,
     keywords,
+    robots: { index: true, follow: true },
     openGraph: {
       title: `Guides | Denz Phuket`,
       description: desc,

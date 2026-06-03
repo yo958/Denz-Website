@@ -15,6 +15,9 @@ export function DogsSection() {
               src="/images/dogs.jpg"
               alt="Three of the Denz French Bulldogs sitting inside the café"
               className="w-full h-full object-cover"
+              width={800}
+              height={600}
+              loading="lazy"
             />
           </div>
 

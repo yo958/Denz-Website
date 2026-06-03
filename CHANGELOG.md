@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.55] - 2026-06-03
+### Fixed
+- `/guide` listing page: added explicit `robots: { index: true, follow: true }` override — was incorrectly inheriting noindex
+- Sitemap: coworking spaces + rooms now load from correct Firestore path (`stores/default/slices/{spaces|products}`)
+### Added
+- Static server-rendered intro blocks to `/rooms`, `/menu`, `/coworking`, `/contact` layouts — Google now sees keyword-rich content without JS
+- `/rooms`: H1 + H2s for all 3 room types + amenities + location in sr-only block
+- `/menu`: H1 + H2s for Thai food, Western food, coffee, online ordering in sr-only block
+- `/coworking`: H1 + H2s for hot desk, dedicated desk, private office, monitor desks, amenities
+- `/contact`: H1 "Find Denz Coworking Café in Kathu, Phuket" + directions + hours + contact info
+- `fetchPriority="high"` + `width`/`height` on hero image (LCP improvement)
+- `width`/`height` + `loading="lazy"` on AboutSection, ChillSection, DogsSection images (CLS fix)
+- `width`/`height` on navbar logo image
+
 ## [0.5.54] - 2026-06-03
 ### Changed
 - FAQ answers now always rendered in DOM (CSS max-height toggle instead of conditional render) — all 11 Q&As now indexable by Google

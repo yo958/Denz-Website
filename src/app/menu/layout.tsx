@@ -170,6 +170,37 @@ export default function MenuLayout({ children }: { children: React.ReactNode }) 
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(menuSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      {/* Static server-rendered content — ensures Google sees keyword-rich text without JS */}
+      <div className="sr-only">
+        <h1>Thai & Western Café Menu in Kathu, Phuket — Denz</h1>
+        <p>
+          Denz serves freshly cooked Thai and Western food at our coworking café in Kathu, Phuket.
+          Our kitchen is open Monday to Friday from 11:00 AM to 10:00 PM. Order online for pickup
+          or enjoy your meal in the café.
+        </p>
+        <h2>Thai Food in Phuket at Denz</h2>
+        <p>
+          Classic Thai dishes made fresh daily: Pad Thai, Tom Yum soup, Thai green curry, massaman curry,
+          cashew chicken (a house favourite), Isaan grilled pork, som tam (papaya salad), and more.
+          Vegetarian options available.
+        </p>
+        <h2>Western Café Food in Kathu</h2>
+        <p>
+          Western breakfasts and all-day meals: burgers (frequently named best burger in Patong), chicken
+          sandwiches, salads, wraps, avocado toast, eggs benedict, and fresh smoothie bowls.
+        </p>
+        <h2>Coffee & Drinks at Denz Café</h2>
+        <p>
+          Specialty coffee bar with flat whites, americanos, iced lattes, and cold brew. Multiple milk
+          options including oat and almond. Free coffee and tea included with all coworking packages.
+          Fresh juices, smoothies, Thai milk tea, and coconut water also available.
+        </p>
+        <h2>Online Ordering — Food Pickup in Patong, Phuket</h2>
+        <p>
+          Order food and drinks online for pickup at Denz. Select your items, choose a time, and collect
+          from the café. No coworking pass required to order food.
+        </p>
+      </div>
       {children}
     </>
   );

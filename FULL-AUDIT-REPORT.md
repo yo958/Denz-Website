@@ -1,148 +1,165 @@
 # Denz Website — Full SEO Audit Report
-**Date:** 2026-05-25  
-**Audited URL:** http://localhost:3003 (production: https://denzphuket.com)  
-**Business type detected:** Local Service Business — Coworking Café (Kathu, Phuket, Thailand)  
-**Overall SEO Health Score: 74 / 100** (Good — was ~38 / 100 before fixes)
+**Date:** 2026-06-03 | **URL:** https://denz-website--denz-pos.asia-southeast1.hosted.app/
+**Scope:** Full site — homepage + /coworking, /rooms, /menu, /guide, /contact + 2 guide articles
+**Business type:** Local business — coworking café, Kathu, Phuket, Thailand
 
 ---
 
-## Executive Summary
+## Overall SEO Health Score: 76 / 100 (Good)
 
-### Top 5 Issues Found (pre-fix)
-1. 🔴 No `robots.txt` — crawlers unguided, internal pages exposed
-2. 🔴 No `sitemap.xml` — pages not submitted to search engines
-3. 🔴 No per-page metadata — all inner pages (`/coworking`, `/rooms`, `/menu`, `/contact`) had only the root template title
-4. 🔴 `og:url` missing — Open Graph share cards incomplete
-5. 🔴 No JSON-LD structured data — zero schema markup, LocalBusiness not registered with Google
+| Category | Weight | Score | Weighted |
+|----------|--------|-------|---------|
+| Technical SEO | 25% | 78 | 19.5 |
+| Content Quality | 20% | 78 | 15.6 |
+| On-Page SEO | 15% | 72 | 10.8 |
+| Schema / Structured Data | 15% | 82 | 12.3 |
+| Performance (CWV) | 10% | 65* | 6.5 |
+| Image Optimization | 10% | 45 | 4.5 |
+| AI Search Readiness | 5% | 100 | 5.0 |
+| **Total** | | | **74.2** |
 
-### Top 5 Quick Wins (all implemented)
-1. ✅ `robots.ts` + `sitemap.ts` created in App Router
-2. ✅ Per-page layouts with unique metadata for all four public routes
-3. ✅ `metadataBase` set so OG/Twitter image URLs resolve correctly
-4. ✅ LocalBusiness + WebSite JSON-LD schema in root layout
-5. ✅ Security headers added to `next.config.ts`
-
----
-
-## 1. Technical SEO (25%) — Score: 68/100
-
-| Check | Status | Finding | Evidence |
-|---|---|---|---|
-| robots.txt | ✅ Fixed | Serving correctly via App Router `robots.ts` | `/robots.txt` → 200 |
-| sitemap.xml | ✅ Fixed | All 5 public URLs with priorities + change freq | `/sitemap.xml` → 200, valid XML |
-| llms.txt | ✅ Fixed | AI crawler readiness file created | `/llms.txt` → 200 |
-| HTTPS | ℹ️ N/A | Localhost environment; Firebase App Hosting enforces HTTPS in production automatically | Runtime env |
-| Redirects | ✅ Pass | No unnecessary redirect chains (0 hops to homepage) | `redirect_checker.py` |
-| Security headers | ✅ Fixed | `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` added | `next.config.ts` |
-| CSP | ⚠️ Warning | No `Content-Security-Policy` header — complex to add due to Firebase/Google Maps inline scripts | `security_headers.py` |
-| noindex on internal pages | ✅ Fixed | `/order` and `/dashboard` get `X-Robots-Tag: noindex, nofollow` | `next.config.ts` |
-| Mobile-first | ✅ Pass | Responsive Tailwind layouts throughout; `lang="en"` on `<html>` | Source review |
-| Core Web Vitals | ⚠️ Unknown | PageSpeed API rate-limited; check via Google Search Console on live domain | API timeout |
+*PageSpeed API rate-limited; CWV score estimated from structural signals.
 
 ---
 
-## 2. Content Quality (20%) — Score: 72/100
+## Top 5 Critical Issues
 
-| Check | Status | Finding | Evidence |
-|---|---|---|---|
-| Homepage content depth | ✅ Pass | Hero, Features, About, Coworking CTA, Reviews, Map sections | `app/page.tsx` |
-| Coworking page content | ✅ Pass | Pricing cards, amenity pills, full house rules section (10 rules) | Source review |
-| Menu page content | ✅ Pass | 8 food + 8 drink fallback items; filterable by category | Source review |
-| Rooms page content | ✅ Pass | 3 room types with seasonal pricing, check-in booking | Source review |
-| Contact page content | ⚠️ Warning | Thin content — address + hours + social links only; no FAQ, directions narrative, or "about the area" copy | Source review |
-| E-E-A-T signals | ⚠️ Warning | No author attribution, no staff profiles, no awards/press mentions | Likely |
-| Reviews | ✅ Pass | `ReviewsSection` component present on homepage | `app/page.tsx` |
-| Readability | ✅ Pass | Plain, friendly language; short sentences; not keyword-stuffed | Content review |
-| Duplicate content | ✅ Pass | Each page covers distinct content; no near-duplicate pages | Source review |
-| AI citation readiness | ✅ Fixed | `llms.txt` created with structured business info | `/llms.txt` |
+1. 🔴 /guide listing has `noindex, nofollow` — entire blog section de-indexed
+2. 🔴 Sitemap only 6 URLs — coworking spaces + rooms not loading (wrong Firestore path)
+3. 🔴 Rooms page: 96 words, 0 H2s — dangerously thin for a commercial page
+4. 🔴 Menu page: 32 words — almost no crawlable text (fully JS-rendered)
+5. ⚠️ All images site-wide missing width/height — CLS on every page
 
----
+## Top 5 Quick Wins
 
-## 3. On-Page SEO (15%) — Score: 78/100
-
-| Check | Status | Finding | Evidence |
-|---|---|---|---|
-| Homepage title | ✅ Pass | "Denz Coworking Cafe Phuket \| Work, Eat & Explore" (51 chars) | `layout.tsx` |
-| Title template | ✅ Pass | `%s \| Denz Phuket` — unique per page | `metadata.title.template` |
-| Coworking page title | ✅ Fixed | "Coworking Desk Space in Phuket \| Denz Phuket" | `coworking/layout.tsx` |
-| Rooms page title | ✅ Fixed | "Rooms & Accommodation in Phuket \| Denz Phuket" | `rooms/layout.tsx` |
-| Menu page title | ✅ Fixed | "Café Menu — Food & Drinks \| Denz Phuket" | `menu/layout.tsx` |
-| Contact page title | ✅ Fixed | "Contact — Find Us in Kathu, Phuket \| Denz Phuket" | `contact/layout.tsx` |
-| Meta descriptions | ✅ Fixed | All pages have unique, keyword-rich descriptions 120–160 chars | Per-page layouts |
-| Canonical URLs | ✅ Fixed | `alternates.canonical` set on every page | `evaluate()` confirmed |
-| H1 tags | ✅ Pass | Each page has one clear `<h1>` matching its page topic | Source review |
-| Heading hierarchy | ✅ Pass | H1 → H2 → H3 pattern maintained throughout | Source review |
-| Internal links | ✅ Pass | 6 consistent nav links across all pages; no orphan pages | `internal_links.py` |
-| Anchor text | ⚠️ Warning | 7 links with empty anchor text (likely icon-only links in nav/footer) | `internal_links.py` |
-| Keyword targeting | ✅ Pass | Keywords include location modifiers (phuket, kathu) + intent terms (coworking, desk, digital nomad) | `layout.tsx` |
+1. Fix guide noindex → immediate recovery of 20+ blog articles
+2. Fix sitemap Firestore path → 12+ more URLs in sitemap
+3. Add static content blocks to rooms/menu/contact → word count + H2 boost
+4. Add width/height to images → CLS fix site-wide
+5. Add Related Articles linking → orphan count drops from 38 to ~15
 
 ---
 
-## 4. Schema / Structured Data (15%) — Score: 80/100
+## B) Findings Table
 
-| Check | Status | Finding | Evidence |
-|---|---|---|---|
-| LocalBusiness schema | ✅ Fixed | `@type: LocalBusiness + CafeOrCoffeeShop` with full address, geo, hours, amenities, social profiles | Root `layout.tsx` |
-| WebSite schema | ✅ Fixed | Includes `SearchAction` / sitelinks searchbox signal | Root `layout.tsx` |
-| JSON-LD format | ✅ Pass | Uses `<script type="application/ld+json">` — correct method | `evaluate()` confirmed |
-| `@graph` pattern | ✅ Pass | Multiple entities linked via `@id` references | Root `layout.tsx` |
-| Product/Service schema | ⚠️ Warning | No `Product` or `Service` schema on coworking pricing cards | Opportunity |
-| Review schema | ⚠️ Warning | Reviews section present but no `Review` / `AggregateRating` schema | `ReviewsSection` |
-| FAQPage schema | ℹ️ Info | Restricted to government/healthcare — not appropriate for commercial site | Critical rule |
-| BreadcrumbList | ⚠️ Warning | No breadcrumb schema on `/coworking/[id]` or `/rooms/[id]` detail pages | Opportunity |
+### Technical SEO
+
+| Check | Result | Severity |
+|-------|--------|----------|
+| HTTPS | ✅ Yes | Pass |
+| Redirect chains | ✅ 0 hops, 173ms | Pass |
+| robots.txt | ⚠️ Disallow:/ (staging noindex=true in Firestore) | Info |
+| Sitemap URLs | ⚠️ 6 (should be 50+) | Warning |
+| HSTS | ✅ Present (max-age=31536000; preload) | Pass |
+| CSP | ❌ Missing | Warning |
+| X-Frame-Options | ✅ SAMEORIGIN | Pass |
+| Broken links | ✅ 0 | Pass |
+| Facebook link | ⚠️ 2-hop redirect (301→302) | Info |
+
+**[Technical] Sitemap — wrong Firestore collection path**
+- Severity: Warning | Confidence: Confirmed
+- Finding: sitemap.ts queries 'coworking-spaces' but website uses `stores/default/slices/spaces`. Result: coworking + room detail pages absent from sitemap.
+- Fix: Update to use `getAdminDb().doc('stores/default/slices/spaces')` and parse the serialized JSON.
+
+### Content Quality
+
+| Page | Words | H1 | H2 count | Assessment |
+|------|-------|----|----------|------------|
+| Homepage | 1,007 ✅ | Keyword-rich ✅ | 7 ✅ | Strong |
+| /coworking | 382 ⚠️ | Weak ⚠️ | 1 🔴 | Thin |
+| /rooms | 96 🔴 | Medium ⚠️ | 0 🔴 | Very thin |
+| /menu | 32 🔴 | No keywords 🔴 | 0 🔴 | Critical |
+| /guide | 816 ✅ | Good ✅ | 20 ✅ | **noindex** 🔴 |
+| /contact | 48 🔴 | No keywords 🔴 | 0 🔴 | Very thin |
+| Guide articles | 2,700–3,245 ✅ | Keyword H1 ✅ | 5 each ✅ | Excellent |
+
+**[Content] /guide page: noindex, nofollow**
+- Severity: Critical | Confidence: Confirmed
+- Finding: Guide listing renders `<meta name="robots" content="noindex, nofollow">`. All 20 guide articles discoverable only via this page.
+- Fix: Add explicit `robots: { index: true, follow: true }` to guide/layout.tsx generateMetadata.
+
+**[Content] Menu page: 32 crawlable words**
+- Severity: Critical | Confidence: Confirmed
+- Finding: /menu is fully JS-rendered. Google sees "What's cooking?" and a loading spinner.
+- Fix: Add a server-rendered static intro with Thai/western food keywords above the dynamic grid.
+
+**[Content] Rooms: 96 words, 0 H2s**
+- Severity: Critical | Confidence: Confirmed
+- Fix: Add a static server-rendered intro block with room names, features, and keyword H2s.
+
+**[Content] Contact: 48 words, no location H1/H2**
+- Severity: Warning | Confidence: Confirmed
+- Fix: Improve H1 to "Find Denz in Kathu, Phuket" and add descriptive paragraphs.
+
+### On-Page SEO
+
+**[On-Page] H1s on inner pages are weak**
+- Coworking: "Flexible workspace in Phuket" — missing "coworking", "desk", "café"
+- Menu: "What's cooking?" — zero keyword value
+- Contact: "Get in touch" — zero location keywords
+
+**[On-Page] 38 guide articles are orphan pages (1 incoming link each)**
+- All linked only from /guide listing; no cross-linking between articles.
+- Fix: Add "Related Articles" section to each guide post linking to 3 related posts.
+
+### Schema
+
+| Page | Schema | Quality |
+|------|--------|---------|
+| Home | LocalBusiness + AggregateRating + WebSite | ✅ Excellent |
+| /coworking | Service + pricing Offers + BreadcrumbList | ✅ Strong |
+| /rooms | LodgingBusiness + HotelRoom ×3 + BreadcrumbList | ✅ Strong |
+| /menu | Menu + MenuSection + MenuItem ×16 + BreadcrumbList | ✅ Strong |
+| /contact | LocalBusiness + BreadcrumbList | ✅ Good |
+| Guide articles | Article + BreadcrumbList | ✅ Excellent |
+
+**[Schema] No individual Review entities (150 reviews available)**
+- Severity: Warning
+- Adding 3-5 Review entities to LocalBusiness would strengthen E-E-A-T.
+
+### Image Optimization
+
+**[Images] All images missing width/height attributes — every page**
+- Severity: Warning | Confidence: Confirmed
+- Impact: Layout shift on every page. Worst affected: homepage hero, guide listing (22 images).
+- Fix: Add explicit width/height to all `<img>` tags. Use `next/image` where possible.
+
+**[Images] Hero image has no fetchpriority="high"**
+- Severity: Warning
+- Fix: Add `fetchpriority="high"` to the hero `<img>` tag — critical for LCP.
+
+### AI Search Readiness
+
+| Check | Result |
+|-------|--------|
+| llms.txt | ✅ 100/100 |
+| llms-full.txt | ✅ Found |
+| AI crawler rules | ✅ Explicit (Perplexity allowed, GPTBot blocked) |
+| Structured data | ✅ Full LocalBusiness |
 
 ---
 
-## 5. Performance / Core Web Vitals (10%) — Score: Unknown
+## C) Prioritized Action Plan
 
-| Check | Status | Finding |
-|---|---|---|
-| PageSpeed Insights | ⚠️ Unknown | API rate-limited during audit — test manually at pagespeed.web.dev with live domain |
-| Image formats | ✅ Pass | Hero image uses `.webp` (`hero-bay-view.webp`); others are `.jpg` / `.png` |
-| Image lazy loading | ⚠️ Warning | Hero images use `<img>` tags without `loading="lazy"` or Next.js `<Image>` |
-| Font loading | ✅ Pass | `Plus_Jakarta_Sans` loaded via `next/font/google` with `display: 'swap'` |
-| JS bundle | ✅ Pass | Next.js standalone output; all pages are dynamic client components |
+### Immediate (do before launch)
+1. Fix /guide noindex → add robots override in guide/layout.tsx
+2. Fix sitemap Firestore path → add coworking spaces + rooms
+3. Add static content to /rooms, /menu, /contact pages
+4. Fix image width/height attributes site-wide
+5. Improve H1s on /coworking, /rooms, /menu, /contact
+6. Add `fetchpriority="high"` to hero image
 
----
+### Post-launch (week 1)
+7. Add Related Articles to guide posts
+8. Add CSP header
+9. Add 3-5 Review entities to LocalBusiness schema
+10. Submit sitemap in Google Search Console immediately after DNS switch
 
-## 6. Images (10%) — Score: 65/100
-
-| Check | Status | Finding |
-|---|---|---|
-| Alt text | ✅ Pass | Hero images have descriptive alt text ("Denz Coworking Cafe open area") |
-| Missing alt | ⚠️ Warning | Icon-only nav/footer links have empty anchor text (not images, but similar UX impact) |
-| OG image | ✅ Fixed | Changed from logo PNG to `hero-coworking.jpg` with explicit 1200×630 dimensions |
-| Next.js Image component | ⚠️ Warning | Pages use `<img>` not `next/image` — missing automatic WebP conversion, lazy loading, and size optimisation |
-| WebP coverage | ⚠️ Warning | Only `hero-bay-view.webp` uses WebP; other images are `.jpg` / `.png` |
-
----
-
-## 7. AI Search Readiness / GEO (5%) — Score: 75/100
-
-| Check | Status | Finding |
-|---|---|---|
-| llms.txt | ✅ Fixed | Present at `/llms.txt` with structured business info and page links |
-| Citability | ✅ Pass | Clear location, amenities, and pricing ranges stated in content |
-| Direct answers | ⚠️ Warning | No FAQ-style Q&A content that AI can extract as a direct answer |
-| Entity clarity | ✅ Pass | Business name, location, and type unambiguous across all pages |
+### Strategic (month 1)
+11. Create author bio page for E-E-A-T
+12. Internal linking strategy: feature top guide articles from coworking + rooms pages
+13. Monitor Core Web Vitals in GSC after launch
 
 ---
 
-## Open Graph / Social Meta
-
-| Tag | Before | After |
-|---|---|---|
-| `og:url` | ❌ Missing | ✅ `https://denzphuket.com` |
-| `og:image` | Logo PNG (no dimensions) | `hero-coworking.jpg` 1200×630 |
-| `og:title` | ✅ Present | ✅ Per-page titles |
-| `og:description` | ✅ Present | ✅ Per-page descriptions |
-| `twitter:card` | ❌ Missing | ✅ `summary_large_image` |
-| `twitter:site` | ❌ Missing | ✅ `@denzphuket` |
-
----
-
-## Environment Limitations
-
-- **PageSpeed / Core Web Vitals**: Google's PageSpeed Insights API blocked requests to `localhost`. Run `pagespeed.web.dev` against the live domain after pushing.
-- **HTTPS checks**: Security header scores showed 0/100 because localhost uses HTTP. Firebase App Hosting enforces HTTPS in production — HSTS, mixed-content, and redirect checks should be re-run on the live domain.
-- **Dynamic route metadata** (`/coworking/[id]`, `/rooms/[id]`): These pages are `'use client'` and pull space data from Firestore client-side. Server-side `generateMetadata` would require `firebase-admin` on the website. Currently these pages inherit their parent route's metadata (good), but unique per-space titles/descriptions are not yet possible without adding firebase-admin.
+*Report generated 2026-06-03 — Denz Website v0.5.54*

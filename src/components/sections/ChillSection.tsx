@@ -49,6 +49,9 @@ export function ChillSection() {
               src="/images/chill-area.webp"
               alt="Denz chill lounge — sofas and jungle views"
               className="w-full h-full object-cover"
+              width={800}
+              height={600}
+              loading="lazy"
             />
             {/* Overlay badge */}
             <div className="absolute bottom-4 left-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-3">

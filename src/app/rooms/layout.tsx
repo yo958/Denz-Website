@@ -159,6 +159,43 @@ export default function RoomsLayout({ children }: { children: React.ReactNode })
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(roomsSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+      {/* Static server-rendered intro — ensures Google sees keyword-rich content without JS */}
+      <div className="sr-only">
+        <h1>WorkStay Rooms & Accommodation in Kathu, Phuket</h1>
+        <p>
+          Denz offers three hotel-style accommodation rooms in Kathu, Phuket, located directly above the
+          coworking café on Patong Hill. Each room features 1000/1000 Mbps gigabit WiFi, air conditioning,
+          panoramic Patong Bay views, and a complimentary daily hot desk pass at Denz Café.
+        </p>
+        <h2>Room 1 — King Deluxe</h2>
+        <p>
+          Work-focused king room with height-adjustable standing desk, ergonomic chair, 50&ldquo; Smart TV
+          with Netflix, in-room safe, fridge, and kettle. Sweeping Patong Bay sunset views. Includes hot
+          desk access at the coworking café below.
+        </p>
+        <h2>Room 2 — Queen Standard</h2>
+        <p>
+          Comfortable queen room with dedicated work setup, 1 Gbps business WiFi, Patong Bay views, and
+          direct staircase access to Denz CoWorking Café. Ideal for short stays and digital nomads.
+        </p>
+        <h2>Room 3 — Queen Deluxe</h2>
+        <p>
+          Our largest room with premium finishings, sweeping 180° Patong Bay views, standing desk,
+          50&ldquo; Smart TV, and full café access. The best option for longer stays in Phuket.
+        </p>
+        <h2>What&apos;s Included with Every Room Stay</h2>
+        <ul>
+          <li>1000/1000 Mbps gigabit business WiFi with backup line</li>
+          <li>Complimentary daily hot desk pass at Denz Café (฿200/day value per person)</li>
+          <li>Air conditioning</li>
+          <li>Panoramic Patong Bay or mountain views</li>
+        </ul>
+        <h2>Location</h2>
+        <p>
+          Soi 4, Soi Khuanyang, Kathu, Pa Tong, Phuket 83120, Thailand. On Patong Hill between
+          Patong Beach and Kathu — minutes from the beach with free on-site parking.
+        </p>
+      </div>
       {children}
     </>
   );

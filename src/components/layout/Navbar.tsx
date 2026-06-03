@@ -63,6 +63,8 @@ export function Navbar() {
                 src="/denz-logo.png"
                 alt="Denz Coworking Café Phuket"
                 className="h-9 w-auto"
+                width={200}
+                height={58}
               />
             </Link>
 

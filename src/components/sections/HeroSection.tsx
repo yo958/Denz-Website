@@ -33,6 +33,9 @@ export function HeroSection({ content = {} }: { content?: HeroContent }) {
           src="/images/hero-bay-view.webp"
           alt="Denz CoWorking outdoor terrace with Patong bay view"
           className="w-full h-full object-cover"
+          fetchPriority="high"
+          width={1920}
+          height={1080}
         />
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/20" />
