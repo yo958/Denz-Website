@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.59] - 2026-06-03
+### Changed
+- Footer: replaced generic Lucide icons with official brand SVGs for all social platforms (Instagram, Facebook, TikTok, YouTube, X, LinkedIn, WhatsApp, TripAdvisor, Threads)
+
 ## [0.5.58] - 2026-06-03
 ### Added
 - Footer: TripAdvisor (Star icon) and Threads (MessageSquare icon) social link support
