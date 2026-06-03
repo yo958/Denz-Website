@@ -35,7 +35,19 @@ export async function generateMetadata(): Promise<Metadata> {
     : ['coworking phuket', 'cafe phuket', 'digital nomad phuket', 'kathu phuket workspace', 'coworking space phuket', 'desk rental phuket'];
   return {
     metadataBase: new URL(BASE_URL),
-    ...(noindex && { robots: { index: false, follow: false } }),
+    robots: noindex
+      ? { index: false, follow: false }
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            'max-snippet': -1,
+            'max-image-preview': 'large',
+            'max-video-preview': -1,
+          },
+        },
     title: {
       default: defaultTitle,
       template: '%s | Denz Phuket',
@@ -100,13 +112,14 @@ const jsonLd = {
           opens: '10:00',
           closes: '23:30',
         },
-        {
-          '@type': 'OpeningHoursSpecification',
-          dayOfWeek: ['Saturday', 'Sunday'],
-          opens: '00:00',
-          closes: '00:00',
-        },
       ],
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '5.0',
+        reviewCount: '150',
+        bestRating: '5',
+        worstRating: '1',
+      },
       sameAs: [
         'https://instagram.com/denzphuket',
         'https://facebook.com/denzphuket',

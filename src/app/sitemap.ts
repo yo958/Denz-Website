@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getAdminDb } from '@/lib/firebase-admin';
-import type { BlogPost, BlogTaxonomy } from '@/types';
+import { toSlug } from '@/lib/slug';
+import type { BlogPost, BlogTaxonomy, CoworkSpace, Product } from '@/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://denzphuket.com';
 
@@ -42,8 +43,44 @@ async function getBlogSitemapEntries(): Promise<MetadataRoute.Sitemap> {
   }
 }
 
+async function getCoworkingSitemapEntries(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const db = getAdminDb();
+    const snap = await db.collection('coworking-spaces').where('archived', '!=', true).get();
+    const spaces = snap.docs.map(d => ({ id: d.id, ...d.data() }) as CoworkSpace);
+    return spaces.map(s => ({
+      url: `${BASE_URL}/coworking/${toSlug(s.name)}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+async function getRoomsSitemapEntries(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const db = getAdminDb();
+    const snap = await db.collection('products').where('category', '==', 'rooms').where('archived', '!=', true).get();
+    const rooms = snap.docs.map(d => ({ id: d.id, ...d.data() }) as Product);
+    return rooms.map(r => ({
+      url: `${BASE_URL}/rooms/${toSlug(r.name)}`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const blogEntries = await getBlogSitemapEntries();
+  const [blogEntries, coworkingEntries, roomsEntries] = await Promise.all([
+    getBlogSitemapEntries(),
+    getCoworkingSitemapEntries(),
+    getRoomsSitemapEntries(),
+  ]);
 
   return [
     {
@@ -82,6 +119,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.6,
     },
+    // Coworking space detail pages
+    ...coworkingEntries,
+    // Room detail pages
+    ...roomsEntries,
     // Blog posts, categories, and tags (fetched live from Firestore)
     ...blogEntries,
   ];

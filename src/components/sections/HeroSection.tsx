@@ -59,6 +59,7 @@ export function HeroSection({ content = {} }: { content?: HeroContent }) {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-5xl sm:text-6xl lg:text-7xl font-bold text-ink leading-[1.08] tracking-tight mb-6"
           >
+            <span className="sr-only">Coworking Café in Kathu, Phuket — </span>
             {headline}
           </motion.h1>
 

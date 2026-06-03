@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.5.53] - 2026-06-03
+### Added
+- `llms-full.txt` — comprehensive AI-search profile (services, pricing, FAQ, directions)
+- `AggregateRating` (5.0 / 150 reviews) added to LocalBusiness JSON-LD schema — enables star ratings in SERPs
+- Explicit AI crawler management in `robots.ts` — allow PerplexityBot/Google-Extended, block GPTBot/ClaudeBot/CCBot
+- Coworking spaces and rooms now included in `sitemap.ts` (fetched dynamically from Firestore)
+- HSTS (`Strict-Transport-Security`) header added to all responses
+### Changed
+- `robots` metadata: added `max-snippet:-1`, `max-image-preview:large`, `max-video-preview:-1` for richer Google previews
+- Hero H1 now includes visually-hidden keyword text ("Coworking Café in Kathu, Phuket") before the tagline
+- Logo `alt` updated to "Denz Coworking Café Phuket" (was "Denz")
+- `llms.txt` expanded with popular guide article links, pricing detail, and amenity summary
+- `openingHoursSpecification` no longer includes Saturday/Sunday 00:00–00:00 entries (schema spec: omit closed days)
+### Fixed
+- Saturday/Sunday `openingHoursSpecification` removed from contact layout schema (was incorrectly set to 00:00–00:00)
+
 ## [0.5.52] - 2026-06-02
 ### Added
 - Privacy Policy page at `/privacy` with PDPA-aware sections

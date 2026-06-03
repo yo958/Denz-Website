@@ -65,12 +65,6 @@ const contactSchema = {
       opens: '10:00',
       closes: '23:30',
     },
-    {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Saturday', 'Sunday'],
-      opens: '00:00',
-      closes: '00:00',
-    },
   ],
   contactPoint: {
     '@type': 'ContactPoint',

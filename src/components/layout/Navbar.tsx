@@ -61,7 +61,7 @@ export function Navbar() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/denz-logo.png"
-                alt="Denz"
+                alt="Denz Coworking Café Phuket"
                 className="h-9 w-auto"
               />
             </Link>

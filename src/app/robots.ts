@@ -33,6 +33,17 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
         allow: '/',
         disallow: ['/order', '/dashboard'],
       },
+      // Allow AI search engines (cited in responses — good for discoverability)
+      { userAgent: 'PerplexityBot', allow: '/' },
+      { userAgent: 'Google-Extended', allow: '/' },
+      { userAgent: 'Applebot-Extended', allow: '/' },
+      // Block training-data scrapers
+      { userAgent: 'GPTBot', disallow: '/' },
+      { userAgent: 'ChatGPT-User', disallow: '/' },
+      { userAgent: 'ClaudeBot', disallow: '/' },
+      { userAgent: 'CCBot', disallow: '/' },
+      { userAgent: 'Bytespider', disallow: '/' },
+      { userAgent: 'Amazonbot', disallow: '/' },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,
   };
