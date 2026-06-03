@@ -93,6 +93,12 @@ export interface DayHours {
   closed: boolean;
 }
 
+export interface SocialLink {
+  platform: string;
+  url: string;
+  label?: string;
+}
+
 export interface SiteSettings {
   venue: {
     name?: string;
@@ -101,6 +107,7 @@ export interface SiteSettings {
     abn?: string;
     timezone?: string;
     openingHours?: Record<DayOfWeek, DayHours>;
+    socialLinks?: SocialLink[];
   };
 }
 

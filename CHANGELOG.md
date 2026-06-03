@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.57] - 2026-06-03
+### Changed
+- Footer: social media links now rendered dynamically from Firestore (managed via POS Settings → Venue → Social Media Links)
+
 ## [0.5.56] - 2026-06-03
 ### Added
 - Complete migration redirect map in next.config.ts (301 permanent):

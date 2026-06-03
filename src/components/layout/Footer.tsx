@@ -1,8 +1,32 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, Clock, Globe, Share2 } from 'lucide-react';
+import { MapPin, Clock, Globe, Share2, Camera, Music2, Play, AtSign, Briefcase, MessageCircle } from 'lucide-react';
 import { useVenueSettings, formatOpeningHours } from '@/hooks/useVenueSettings';
+import type { SocialLink } from '@/types';
+
+function SocialIcon({ platform }: { platform: string }) {
+  switch (platform) {
+    case 'instagram':  return <Camera className="w-4 h-4" />;
+    case 'facebook':   return <Share2 className="w-4 h-4" />;
+    case 'tiktok':     return <Music2 className="w-4 h-4" />;
+    case 'youtube':    return <Play className="w-4 h-4" />;
+    case 'x':          return <AtSign className="w-4 h-4" />;
+    case 'linkedin':   return <Briefcase className="w-4 h-4" />;
+    case 'whatsapp':   return <MessageCircle className="w-4 h-4" />;
+    default:           return <Globe className="w-4 h-4" />;
+  }
+}
+
+function socialLabel(link: SocialLink): string {
+  if (link.label) return link.label;
+  const map: Record<string, string> = {
+    instagram: 'Instagram', facebook: 'Facebook', tiktok: 'TikTok',
+    youtube: 'YouTube', x: 'X / Twitter', linkedin: 'LinkedIn',
+    whatsapp: 'WhatsApp',
+  };
+  return map[link.platform] ?? 'Social';
+}
 
 export function Footer() {
   const settings = useVenueSettings();
@@ -26,26 +50,22 @@ export function Footer() {
               A coworking café in the heart of Phuket — built for digital nomads,
               remote workers, and anyone who wants great coffee with a mountain view.
             </p>
-            <div className="flex items-center gap-3 mt-6">
-              <a
-                href="https://instagram.com/denzphuket"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-                aria-label="Instagram"
-              >
-                <Globe className="w-4 h-4" />
-              </a>
-              <a
-                href="https://facebook.com/denzphuket"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-                aria-label="Facebook"
-              >
-                <Share2 className="w-4 h-4" />
-              </a>
-            </div>
+            {(settings.venue.socialLinks ?? []).length > 0 && (
+              <div className="flex items-center gap-3 mt-6 flex-wrap">
+                {(settings.venue.socialLinks ?? []).map((link, i) => (
+                  <a
+                    key={i}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                    aria-label={socialLabel(link)}
+                  >
+                    <SocialIcon platform={link.platform} />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Links */}
