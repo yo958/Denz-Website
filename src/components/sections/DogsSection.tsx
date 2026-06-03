@@ -24,7 +24,7 @@ export function DogsSection() {
               Meet the locals
             </span>
             <h2 className="text-4xl font-bold text-ink leading-tight mb-5">
-              Our 5 French Bulldogs
+              Meet Our 5 French Bulldogs at Denz
             </h2>
             <p className="text-ink-muted leading-relaxed mb-4">
               Denz is home to five French Bulldogs —{' '}

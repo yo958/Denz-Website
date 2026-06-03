@@ -18,7 +18,7 @@ export function MapSection() {
             <span className="inline-block text-xs font-semibold uppercase tracking-widest text-brand mb-4">
               Find us
             </span>
-            <h2 className="text-4xl font-bold text-ink mb-8">Get directions</h2>
+            <h2 className="text-4xl font-bold text-ink mb-8">How to Get to Denz in Kathu, Phuket</h2>
 
             <ul className="space-y-6">
               <li className="flex items-start gap-4">

@@ -72,8 +72,8 @@ export function CoworkingCta() {
               Coworking
             </span>
             <h2 className="text-4xl sm:text-5xl font-bold text-white leading-tight mb-6">
-              From {fromLabel}<br />
-              <span className="text-white/50">No commitment needed.</span>
+              Desk Rental in Patong, Phuket<br />
+              <span className="text-white/50">From {fromLabel} No commitment needed.</span>
             </h2>
             <p className="text-white/60 text-lg leading-relaxed mb-8">
               Whether you need a desk for a day or a private office for a month,

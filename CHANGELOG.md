@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.54] - 2026-06-03
+### Changed
+- FAQ answers now always rendered in DOM (CSS max-height toggle instead of conditional render) — all 11 Q&As now indexable by Google
+- FeaturesSection H2: "Everything you need, in one place" → "Coworking, Café & Rooms in One Place in Phuket"
+- FeaturesSection card H3s updated: coworking → "Coworking Space in Phuket", café → "Thai & Western Food in Kathu, Phuket", rooms → "WorkStay Rooms for Remote Workers in Phuket"
+- AboutSection default H2: "A workspace that feels like home" → "Coworking Space in Kathu, Phuket"
+- ChillSection H2: "Not everything has to be productive." → "Chill Space & Social Lounge in Phuket" (tagline demoted to subtitle)
+- CoworkingCta H2: "From ฿X/day." → "Desk Rental in Patong, Phuket"
+- DogsSection H2: "Our 5 French Bulldogs" → "Meet Our 5 French Bulldogs at Denz"
+- MapSection H2: "Get directions" → "How to Get to Denz in Kathu, Phuket"
+
 ## [0.5.53] - 2026-06-03
 ### Added
 - `llms-full.txt` — comprehensive AI-search profile (services, pricing, FAQ, directions)

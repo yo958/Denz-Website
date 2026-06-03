@@ -83,11 +83,12 @@ export function FaqSection({ content }: { content?: { items?: FaqItem[] } }) {
                   className={`w-5 h-5 text-brand shrink-0 transition-transform duration-200 ${open === i ? 'rotate-180' : ''}`}
                 />
               </button>
-              {open === i && (
+              {/* Answer is always in the DOM so search engines can index it; CSS hides it when closed */}
+              <div className={`overflow-hidden transition-all duration-200 ${open === i ? 'max-h-96' : 'max-h-0'}`}>
                 <div className="px-6 pb-5">
                   <p className="text-ink-muted text-sm leading-relaxed">{faq.a}</p>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>

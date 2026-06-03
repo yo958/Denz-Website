@@ -17,7 +17,7 @@ interface AboutContent {
 }
 
 export function AboutSection({ content = {} }: { content?: AboutContent }) {
-  const title = content.title || 'A workspace that feels like home';
+  const title = content.title || 'Coworking Space in Kathu, Phuket';
   const body1 = content.body1 || 'Nestled between the mountains of Kathu and the beaches of Patong, Denz is where remote workers, freelancers and digital nomads call their second home in Phuket.';
   const body2 = content.body2 || 'We built Denz because we wanted a place that had everything — fast internet, proper food, comfortable desks and a community that gets it. No pretension, just a great place to get things done.';
   const settings = useVenueSettings();

@@ -20,8 +20,9 @@ export function ChillSection() {
               Chill space
             </span>
             <h2 className="text-4xl font-bold text-white leading-tight mb-5">
-              Not everything has to be productive.
+              Chill Space & Social Lounge in Phuket
             </h2>
+            <p className="text-white/50 text-lg mb-2">Not everything has to be productive.</p>
             <p className="text-white/70 leading-relaxed mb-4">
               The Denz chill lounge is your communal living room in Phuket. Bean bags, panoramic Patong Bay views, a TV, and a Nintendo 64 for when a multiplayer game of GoldenEye feels more important than your inbox.
             </p>

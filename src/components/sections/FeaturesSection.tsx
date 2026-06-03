@@ -8,7 +8,7 @@ const FEATURES = [
   {
     icon: Wifi,
     eyebrow: 'Coworking',
-    title: 'Your office away from home',
+    title: 'Coworking Space in Phuket',
     description:
       'Gigabit WiFi, standing desks, private offices and flexible packages from day passes to monthly. Start from just ฿200/day.',
     href: '/coworking',
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     icon: UtensilsCrossed,
     eyebrow: 'Café',
-    title: 'Thai & western food, done right',
+    title: 'Thai & Western Food in Kathu, Phuket',
     description:
       'Freshly cooked Thai classics, western breakfasts, great coffee and fresh smoothies — all day, every day.',
     href: '/menu',
@@ -32,9 +32,9 @@ const FEATURES = [
   {
     icon: BedDouble,
     eyebrow: 'Stay',
-    title: 'Sleep, work, repeat',
+    title: 'WorkStay Rooms for Remote Workers in Phuket',
     description:
-      'Clean, comfortable rooms right above the café. Wake up, grab a coffee and get straight to work.',
+      'Clean, comfortable rooms right above the café with Patong Bay views, gigabit WiFi and direct coworking access.',
     href: '/rooms',
     cta: 'See rooms',
     accent: 'bg-green-50',
@@ -52,7 +52,7 @@ export function FeaturesSection() {
           What we offer
         </span>
         <h2 className="text-4xl sm:text-5xl font-bold text-ink tracking-tight">
-          Everything you need,<br />in one place
+          Coworking, Café & Rooms<br />in One Place in Phuket
         </h2>
       </div>
 
