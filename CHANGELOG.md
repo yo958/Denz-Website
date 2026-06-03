@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.61] - 2026-06-03
+### Added
+- Contact page: social links now dynamic from Firestore, matching footer
+### Changed
+- Extracted SocialIcon + socialLabel into shared component (src/components/ui/SocialIcon.tsx)
+
 ## [0.5.60] - 2026-06-03
 ### Fixed
 - Footer: removed duplicate Privacy Policy and Terms of Service from Explore links (already in bottom bar)

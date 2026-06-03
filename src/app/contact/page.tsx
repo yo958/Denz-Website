@@ -1,9 +1,10 @@
 'use client';
 
-import { MapPin, Clock, Globe, Share2 } from 'lucide-react';
+import { MapPin, Clock, Globe } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { useVenueSettings, formatOpeningHours } from '@/hooks/useVenueSettings';
 import { usePageContent } from '@/hooks/usePageContent';
+import { SocialIcon, socialLabel } from '@/components/ui/SocialIcon';
 
 export default function ContactPage() {
   const settings = useVenueSettings();
@@ -50,34 +51,30 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center shrink-0">
-                <Globe className="w-5 h-5 text-brand" />
-              </div>
-              <div>
-                <p className="font-semibold text-ink">Social</p>
-                <div className="flex gap-3 mt-2">
-                  <a
-                    href="https://instagram.com/denzphuket"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-surface-muted border border-ink-faint/20 rounded-full px-4 py-2 text-sm font-medium text-ink-muted hover:text-ink transition-colors"
-                  >
-                    <Globe className="w-4 h-4" />
-                    @denzphuket
-                  </a>
-                  <a
-                    href="https://facebook.com/denzphuket"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-surface-muted border border-ink-faint/20 rounded-full px-4 py-2 text-sm font-medium text-ink-muted hover:text-ink transition-colors"
-                  >
-                    <Share2 className="w-4 h-4" />
-                    Facebook
-                  </a>
+            {(settings.venue.socialLinks ?? []).length > 0 && (
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center shrink-0">
+                  <Globe className="w-5 h-5 text-brand" />
+                </div>
+                <div>
+                  <p className="font-semibold text-ink">Social</p>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {(settings.venue.socialLinks ?? []).map((link, i) => (
+                      <a
+                        key={i}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 bg-surface-muted border border-ink-faint/20 rounded-full px-4 py-2 text-sm font-medium text-ink-muted hover:text-ink transition-colors"
+                      >
+                        <SocialIcon platform={link.platform} />
+                        {socialLabel(link)}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Map */}
