@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.63] - 2026-06-03
+### Fixed
+- JSON-LD `openingHoursSpecification` in root layout now reads dynamically from POS settings slice in Firestore instead of being hardcoded
+
 ## [0.5.62] - 2026-06-03
 ### Changed
 - llms.txt and llms-full.txt served as dynamic Next.js route handlers reading from Firestore (editable from POS Settings); static files removed
