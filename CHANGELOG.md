@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.62] - 2026-06-03
+### Changed
+- llms.txt and llms-full.txt served as dynamic Next.js route handlers reading from Firestore (editable from POS Settings); static files removed
+
 ## [0.5.61] - 2026-06-03
 ### Added
 - Contact page: social links now dynamic from Firestore, matching footer

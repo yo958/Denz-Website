@@ -1,4 +1,9 @@
-# Denz — Coworking Café in Phuket, Thailand
+import { NextResponse } from 'next/server';
+import { getAdminDb } from '@/lib/firebase-admin';
+
+export const dynamic = 'force-dynamic';
+
+const FALLBACK = `# Denz — Coworking Café in Phuket, Thailand
 
 > Denz is a modern coworking café in Kathu, Phuket, Thailand. We offer flexible hot desk and dedicated desk coworking, private offices, hotel-style accommodation rooms, a full café menu with Thai and international food, and equipment rentals — all in one place. Rated 5.0 stars on Google (150+ reviews). Open Monday to Friday, 10:00 AM – 11:30 PM.
 
@@ -56,4 +61,20 @@ Full Thai and western food menu. Kitchen open 11:00 AM – 10:00 PM. Specialitie
 - Panoramic views of Patong Bay from both coworking area and terrace
 - 1000/1000 Mbps gigabit business WiFi with backup line
 - Private podcast and video studio available for hire
-- One of the highest-rated coworking spaces in Phuket (5.0 stars, 150+ reviews)
+- One of the highest-rated coworking spaces in Phuket (5.0 stars, 150+ reviews)`;
+
+export async function GET() {
+  try {
+    const db = getAdminDb();
+    if (db) {
+      const snap = await db.collection('page-content').doc('llms').get();
+      const content = snap.exists ? (snap.data()?.short as string | undefined) : undefined;
+      if (content) {
+        return new NextResponse(content, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+      }
+    }
+  } catch {
+    // fall through to fallback
+  }
+  return new NextResponse(FALLBACK, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+}

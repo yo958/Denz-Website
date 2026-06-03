@@ -1,4 +1,9 @@
-# Denz — Full Business Profile
+import { NextResponse } from 'next/server';
+import { getAdminDb } from '@/lib/firebase-admin';
+
+export const dynamic = 'force-dynamic';
+
+const FALLBACK = `# Denz — Full Business Profile
 
 ## Business Overview
 
@@ -196,4 +201,20 @@ Denz was founded as a combined coworking and café concept to serve the growing 
 - **Phone:** +66 63 917 7720
 - **Instagram:** https://instagram.com/denzphuket
 - **Facebook:** https://facebook.com/denzphuket
-- **Google Maps:** https://maps.app.goo.gl/DvhWG46V5XLVdurTA
+- **Google Maps:** https://maps.app.goo.gl/DvhWG46V5XLVdurTA`;
+
+export async function GET() {
+  try {
+    const db = getAdminDb();
+    if (db) {
+      const snap = await db.collection('page-content').doc('llms').get();
+      const content = snap.exists ? (snap.data()?.full as string | undefined) : undefined;
+      if (content) {
+        return new NextResponse(content, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+      }
+    }
+  } catch {
+    // fall through to fallback
+  }
+  return new NextResponse(FALLBACK, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+}
