@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.5.58] - 2026-06-03
+### Added
+- Footer: TripAdvisor (Star icon) and Threads (MessageSquare icon) social link support
+
 ## [0.5.57] - 2026-06-03
 ### Changed
 - Footer: social media links now rendered dynamically from Firestore (managed via POS Settings → Venue → Social Media Links)

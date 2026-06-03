@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, Clock, Globe, Share2, Camera, Music2, Play, AtSign, Briefcase, MessageCircle } from 'lucide-react';
+import { MapPin, Clock, Globe, Share2, Camera, Music2, Play, AtSign, Briefcase, MessageCircle, Star, MessageSquare } from 'lucide-react';
 import { useVenueSettings, formatOpeningHours } from '@/hooks/useVenueSettings';
 import type { SocialLink } from '@/types';
 
@@ -14,6 +14,8 @@ function SocialIcon({ platform }: { platform: string }) {
     case 'x':          return <AtSign className="w-4 h-4" />;
     case 'linkedin':   return <Briefcase className="w-4 h-4" />;
     case 'whatsapp':   return <MessageCircle className="w-4 h-4" />;
+    case 'tripadvisor': return <Star className="w-4 h-4" />;
+    case 'threads':    return <MessageSquare className="w-4 h-4" />;
     default:           return <Globe className="w-4 h-4" />;
   }
 }
@@ -23,7 +25,7 @@ function socialLabel(link: SocialLink): string {
   const map: Record<string, string> = {
     instagram: 'Instagram', facebook: 'Facebook', tiktok: 'TikTok',
     youtube: 'YouTube', x: 'X / Twitter', linkedin: 'LinkedIn',
-    whatsapp: 'WhatsApp',
+    whatsapp: 'WhatsApp', tripadvisor: 'TripAdvisor', threads: 'Threads',
   };
   return map[link.platform] ?? 'Social';
 }
